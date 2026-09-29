@@ -18,6 +18,10 @@ One file per rule of the evaluation, each `{ "description", "cases": [...] }`; a
 
 On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resolves to, `null` for the embedded bundle; on every other `SKIPPED` it is the newest release the device will not take.
 
+## `resource-files.json`
+
+`{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — a bundle the embed step did not register carries only its files, and its absent `pack` reads as `null`, its absent `deltas` and `patches` as empty.
+
 ## `version-ranges.json`
 
 `{ version, range, satisfied }` over the shared range subset — `satisfied` is `true`, `false`, or `null` when the range does not parse, which a condition treats as not satisfied.

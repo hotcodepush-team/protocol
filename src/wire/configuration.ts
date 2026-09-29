@@ -5,7 +5,7 @@ import {
   NETWORK_POLICIES,
   READY_SIGNALS,
 } from '../results.js';
-import { BundleManifestSchema } from './bundle-manifest.js';
+import { EmbeddedBundleManifestSchema } from './bundle-manifest.js';
 import { IsoTimestampSchema, NonEmptyStringSchema } from './primitives.js';
 
 /**
@@ -33,7 +33,7 @@ export type ProjectConfiguration = z.infer<typeof ProjectConfigurationSchema>;
 export const ConfigurationSchema = ProjectConfigurationSchema.extend({
   builtAt: IsoTimestampSchema,
   embeddedBundleId: NonEmptyStringSchema.nullable(),
-  embeddedBundleManifest: BundleManifestSchema,
+  embeddedBundleManifest: EmbeddedBundleManifestSchema,
   fingerprint: NonEmptyStringSchema.nullable(),
 });
 export type Configuration = z.infer<typeof ConfigurationSchema>;

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -5,7 +7,22 @@ import {
   ProjectConfigurationSchema,
 } from './configuration.js';
 
+interface ResourceFileCase {
+  embeddedBundleManifest: unknown;
+  name: string;
+  resourceFile: unknown;
+}
+
 const PROJECT = { appId: 'a1', channelId: 'c1', dir: 'dist' };
+
+const RESOURCE_FILE_CASES = (
+  JSON.parse(
+    readFileSync(
+      new URL('../../fixtures/resource-files.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { cases: ResourceFileCase[] }
+).cases;
 
 describe('ProjectConfigurationSchema', () => {
   test('should apply the defaults to a file with the two ids', () => {
@@ -44,28 +61,12 @@ describe('ConfigurationSchema', () => {
     expect(ConfigurationSchema.safeParse(PROJECT).success).toBe(false);
   });
 
-  test('should parse the resource file', () => {
-    const configuration = {
-      ...PROJECT,
-      builtAt: '2026-09-29T10:00:00.000Z',
-      embeddedBundleId: null,
-      embeddedBundleManifest: {
-        appId: 'a1',
-        bundleId: 'b0',
-        createdAt: '2026-09-29T09:00:00.000Z',
-        deltas: [],
-        files: [],
-        pack: {
-          sizeBytes: 0,
-          url: 'https://files.hotcodepush.com/apps/a1/bundles/b0/pack',
-        },
-        patches: [],
-        version: '1.4.1',
-      },
-      fingerprint: null,
-    };
-    expect(ConfigurationSchema.parse(configuration)).toMatchObject(
-      configuration,
-    );
-  });
+  test.each(RESOURCE_FILE_CASES)(
+    '$name',
+    ({ embeddedBundleManifest, resourceFile }) => {
+      expect(
+        ConfigurationSchema.parse(resourceFile).embeddedBundleManifest,
+      ).toEqual(embeddedBundleManifest);
+    },
+  );
 });

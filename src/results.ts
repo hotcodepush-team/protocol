@@ -156,10 +156,12 @@ export interface GetDeviceResult {
   binaryBuild: string;
   binaryVersion: string;
   channel: GetChannelResult;
-  fingerprint: string;
+  /** `fp1:<sha256>` from the resource file, `null` in a build that carries none. */
+  fingerprint: string | null;
   id: string;
   osVersion: string;
-  platform: Platform;
+  /** `web` from the SDK's web no-op; the index and the events serve `ios` and `android` only. */
+  platform: Platform | 'web';
   sdkVersion: string;
 }
 

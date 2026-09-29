@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import {
   BundleManifestSchema,
+  EmbeddedBundleManifestSchema,
   ManifestEnvelopeSchema,
 } from './bundle-manifest.js';
 
@@ -46,6 +47,19 @@ describe('BundleManifestSchema', () => {
     expect(BundleManifestSchema.safeParse({ ...MANIFEST, files }).success).toBe(
       false,
     );
+  });
+
+  test('should reject a null pack', () => {
+    expect(
+      BundleManifestSchema.safeParse({ ...MANIFEST, pack: null }).success,
+    ).toBe(false);
+  });
+});
+
+describe('EmbeddedBundleManifestSchema', () => {
+  test('should parse a manifest with a null pack', () => {
+    const manifest = { ...MANIFEST, pack: null };
+    expect(EmbeddedBundleManifestSchema.parse(manifest)).toEqual(manifest);
   });
 });
 
