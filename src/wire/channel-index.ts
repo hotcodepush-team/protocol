@@ -51,16 +51,22 @@ export const UnknownConditionSchema = z.looseObject({
     .refine(type => !(CONDITION_TYPES as readonly string[]).includes(type)),
 });
 
-export const ConditionSchema = z.union([
+export const KnownConditionSchema = z.union([
   AttributeConditionSchema,
   BinaryConditionSchema,
   DeviceConditionSchema,
   FingerprintConditionSchema,
   OsConditionSchema,
   RuntimeConditionSchema,
+]);
+export type KnownCondition = z.infer<typeof KnownConditionSchema>;
+export type UnknownCondition = z.infer<typeof UnknownConditionSchema>;
+
+export const ConditionSchema = z.union([
+  KnownConditionSchema,
   UnknownConditionSchema,
 ]);
-export type Condition = z.infer<typeof ConditionSchema>;
+export type Condition = KnownCondition | UnknownCondition;
 
 export const IndexReleaseSchema = z.looseObject({
   bundleId: NonEmptyStringSchema,

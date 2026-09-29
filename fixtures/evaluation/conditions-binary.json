@@ -1,0 +1,1256 @@
+{
+  "description": "The binary condition: a range over the binary version, with the build number as a fourth component where the range names one; a range that does not parse is not satisfied.",
+  "cases": [
+    {
+      "name": "should satisfy \">=2.3.0\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \"<2.4.0\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "<2.4.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should satisfy \"2.x\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.x",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"2.4.1\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"2.4.1.57\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.4.1.57",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \"2.4.1.58\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.4.1.58",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should satisfy \">=2.3.0 <3.0.0\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=2.3.0 <3.0.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \"<2.4.1 || >2.4.1\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "<2.4.1 || >2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should not satisfy \">=3\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=3",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should satisfy \"1.x || 2.x\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "1.x || 2.x",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"2\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"2.4\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.4",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \"2.5\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.5",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should satisfy \"x\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "x",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"*\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "*",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"=2.4.1\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "=2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \">2.4.1\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should satisfy \">2.4.1.56\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">2.4.1.56",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should satisfy \"<=2.4.1\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "<=2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    },
+    {
+      "name": "should not satisfy \"not a range\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "not a range",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should not satisfy \">=1.x\" on 2.4.1 build 57",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=1.x",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should not satisfy any range when the binary version is not a dotted number",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=2.0.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1-beta",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "condition": "binary",
+        "reason": "INCOMPATIBLE",
+        "releaseId": "release-1",
+        "status": "SKIPPED"
+      }
+    },
+    {
+      "name": "should ignore a build number that is not a number",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": "2.4.1",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "appliedIndexSequence": null,
+        "attributes": {},
+        "binaryBuild": "abc",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null,
+        "runtimeVersion": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-1",
+        "status": "AVAILABLE"
+      }
+    }
+  ]
+}

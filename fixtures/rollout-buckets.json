@@ -1,0 +1,40 @@
+{
+  "description": "The rollout bucket: FNV-1a 32-bit over the UTF-8 bytes of the device id followed by the release id, modulo 100.",
+  "cases": [
+    {
+      "bucket": 61,
+      "deviceId": "",
+      "releaseId": ""
+    },
+    {
+      "bucket": 20,
+      "deviceId": "a",
+      "releaseId": ""
+    },
+    {
+      "bucket": 20,
+      "deviceId": "",
+      "releaseId": "a"
+    },
+    {
+      "bucket": 90,
+      "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+      "releaseId": "release-1"
+    },
+    {
+      "bucket": 71,
+      "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+      "releaseId": "release-2"
+    },
+    {
+      "bucket": 52,
+      "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+      "releaseId": "release-3"
+    },
+    {
+      "bucket": 69,
+      "deviceId": "d34dbeef-0000-4000-8000-000000000000",
+      "releaseId": "ü"
+    }
+  ]
+}
