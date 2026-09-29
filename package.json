@@ -1,0 +1,46 @@
+{
+  "name": "@hotcodepush/protocol",
+  "description": "The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator and the fixture suite",
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://hotcodepush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hotcodepush-team/protocol-js.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "fmt": "prettier --write .",
+    "lint": "eslint .",
+    "prepare": "npm run build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit --project tsconfig.json"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.11.0",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-import-x": "4.17.1",
+    "prettier": "3.9.8",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.1"
+  }
+}
