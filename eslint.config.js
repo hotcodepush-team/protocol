@@ -13,6 +13,7 @@ export default defineConfig(
   {
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
       'import-x/no-extraneous-dependencies': [
         'error',
         { devDependencies: ['**/*.test.ts', '**/*.config.*'] },
