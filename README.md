@@ -4,10 +4,10 @@ The HotCodePush update-protocol client for JavaScript: the wire types, the evalu
 
 ## Installation
 
-The package is not on npm yet; install it from GitHub:
+The package is not on npm yet; install it from the `dist` branch, which CI rebuilds from every push to `main` with the build output committed, so no install script runs:
 
 ```sh
-npm install github:hotcodepush-team/protocol-js#main
+npm install github:hotcodepush-team/protocol-js#dist
 ```
 
 ## Usage

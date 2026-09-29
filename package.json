@@ -29,7 +29,6 @@
     "build": "tsc --project tsconfig.json",
     "fmt": "prettier --write .",
     "lint": "eslint .",
-    "prepare": "npm run build",
     "test": "vitest run",
     "typecheck": "tsc --project tsconfig.typecheck.json"
   },
