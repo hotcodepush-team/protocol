@@ -25,3 +25,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 ## `rollout-buckets.json`
 
 `{ deviceId, releaseId, bucket }`: FNV-1a 32-bit over the UTF-8 bytes of the device id followed by the release id, modulo 100; a device takes a release when its bucket is below the rollout percentage.
+
+## `packs.json`
+
+One pack as the writer produces it — `packBase64`, its `packSha256`, and `entries` in order with each content and its `sha256` — so a reader is tested against exact bytes and a writer against exact output.

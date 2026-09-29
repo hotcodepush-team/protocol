@@ -13,9 +13,14 @@ npm install https://pkg.pr.new/hotcodepush-team/protocol-js/@hotcodepush/protoco
 ## Usage
 
 ```ts
-import { CHANNEL_INDEX_SCHEMA } from '@hotcodepush/protocol';
+import {
+  ChannelIndexSchema,
+  evaluateChannelIndex,
+} from '@hotcodepush/protocol';
 
-console.log(CHANNEL_INDEX_SCHEMA); // 1, the channel index format this client reads
+const index = ChannelIndexSchema.parse(await response.json());
+const { outcome, verdicts } = evaluateChannelIndex(index, deviceInfo);
+// outcome: the release to take, or the reason not to; verdicts: every release explained
 ```
 
 The package is the foundation of the HotCodePush SDKs, not their supported API: an app uses the SDK for its framework.
