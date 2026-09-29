@@ -1,8 +1,8 @@
 /**
  * The range subset the three evaluators share, over dotted numeric versions:
  * comparators `>=`, `>`, `<=`, `<`, `=`, whitespace allowed after the operator,
- * a bare version as equality, partial versions and an `x` or `*` as the last
- * component as intervals, alternatives joined by `||`, comparators of one
+ * a bare version as equality, partial versions and trailing `x` or `*`
+ * components as intervals, alternatives joined by `||`, comparators of one
  * alternative joined by whitespace. Anything else does not parse, and a
  * condition that does not parse is not satisfied.
  */
@@ -11,9 +11,9 @@ export type Version = readonly number[];
 
 type Comparator = { operator: '<' | '<=' | '=' | '>' | '>='; version: Version };
 
-/** One comparator and the whitespace after it, a wildcard only as the last component; sticky, so matching stops at the first character that is not one. */
+/** One comparator and the whitespace after it, wildcards only as trailing components; sticky, so matching stops at the first character that is not one. */
 const COMPARATOR_PATTERN =
-  /(>=|<=|>|<|=)?\s*(\d+(?:\.\d+)*(?:\.[xX*])?|[xX*])(?:\s+|$)/gy;
+  /(>=|<=|>|<|=)?\s*(\d+(?:\.\d+)*(?:\.[xX*])*|[xX*](?:\.[xX*])*)(?:\s+|$)/gy;
 const VERSION_PATTERN = /^\d+(\.\d+)*$/;
 
 /** A version's numeric components; `null` when the string is not a dotted number. */

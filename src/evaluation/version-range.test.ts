@@ -54,6 +54,9 @@ describe('isVersionInRange', () => {
     ['> 1.2 < 2', '>1.2 <2'],
     ['<=\t2.4.1', '<=2.4.1'],
     ['=  1.2.3 || <  1', '=1.2.3 || <1'],
+    ['1.x.x', '1.x'],
+    ['1.2.X.*', '1.2.x'],
+    ['x.x.x', '*'],
   ])('should read %j as %j', (range, joinedRange) => {
     for (const version of [
       [0, 9],
@@ -69,8 +72,8 @@ describe('isVersionInRange', () => {
     }
   });
 
-  test.each(['1.x.3', '1.*.3', '1.X.3', '1.x.x', 'x.1', '2.4.x.57'])(
-    'should not parse %j when a component follows a wildcard',
+  test.each(['1.x.3', '1.*.3', '1.X.3', '1.x.x.3', 'x.1', '2.4.x.57'])(
+    'should not parse %j when a number follows a wildcard',
     range => {
       expect(isVersionInRange([1, 2, 3], range)).toBeNull();
     },

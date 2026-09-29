@@ -198,8 +198,18 @@
     },
     {
       "range": "1.x.x",
-      "satisfied": null,
+      "satisfied": true,
       "version": "1.2.3"
+    },
+    {
+      "range": "2.x.x",
+      "satisfied": true,
+      "version": "2.4.1"
+    },
+    {
+      "range": "1.x.x",
+      "satisfied": false,
+      "version": "2.0.0"
     },
     {
       "range": "1.2x",
