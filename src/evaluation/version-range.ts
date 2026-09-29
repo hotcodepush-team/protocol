@@ -1,16 +1,19 @@
 /**
  * The range subset the three evaluators share, over dotted numeric versions:
- * comparators `>=`, `>`, `<=`, `<`, `=`, a bare version as equality, `x` or `*`
- * wildcards and partial versions as intervals, alternatives joined by `||`,
- * comparators of one alternative joined by whitespace. Anything else does not
- * parse, and a condition that does not parse is not satisfied.
+ * comparators `>=`, `>`, `<=`, `<`, `=`, whitespace allowed after the operator,
+ * a bare version as equality, partial versions and an `x` or `*` as the last
+ * component as intervals, alternatives joined by `||`, comparators of one
+ * alternative joined by whitespace. Anything else does not parse, and a
+ * condition that does not parse is not satisfied.
  */
 
 export type Version = readonly number[];
 
 type Comparator = { operator: '<' | '<=' | '=' | '>' | '>='; version: Version };
 
-const COMPARATOR_PATTERN = /^(>=|<=|>|<|=)?\s*([0-9xX*]+(?:\.[0-9xX*]+)*)$/;
+/** One comparator and the whitespace after it, a wildcard only as the last component; sticky, so matching stops at the first character that is not one. */
+const COMPARATOR_PATTERN =
+  /(>=|<=|>|<|=)?\s*(\d+(?:\.\d+)*(?:\.[xX*])?|[xX*])(?:\s+|$)/gy;
 const VERSION_PATTERN = /^\d+(\.\d+)*$/;
 
 /** A version's numeric components; `null` when the string is not a dotted number. */
@@ -84,16 +87,18 @@ function isComparatorSatisfied(
 }
 
 function parseAlternative(alternative: string): Comparator[] | null {
-  const parts = alternative
-    .trim()
-    .split(/\s+/)
-    .filter(part => part.length > 0);
-  if (parts.length === 0) {
+  const trimmed = alternative.trim();
+  const matches = [...trimmed.matchAll(COMPARATOR_PATTERN)];
+  const matchedLength = matches.reduce(
+    (length, match) => length + match[0].length,
+    0,
+  );
+  if (trimmed.length === 0 || matchedLength !== trimmed.length) {
     return null;
   }
   const comparators: Comparator[] = [];
-  for (const part of parts) {
-    const parsed = parseComparator(part);
+  for (const match of matches) {
+    const parsed = parseComparator(match);
     if (parsed === null) {
       return null;
     }
@@ -102,15 +107,11 @@ function parseAlternative(alternative: string): Comparator[] | null {
   return comparators;
 }
 
-function parseComparator(part: string): Comparator[] | null {
-  const match = COMPARATOR_PATTERN.exec(part);
-  if (match === null) {
-    return null;
-  }
+function parseComparator(match: RegExpMatchArray): Comparator[] | null {
   const operator = match[1] as Comparator['operator'] | undefined;
   const components = (match[2] ?? '').split('.');
   const wildcardIndex = components.findIndex(component =>
-    /^[xX*]+$/.test(component),
+    /^[xX*]$/.test(component),
   );
   if (wildcardIndex !== -1 && operator !== undefined) {
     return null;

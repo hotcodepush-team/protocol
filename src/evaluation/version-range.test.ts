@@ -48,4 +48,49 @@ describe('isVersionInRange', () => {
     }
     expect(isVersionInRange(parsed, range)).toBe(satisfied);
   });
+
+  test.each([
+    ['>= 1.2', '>=1.2'],
+    ['> 1.2 < 2', '>1.2 <2'],
+    ['<=\t2.4.1', '<=2.4.1'],
+    ['=  1.2.3 || <  1', '=1.2.3 || <1'],
+  ])('should read %j as %j', (range, joinedRange) => {
+    for (const version of [
+      [0, 9],
+      [1, 2],
+      [1, 2, 3, 4],
+      [1, 3],
+      [2, 4, 1],
+    ]) {
+      expect(isVersionInRange(version, joinedRange)).not.toBeNull();
+      expect(isVersionInRange(version, range)).toBe(
+        isVersionInRange(version, joinedRange),
+      );
+    }
+  });
+
+  test.each(['1.x.3', '1.*.3', '1.X.3', '1.x.x', 'x.1', '2.4.x.57'])(
+    'should not parse %j when a component follows a wildcard',
+    range => {
+      expect(isVersionInRange([1, 2, 3], range)).toBeNull();
+    },
+  );
+
+  test.each(['1.2x', '1.x2', 'xx'])(
+    'should not parse %j when a component is neither a number nor a wildcard',
+    range => {
+      expect(isVersionInRange([1, 2, 3], range)).toBeNull();
+    },
+  );
+
+  test.each(['>=', '1.2 >=', '> = 1.2', '>= >= 1.2'])(
+    'should not parse %j when an operator is not followed by a version',
+    range => {
+      expect(isVersionInRange([1, 2, 3], range)).toBeNull();
+    },
+  );
+
+  test('should not parse comparators when no whitespace separates them', () => {
+    expect(isVersionInRange([1, 2, 3], '>=1.2<2')).toBeNull();
+  });
 });
