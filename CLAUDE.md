@@ -30,7 +30,7 @@ Tests live beside the code they test, `*.test.ts` next to the file.
 | `npm run typecheck` | `tsc --noEmit`                                                |
 
 Run `npm run fmt` before every commit; lint, typecheck, test and build must pass, as `ci.yml` checks on every push and pull request.
-`dist.yml` appends every push to `main` — its tree plus the build output — as one commit to the `dist` branch, never force-pushed, so a consumer installs `#dist` without any install script and every commit a lockfile pins stays reachable; a `main` that does not build leaves `dist` where it was.
+`dist.yml` appends every push to `main` — its tree plus the build output — as one commit to the `dist` branch, never force-pushed, with `scripts` dropped from its `package.json`, since npm prepares — installs and builds — any git dependency whose manifest has a `build` or install script, so a consumer installs `#dist` with no script run and every commit a lockfile pins stays reachable; a `main` that does not build leaves `dist` where it was.
 No releases yet: the version stays `0.0.0`, and release-please, npm provenance and pkg.pr.new arrive with the publish decision.
 
 ## Wire format

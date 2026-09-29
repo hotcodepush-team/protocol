@@ -23,6 +23,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Drop the scripts, since npm prepares a git dependency whose package.json has a build or install script
+        run: node -e "const fs = require('fs'); const p = JSON.parse(fs.readFileSync('package.json', 'utf8')); delete p.scripts; fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\\n');"
       - name: Commit main's tree plus dist/ onto the dist branch, never force-pushed
         run: |
           git config user.name 'github-actions[bot]'
