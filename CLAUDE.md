@@ -2,7 +2,7 @@
 
 `@hotcodepush/protocol`, the one update-protocol client in TypeScript: the wire types, the evaluator and the fixture suite.
 The Swift package `HotCodePushProtocol` (`protocol-ios`) and the Android library `com.hotcodepush:protocol-android` (`protocol-android`) implement the same functions and types, proven equal by this repo's fixtures.
-The monorepo, the SDKs and the CLI consume it as a git dependency on the CI-built `dist` branch, `github:hotcodepush-team/protocol-js#dist`, until its publish decision; it is not the supported API, apps use the SDK for their framework.
+The monorepo, the SDKs and the CLI consume it from pkg.pr.new until its publish decision — `npm install https://pkg.pr.new/hotcodepush-team/protocol-js/@hotcodepush/protocol@<sha>`, a consumer pinning one commit and bumping it deliberately, never `@main`; it is not the supported API, apps use the SDK for their framework.
 Stack: TypeScript compiled by `tsc` into ESM in `dist/`, ESLint, Prettier, Vitest, Node 24.
 
 The plan is the private `handbook` repo, checked out beside this one: `../handbook/docs/`.
@@ -14,7 +14,7 @@ When code and plan disagree, stop and surface it; never improvise.
 ```
 src/        the package source; index.ts is the public entry point
 fixtures/   the fixture suite, shipped in the package: one JSON case per rule of the device protocol
-dist/       the build output, never committed on main; dist.yml commits it to the dist branch
+dist/       the build output, never committed
 ```
 
 Tests live beside the code they test, `*.test.ts` next to the file.
@@ -30,8 +30,8 @@ Tests live beside the code they test, `*.test.ts` next to the file.
 | `npm run typecheck` | `tsc --noEmit`                                                |
 
 Run `npm run fmt` before every commit; lint, typecheck, test and build must pass, as `ci.yml` checks on every push and pull request.
-`dist.yml` appends every push to `main` — its tree plus the build output — as one commit to the `dist` branch, never force-pushed, with `scripts` dropped from its `package.json`, since npm prepares — installs and builds — any git dependency whose manifest has a `build` or install script, so a consumer installs `#dist` with no script run and every commit a lockfile pins stays reachable; a `main` that does not build leaves `dist` where it was.
-No releases yet: the version stays `0.0.0`, and release-please, npm provenance and pkg.pr.new arrive with the publish decision.
+`ci.yml`'s `preview` job publishes every push to `main` and every pull request to pkg.pr.new through its GitHub App, no secret involved; a consumer's install runs no script of ours, and a commit a lockfile pins stays installable.
+No releases yet: the version stays `0.0.0`, and release-please and npm provenance arrive with the publish decision.
 
 ## Wire format
 
