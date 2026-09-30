@@ -23,7 +23,6 @@ const NAME_FIELD_LENGTH = 100;
 const SIZE_FIELD_OFFSET = 124;
 const SIZE_FIELD_LENGTH = 12;
 const HASH_PATTERN = /^[0-9a-f]{64}$/;
-const END_OF_ARCHIVE = new Uint8Array(BLOCK_SIZE * 2);
 
 /** The pack as a stream, from entries whose bodies are read one after the other. */
 export function buildPack(
@@ -102,7 +101,7 @@ async function* generatePackChunks(
       yield new Uint8Array(padding);
     }
   }
-  yield END_OF_ARCHIVE;
+  yield new Uint8Array(BLOCK_SIZE * 2);
 }
 
 async function* generatePackEntries(

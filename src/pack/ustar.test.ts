@@ -139,6 +139,12 @@ describe('buildPack', () => {
     expect(computeSha256Hex(pack)).toBe(FIXTURE.packSha256);
   });
 
+  test('should write a fresh end-of-archive buffer for every pack', async () => {
+    const { value } = await buildPack([]).getReader().read();
+    value?.fill(1);
+    expect(await collect(buildPack([]))).toEqual(new Uint8Array(1024));
+  });
+
   test('should refuse a body shorter than its size', async () => {
     const entry = { ...entryOf(bytesOf('hello')), sizeBytes: 6 };
     await expect(collect(buildPack([entry]))).rejects.toThrow(PackFormatError);
