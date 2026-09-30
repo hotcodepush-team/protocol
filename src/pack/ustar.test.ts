@@ -214,6 +214,36 @@ describe('readPack', () => {
     expect(names).toHaveLength(3);
   });
 
+  test('should drain an unread entry that arrives in several chunks', async () => {
+    const pack = await collect(
+      buildPack(CONTENTS.map(bytes => entryOf(bytes))),
+    );
+    const names: string[] = [];
+    for await (const entry of readPack(streamOf(pack, 512))) {
+      names.push(entry.sha256);
+    }
+    expect(names).toEqual(CONTENTS.map(bytes => computeSha256Hex(bytes)));
+  });
+
+  test(
+    'should drain an unread entry of 64 MiB within a second',
+    { timeout: 1000 },
+    async () => {
+      const chunk = new Uint8Array(64 * 1024);
+      const chunkCount = 1024;
+      const chunks = [
+        buildPackHeader('a'.repeat(64), chunk.length * chunkCount),
+        ...Array.from({ length: chunkCount }, () => chunk),
+        new Uint8Array(1024),
+      ];
+      const names: string[] = [];
+      for await (const entry of readPack(streamOfChunks(chunks))) {
+        names.push(entry.sha256);
+      }
+      expect(names).toEqual(['a'.repeat(64)]);
+    },
+  );
+
   test('should verify each entry against its name', async () => {
     const pack = await collect(
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),

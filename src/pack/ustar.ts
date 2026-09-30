@@ -194,7 +194,7 @@ function readableStreamFromAsyncIterable(
 
 /** A reader over a byte stream that hands out exact byte counts and bounded sub-streams. */
 class ByteReader {
-  private buffered = new Uint8Array(0);
+  private buffered: Uint8Array = new Uint8Array(0);
   private isDone = false;
   private readonly reader: ReadableStreamDefaultReader<Uint8Array>;
 
@@ -223,20 +223,24 @@ class ByteReader {
     stream: ReadableStream<Uint8Array>;
   } {
     const state = { remaining: length };
-    const stream = new ReadableStream<Uint8Array>({
-      pull: async controller => {
-        if (state.remaining === 0) {
-          controller.close();
-          return;
-        }
-        const chunk = (await this.readUpTo(state.remaining)).slice();
-        state.remaining -= chunk.length;
-        controller.enqueue(chunk);
-        if (state.remaining === 0) {
-          controller.close();
-        }
+    // A zero high-water mark pulls only for a consumer's read, so no pull ahead races the drain for the same bytes.
+    const stream = new ReadableStream<Uint8Array>(
+      {
+        pull: async controller => {
+          if (state.remaining === 0) {
+            controller.close();
+            return;
+          }
+          const chunk = (await this.readUpTo(state.remaining)).slice();
+          state.remaining -= chunk.length;
+          controller.enqueue(chunk);
+          if (state.remaining === 0) {
+            controller.close();
+          }
+        },
       },
-    });
+      { highWaterMark: 0 },
+    );
     const drain = async (): Promise<void> => {
       await this.skip(state.remaining);
       state.remaining = 0;
@@ -244,8 +248,11 @@ class ByteReader {
     return { drain, stream };
   }
 
+  /** Discards the next `length` bytes chunk by chunk, never holding more than one chunk. */
   async skip(length: number): Promise<void> {
-    await this.readExactly(length);
+    for (let remaining = length; remaining > 0;) {
+      remaining -= (await this.readUpTo(remaining)).length;
+    }
   }
 
   private async fill(): Promise<void> {
@@ -254,6 +261,11 @@ class ByteReader {
       this.isDone = true;
       return;
     }
+    if (this.buffered.length === 0) {
+      this.buffered = value;
+      return;
+    }
+    // Joined only when a header block spans two chunks.
     const joined = new Uint8Array(this.buffered.length + value.length);
     joined.set(this.buffered, 0);
     joined.set(value, this.buffered.length);
