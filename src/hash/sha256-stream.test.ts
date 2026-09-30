@@ -29,6 +29,17 @@ describe('computeSha256HexOfStream', () => {
     );
   });
 
+  test.each([55, 56, 63, 64, 65])(
+    'should hash %i bytes split into one-byte chunks like the whole buffer',
+    async length => {
+      const bytes = BYTES.subarray(0, length);
+      const chunks = Array.from(bytes, byte => Uint8Array.of(byte));
+      expect(await computeSha256HexOfStream(streamOf(chunks))).toBe(
+        computeSha256Hex(bytes),
+      );
+    },
+  );
+
   test('should hash an empty stream', async () => {
     expect(await computeSha256HexOfStream(streamOf([]))).toBe(
       computeSha256Hex(new Uint8Array()),

@@ -1,4 +1,5 @@
-import { Sha256, encodeHex } from './sha256.js';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 /** A pass-through whose `digest` resolves with the SHA-256 hex of every byte that flowed through. */
 export class Sha256TransformStream extends TransformStream<
@@ -8,14 +9,14 @@ export class Sha256TransformStream extends TransformStream<
   readonly digest: Promise<string>;
 
   constructor() {
-    const hash = new Sha256();
+    const hash = sha256.create();
     let resolveDigest: (digest: string) => void = () => undefined;
     const digest = new Promise<string>(resolve => {
       resolveDigest = resolve;
     });
     super({
       flush() {
-        resolveDigest(encodeHex(hash.digest()));
+        resolveDigest(bytesToHex(hash.digest()));
       },
       transform(chunk, controller) {
         hash.update(chunk);
@@ -30,9 +31,9 @@ export class Sha256TransformStream extends TransformStream<
 export async function computeSha256HexOfStream(
   stream: ReadableStream<Uint8Array>,
 ): Promise<string> {
-  const hash = new Sha256();
+  const hash = sha256.create();
   for await (const chunk of stream) {
     hash.update(chunk);
   }
-  return encodeHex(hash.digest());
+  return bytesToHex(hash.digest());
 }

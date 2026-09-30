@@ -1,11 +1,12 @@
+import { bytesToHex } from '@noble/hashes/utils.js';
 import { describe, expect, test } from 'vitest';
 
-import { Sha256, computeSha256Hex, encodeHex } from './sha256.js';
+import { computeSha256Hex } from './sha256.js';
 
 async function computeReferenceHex(
   bytes: Uint8Array<ArrayBuffer>,
 ): Promise<string> {
-  return encodeHex(
+  return bytesToHex(
     new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)),
   );
 }
@@ -23,6 +24,14 @@ describe('computeSha256Hex', () => {
     );
   });
 
+  test('should hash the 56-byte two-block message to the known digest', () => {
+    expect(
+      computeSha256Hex(
+        'abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq',
+      ),
+    ).toBe('248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1');
+  });
+
   test.each([1, 55, 56, 57, 63, 64, 65, 119, 120, 1000, 4097])(
     'should match WebCrypto for %i bytes',
     async length => {
@@ -32,15 +41,4 @@ describe('computeSha256Hex', () => {
       expect(computeSha256Hex(bytes)).toBe(await computeReferenceHex(bytes));
     },
   );
-});
-
-describe('Sha256', () => {
-  test('should produce the same digest when the input is split across updates', async () => {
-    const bytes = new Uint8Array(300).map((_, index) => (index * 13) % 256);
-    const hash = new Sha256();
-    hash.update(bytes.subarray(0, 10));
-    hash.update(bytes.subarray(10, 70));
-    hash.update(bytes.subarray(70));
-    expect(encodeHex(hash.digest())).toBe(await computeReferenceHex(bytes));
-  });
 });
