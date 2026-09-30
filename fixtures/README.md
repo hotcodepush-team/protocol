@@ -33,3 +33,9 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 ## `packs.json`
 
 One pack as the writer produces it — `packBase64`, its `packSha256`, and `entries` in order with each content and its `sha256` — so a reader is tested against exact bytes and a writer against exact output.
+
+`refusedPacks` lists the cuts and malformed ends every reader must refuse with a format error — an empty body, a cut between entries, a cut on a block boundary inside an entry, a cut inside a block, no end blocks, one end block, a zero block between entries — each as `name` and `packBase64`.
+
+## `bounds.json`
+
+The writer-side bounds, `deviceConditionMaxHashedIds` and `releaseMaxConditions`, tied to the package's exported constants by a test; a writer refuses a release above them, a reader parses any count, so raising a number later stays additive.
