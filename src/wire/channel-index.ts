@@ -13,6 +13,12 @@ import {
 /** The channel index's format major, equal to the `v1` in the index path. */
 export const CHANNEL_INDEX_SCHEMA = 1;
 
+/** The most hashed ids a `device` condition carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
+export const DEVICE_CONDITION_MAX_HASHED_IDS = 500;
+
+/** The most conditions a release carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
+export const RELEASE_MAX_CONDITIONS = 16;
+
 export const AttributeConditionSchema = z.looseObject({
   key: NonEmptyStringSchema,
   type: z.literal('attribute'),

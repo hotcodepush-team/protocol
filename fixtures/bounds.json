@@ -1,0 +1,5 @@
+{
+  "description": "The bounds a writer holds a channel index to: the hashed ids of one device condition and the conditions of one release. A reader parses any count, so raising a bound stays additive.",
+  "deviceConditionMaxHashedIds": 500,
+  "releaseMaxConditions": 16
+}

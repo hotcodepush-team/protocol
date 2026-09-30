@@ -1,10 +1,23 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, test } from 'vitest';
 
 import {
   CHANNEL_INDEX_SCHEMA,
   ChannelIndexSchema,
   ConditionSchema,
+  DEVICE_CONDITION_MAX_HASHED_IDS,
+  RELEASE_MAX_CONDITIONS,
 } from './channel-index.js';
+
+interface BoundsFixture {
+  deviceConditionMaxHashedIds: number;
+  releaseMaxConditions: number;
+}
+
+const BOUNDS = JSON.parse(
+  readFileSync(new URL('../../fixtures/bounds.json', import.meta.url), 'utf8'),
+) as BoundsFixture;
 
 const HASH = 'a'.repeat(64);
 
@@ -65,6 +78,15 @@ describe('ChannelIndexSchema', () => {
       },
     });
     expect(parsed.rollBackToEmbedded?.aboveNumber).toBe(41);
+  });
+});
+
+describe('bounds', () => {
+  test('should match the constants to the bounds fixture', () => {
+    expect(DEVICE_CONDITION_MAX_HASHED_IDS).toBe(
+      BOUNDS.deviceConditionMaxHashedIds,
+    );
+    expect(RELEASE_MAX_CONDITIONS).toBe(BOUNDS.releaseMaxConditions);
   });
 });
 
