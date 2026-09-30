@@ -32,7 +32,7 @@ export function buildPack(
   return readableStreamFromAsyncIterable(generatePackChunks(entries));
 }
 
-/** The entries of a pack, in order, refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one. */
+/** The entries of a pack, in order, refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one, and the stream is cancelled and released however the iteration ends. */
 export function readPack(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<PackEntry> {
@@ -108,21 +108,25 @@ async function* generatePackChunks(
 async function* generatePackEntries(
   reader: ByteReader,
 ): AsyncGenerator<PackEntry> {
-  for (;;) {
-    const header = await reader.readExactly(BLOCK_SIZE);
-    if (isZeroBlock(header)) {
-      if (!isZeroBlock(await reader.readExactly(BLOCK_SIZE))) {
-        throw new PackFormatError(
-          'a zero block is not followed by the second end-of-archive block',
-        );
+  try {
+    for (;;) {
+      const header = await reader.readExactly(BLOCK_SIZE);
+      if (isZeroBlock(header)) {
+        if (!isZeroBlock(await reader.readExactly(BLOCK_SIZE))) {
+          throw new PackFormatError(
+            'a zero block is not followed by the second end-of-archive block',
+          );
+        }
+        return;
       }
-      return;
+      const { sha256, sizeBytes } = parsePackHeader(header);
+      const entry = reader.readStream(sizeBytes);
+      yield { body: entry.stream, sha256, sizeBytes };
+      await entry.drain();
+      await reader.skip(resolvePadding(sizeBytes));
     }
-    const { sha256, sizeBytes } = parsePackHeader(header);
-    const entry = reader.readStream(sizeBytes);
-    yield { body: entry.stream, sha256, sizeBytes };
-    await entry.drain();
-    await reader.skip(resolvePadding(sizeBytes));
+  } finally {
+    await reader.release();
   }
 }
 
@@ -246,6 +250,12 @@ class ByteReader {
       state.remaining = 0;
     };
     return { drain, stream };
+  }
+
+  /** Cancels what is left of the stream and releases its lock; cancelling a stream that errored rejects with the error the iteration already throws. */
+  async release(): Promise<void> {
+    await this.reader.cancel().catch(() => undefined);
+    this.reader.releaseLock();
   }
 
   /** Discards the next `length` bytes chunk by chunk, never holding more than one chunk. */

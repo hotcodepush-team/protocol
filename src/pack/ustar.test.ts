@@ -49,6 +49,25 @@ function streamOfChunks(chunks: Uint8Array[]): ReadableStream<Uint8Array> {
   });
 }
 
+/** A stream that stays open after its bytes, recording whether it was cancelled. */
+function openStreamOf(bytes: Uint8Array): {
+  isCancelled: boolean;
+  stream: ReadableStream<Uint8Array>;
+} {
+  const opened = {
+    isCancelled: false,
+    stream: new ReadableStream<Uint8Array>({
+      cancel() {
+        opened.isCancelled = true;
+      },
+      start(controller) {
+        controller.enqueue(bytes);
+      },
+    }),
+  };
+  return opened;
+}
+
 function entryOf(bytes: Uint8Array, chunkSize?: number): PackEntry {
   return {
     body: streamOf(bytes, chunkSize),
@@ -276,6 +295,38 @@ describe('readPack', () => {
       pack.subarray(512),
     ]);
     expect(await readContents(stream)).toEqual([bytesOf('hello')]);
+  });
+
+  test('should cancel the source and release it when the consumer leaves early', async () => {
+    const pack = await collect(
+      buildPack(CONTENTS.map(bytes => entryOf(bytes))),
+    );
+    const opened = openStreamOf(pack);
+    const names: string[] = [];
+    for await (const entry of readPack(opened.stream)) {
+      names.push(entry.sha256);
+      break;
+    }
+    expect(names).toHaveLength(1);
+    expect(opened.isCancelled).toBe(true);
+    expect(opened.stream.locked).toBe(false);
+  });
+
+  test('should cancel the source and release it when the pack is refused', async () => {
+    const pack = await collect(buildPack([entryOf(bytesOf('hello'))]));
+    pack[0] = 0x62;
+    const opened = openStreamOf(pack);
+    await expect(readContents(opened.stream)).rejects.toThrow(PackFormatError);
+    expect(opened.isCancelled).toBe(true);
+    expect(opened.stream.locked).toBe(false);
+  });
+
+  test('should release the source when the pack ends', async () => {
+    const stream = streamOf(
+      await collect(buildPack([entryOf(bytesOf('hello'))])),
+    );
+    await readContents(stream);
+    expect(stream.locked).toBe(false);
   });
 
   test('should read an empty pack', async () => {
