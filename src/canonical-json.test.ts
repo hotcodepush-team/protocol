@@ -39,6 +39,21 @@ describe('stringifyCanonicalJson', () => {
     expect(() => stringifyCanonicalJson(() => 1)).toThrow(TypeError);
   });
 
+  test.each([
+    ['a Date', new Date(0)],
+    ['a Map', new Map([['a', 1]])],
+    ['a Set', new Set([1])],
+    ['a Uint8Array', new Uint8Array([1, 2])],
+    ['a class instance', new (class Point {})()],
+  ])('should refuse %s', (_name, value) => {
+    expect(() => stringifyCanonicalJson({ value })).toThrow(TypeError);
+  });
+
+  test('should write an object without a prototype', () => {
+    const document = Object.assign(Object.create(null) as object, { a: 1 });
+    expect(stringifyCanonicalJson(document)).toBe('{"a":1}');
+  });
+
   test('should parse back to an equal document', () => {
     const document = {
       files: [{ path: 'a', sha256: 'b', sizeBytes: 3 }],

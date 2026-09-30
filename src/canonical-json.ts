@@ -19,12 +19,22 @@ export function stringifyCanonicalJson(value: unknown): string {
     case 'string':
       return JSON.stringify(value);
     case 'object':
-      return Array.isArray(value)
-        ? `[${value.map(entry => stringifyCanonicalJson(entry)).join(',')}]`
-        : stringifyCanonicalObject(value as Record<string, unknown>);
+      if (Array.isArray(value)) {
+        return `[${value.map(entry => stringifyCanonicalJson(entry)).join(',')}]`;
+      }
+      // A Date, a Map or a typed array would read as `{}` or index keys: a bug to surface, never bytes to sign.
+      if (!isPlainObject(value)) {
+        throw new TypeError('canonical JSON carries plain objects only');
+      }
+      return stringifyCanonicalObject(value as Record<string, unknown>);
     default:
       throw new TypeError(`canonical JSON cannot carry a ${typeof value}`);
   }
+}
+
+function isPlainObject(value: object): boolean {
+  const prototype: unknown = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 function stringifyCanonicalObject(object: Record<string, unknown>): string {
