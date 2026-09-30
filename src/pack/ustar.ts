@@ -32,7 +32,7 @@ export function buildPack(
   return readableStreamFromAsyncIterable(generatePackChunks(entries));
 }
 
-/** The entries of a pack, in order; an entry's body must be consumed, or is drained, before the next one. */
+/** The entries of a pack, in order, refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one. */
 export function readPack(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<PackEntry> {
@@ -110,10 +110,12 @@ async function* generatePackEntries(
 ): AsyncGenerator<PackEntry> {
   for (;;) {
     const header = await reader.readExactly(BLOCK_SIZE);
-    if (header === null) {
-      return;
-    }
-    if (header.every(byte => byte === 0)) {
+    if (isZeroBlock(header)) {
+      if (!isZeroBlock(await reader.readExactly(BLOCK_SIZE))) {
+        throw new PackFormatError(
+          'a zero block is not followed by the second end-of-archive block',
+        );
+      }
       return;
     }
     const { sha256, sizeBytes } = parsePackHeader(header);
@@ -122,6 +124,10 @@ async function* generatePackEntries(
     await entry.drain();
     await reader.skip(resolvePadding(sizeBytes));
   }
+}
+
+function isZeroBlock(block: Uint8Array): boolean {
+  return block.every(byte => byte === 0);
 }
 
 function parsePackHeader(header: Uint8Array): {
@@ -196,16 +202,15 @@ class ByteReader {
     this.reader = stream.getReader();
   }
 
-  /** Exactly `length` bytes; `null` at a clean end of the stream, an error at a truncated one. */
-  async readExactly(length: number): Promise<Uint8Array | null> {
+  /** Exactly `length` bytes; an error when the stream ends first, a block boundary included, since only the end-of-archive blocks end a pack. */
+  async readExactly(length: number): Promise<Uint8Array> {
     while (this.buffered.length < length && !this.isDone) {
       await this.fill();
     }
-    if (this.buffered.length === 0 && length > 0) {
-      return null;
-    }
     if (this.buffered.length < length) {
-      throw new PackFormatError('the pack ends inside an entry');
+      throw new PackFormatError(
+        'the pack ends before its end-of-archive blocks',
+      );
     }
     const bytes = this.buffered.slice(0, length);
     this.buffered = this.buffered.subarray(length);
@@ -224,17 +229,7 @@ class ByteReader {
           controller.close();
           return;
         }
-        if (this.buffered.length === 0 && !this.isDone) {
-          await this.fill();
-        }
-        if (this.buffered.length === 0) {
-          throw new PackFormatError('the pack ends inside an entry');
-        }
-        const chunk = this.buffered.slice(
-          0,
-          Math.min(state.remaining, this.buffered.length),
-        );
-        this.buffered = this.buffered.subarray(chunk.length);
+        const chunk = (await this.readUpTo(state.remaining)).slice();
         state.remaining -= chunk.length;
         controller.enqueue(chunk);
         if (state.remaining === 0) {
@@ -250,9 +245,7 @@ class ByteReader {
   }
 
   async skip(length: number): Promise<void> {
-    if (length > 0 && (await this.readExactly(length)) === null) {
-      throw new PackFormatError('the pack ends inside an entry');
-    }
+    await this.readExactly(length);
   }
 
   private async fill(): Promise<void> {
@@ -265,5 +258,21 @@ class ByteReader {
     joined.set(this.buffered, 0);
     joined.set(value, this.buffered.length);
     this.buffered = joined;
+  }
+
+  /** The next buffered bytes, at most `maxLength`, read past zero-length chunks; an error when the stream ends first. */
+  private async readUpTo(maxLength: number): Promise<Uint8Array> {
+    while (this.buffered.length === 0 && !this.isDone) {
+      await this.fill();
+    }
+    if (this.buffered.length === 0) {
+      throw new PackFormatError('the pack ends inside an entry');
+    }
+    const bytes = this.buffered.subarray(
+      0,
+      Math.min(maxLength, this.buffered.length),
+    );
+    this.buffered = this.buffered.subarray(bytes.length);
+    return bytes;
   }
 }

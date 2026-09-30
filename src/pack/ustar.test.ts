@@ -18,6 +18,7 @@ interface PackFixture {
   entries: { content: string; sha256: string }[];
   packBase64: string;
   packSha256: string;
+  refusedPacks: { name: string; packBase64: string }[];
 }
 
 const FIXTURE = JSON.parse(
@@ -32,11 +33,17 @@ function streamOf(
   bytes: Uint8Array,
   chunkSize = bytes.length,
 ): ReadableStream<Uint8Array> {
+  const chunks: Uint8Array[] = [];
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    chunks.push(bytes.slice(offset, offset + chunkSize));
+  }
+  return streamOfChunks(chunks);
+}
+
+function streamOfChunks(chunks: Uint8Array[]): ReadableStream<Uint8Array> {
   return new ReadableStream({
     start(controller) {
-      for (let offset = 0; offset < bytes.length; offset += chunkSize) {
-        controller.enqueue(bytes.slice(offset, offset + chunkSize));
-      }
+      chunks.forEach(chunk => controller.enqueue(chunk));
       controller.close();
     },
   });
@@ -65,6 +72,16 @@ async function collect(
     return offset + chunk.length;
   }, 0);
   return joined;
+}
+
+async function readContents(
+  stream: ReadableStream<Uint8Array>,
+): Promise<Uint8Array[]> {
+  const contents: Uint8Array[] = [];
+  for await (const entry of readPack(stream)) {
+    contents.push(await collect(entry.body));
+  }
+  return contents;
 }
 
 const CONTENTS = [
@@ -209,20 +226,26 @@ describe('readPack', () => {
   test('should refuse a header whose checksum does not match', async () => {
     const pack = await collect(buildPack([entryOf(bytesOf('hello'))]));
     pack[0] = 0x62;
-    await expect(async () => {
-      for await (const entry of readPack(streamOf(pack))) {
-        await collect(entry.body);
-      }
-    }).rejects.toThrow(PackFormatError);
+    await expect(readContents(streamOf(pack))).rejects.toThrow(PackFormatError);
   });
 
-  test('should refuse a pack that ends inside an entry', async () => {
+  test.each(
+    FIXTURE.refusedPacks.map(refusedPack => [refusedPack.name, refusedPack]),
+  )('%s', async (_name, refusedPack) => {
+    const pack = new Uint8Array(Buffer.from(refusedPack.packBase64, 'base64'));
+    await expect(readContents(streamOf(pack, 100))).rejects.toThrow(
+      PackFormatError,
+    );
+  });
+
+  test('should read past a zero-length chunk inside an entry', async () => {
     const pack = await collect(buildPack([entryOf(bytesOf('hello'))]));
-    await expect(async () => {
-      for await (const entry of readPack(streamOf(pack.subarray(0, 514)))) {
-        await collect(entry.body);
-      }
-    }).rejects.toThrow(PackFormatError);
+    const stream = streamOfChunks([
+      pack.subarray(0, 512),
+      new Uint8Array(0),
+      pack.subarray(512),
+    ]);
+    expect(await readContents(stream)).toEqual([bytesOf('hello')]);
   });
 
   test('should read an empty pack', async () => {
