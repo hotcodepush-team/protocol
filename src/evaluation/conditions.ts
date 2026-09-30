@@ -40,7 +40,10 @@ function isConditionSatisfied(
   }
   switch (condition.type) {
     case 'attribute': {
-      const value = device.attributes[condition.key];
+      // Own members only: an inherited `constructor` is no attribute the app set.
+      const value = Object.hasOwn(device.attributes, condition.key)
+        ? device.attributes[condition.key]
+        : undefined;
       return (
         value !== undefined &&
         hashAttribute(condition.key, value) === condition.valueSha256
