@@ -278,12 +278,6 @@ describe('readPack', () => {
     }
   });
 
-  test('should refuse a header whose checksum does not match', async () => {
-    const pack = await collect(buildPack([entryOf(bytesOf('hello'))]));
-    pack[0] = 0x62;
-    await expect(readContents(streamOf(pack))).rejects.toThrow(PackFormatError);
-  });
-
   test.each(
     FIXTURE.refusedPacks.map(refusedPack => [refusedPack.name, refusedPack]),
   )('%s', async (_name, refusedPack) => {

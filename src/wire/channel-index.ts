@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CONDITION_TYPES } from '../results.js';
 import {
+  IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
   PlatformSchema,
@@ -75,11 +76,11 @@ export const ConditionSchema = z.union([
 export type Condition = KnownCondition | UnknownCondition;
 
 export const IndexReleaseSchema = z.looseObject({
-  bundleId: NonEmptyStringSchema,
+  bundleId: IdentifierSchema,
   bundleVersion: z.string(),
   conditions: z.array(ConditionSchema),
   createdAt: IsoTimestampSchema,
-  id: NonEmptyStringSchema,
+  id: IdentifierSchema,
   isMandatory: z.boolean(),
   manifestSha256: Sha256HexSchema,
   manifestUrl: z.url(),
@@ -106,7 +107,7 @@ export const ChannelIndexSchema = z.looseObject({
   isPaused: z.boolean(),
   platform: PlatformSchema,
   releases: z.array(IndexReleaseSchema),
-  revokedReleaseIds: z.array(NonEmptyStringSchema),
+  revokedReleaseIds: z.array(IdentifierSchema),
   rollBackToEmbedded: RollBackToEmbeddedDirectiveSchema.nullable(),
   schema: z.literal(CHANNEL_INDEX_SCHEMA),
   sequence: z.int().nonnegative(),

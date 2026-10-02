@@ -15,9 +15,21 @@ interface BoundsFixture {
   releaseMaxConditions: number;
 }
 
+interface WireRulesFixture {
+  acceptedIndexes: { index: unknown; name: string }[];
+  refusedIndexes: { index: unknown; name: string }[];
+}
+
 const BOUNDS = JSON.parse(
   readFileSync(new URL('../../fixtures/bounds.json', import.meta.url), 'utf8'),
 ) as BoundsFixture;
+
+const WIRE_RULES = JSON.parse(
+  readFileSync(
+    new URL('../../fixtures/wire-rules.json', import.meta.url),
+    'utf8',
+  ),
+) as WireRulesFixture;
 
 const HASH = 'a'.repeat(64);
 
@@ -79,6 +91,21 @@ describe('ChannelIndexSchema', () => {
     });
     expect(parsed.rollBackToEmbedded?.aboveNumber).toBe(41);
   });
+});
+
+describe('the wire rules', () => {
+  test.each(
+    WIRE_RULES.acceptedIndexes.map(accepted => [accepted.name, accepted]),
+  )('%s', (_name, accepted) => {
+    expect(ChannelIndexSchema.safeParse(accepted.index).success).toBe(true);
+  });
+
+  test.each(WIRE_RULES.refusedIndexes.map(refused => [refused.name, refused]))(
+    '%s',
+    (_name, refused) => {
+      expect(ChannelIndexSchema.safeParse(refused.index).success).toBe(false);
+    },
+  );
 });
 
 describe('bounds', () => {

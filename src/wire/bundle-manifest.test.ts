@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -5,6 +7,18 @@ import {
   EmbeddedBundleManifestSchema,
   ManifestEnvelopeSchema,
 } from './bundle-manifest.js';
+
+interface WireRulesFixture {
+  acceptedManifests: { manifest: unknown; name: string }[];
+  refusedManifests: { manifest: unknown; name: string }[];
+}
+
+const WIRE_RULES = JSON.parse(
+  readFileSync(
+    new URL('../../fixtures/wire-rules.json', import.meta.url),
+    'utf8',
+  ),
+) as WireRulesFixture;
 
 const HASH = 'b'.repeat(64);
 
@@ -53,6 +67,24 @@ describe('BundleManifestSchema', () => {
     expect(
       BundleManifestSchema.safeParse({ ...MANIFEST, pack: null }).success,
     ).toBe(false);
+  });
+});
+
+describe('the wire rules', () => {
+  test.each(
+    WIRE_RULES.acceptedManifests.map(accepted => [accepted.name, accepted]),
+  )('%s', (_name, accepted) => {
+    expect(BundleManifestSchema.safeParse(accepted.manifest).success).toBe(
+      true,
+    );
+  });
+
+  test.each(
+    WIRE_RULES.refusedManifests.map(refused => [refused.name, refused]),
+  )('%s', (_name, refused) => {
+    expect(BundleManifestSchema.safeParse(refused.manifest).success).toBe(
+      false,
+    );
   });
 });
 

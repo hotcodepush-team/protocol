@@ -5,12 +5,18 @@ import { PLATFORMS } from '../results.js';
 /** A channel's name: `A–Z a–z 0–9 - _`, one to 64 characters, unique per app case-insensitively. */
 export const ChannelNameSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 
+/** A bundle or release id: `A–Z a–z 0–9 _ -`, one to 64 characters, since a bundle id names a directory on the device. */
+export const IdentifierSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
+
 /** An ISO 8601 timestamp in UTC, `2026-09-29T10:00:00.000Z`. */
 export const IsoTimestampSchema = z.iso.datetime();
 
 export const NonEmptyStringSchema = z.string().min(1);
 
 export const PlatformSchema = z.enum(PLATFORMS);
+
+/** A path inside a bundle: `/`-separated, with no empty, `.` or `..` segment, no backslash and no NUL, so a file never lands outside its bundle. */
+export const RelativePathSchema = z.string().refine(isRelativePath);
 
 /** A SHA-256 as 64 lowercase hexadecimal characters. */
 export const Sha256HexSchema = z.string().regex(/^[0-9a-f]{64}$/);
@@ -28,3 +34,13 @@ export const SignatureSchema = z.looseObject({
   value: SignatureValueSchema,
 });
 export type Signature = z.infer<typeof SignatureSchema>;
+
+function isRelativePath(path: string): boolean {
+  return (
+    !path.includes('\\') &&
+    !path.includes('\0') &&
+    path
+      .split('/')
+      .every(segment => segment !== '' && segment !== '.' && segment !== '..')
+  );
+}

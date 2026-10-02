@@ -1,0 +1,2619 @@
+{
+  "description": "The wire rules every reader enforces before a byte is written: bundle and release ids are [A-Za-z0-9_-]{1,64}, a hash is 64 lowercase hex, a manifest path is relative and /-separated with no empty, . or .. segment, no backslash and no NUL, timestamps are UTC with a Z, and every field of the shape is present, a nullable one as null. A refused index is INVALID_INDEX, a refused manifest VERIFICATION_FAILED, the whole document refused for one breach; an unknown field is ignored and an unknown condition type parses.",
+  "acceptedIndexes": [
+    {
+      "name": "should accept the index as the materializer writes it",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept ids of one and of 64 characters drawn from the whole alphabet",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-abcd",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "r",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": [
+          "aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-abcd"
+        ],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept a field it does not know, on the index and on a release",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096,
+            "laterField": "ignored"
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7,
+        "laterField": {
+          "nested": true
+        }
+      }
+    },
+    {
+      "name": "should accept a condition type it does not know, which fails closed when evaluated",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "region": "eu",
+                "type": "geo"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept a timestamp without fractional seconds",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept the directive with its signature and a capped channel",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": "2026-09-30T00:00:00.000Z",
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": {
+          "aboveNumber": 1,
+          "signature": {
+            "keyId": "key-1",
+            "value": "ed25519:AAAA"
+          }
+        },
+        "schema": 1,
+        "sequence": 7
+      }
+    }
+  ],
+  "refusedIndexes": [
+    {
+      "name": "should refuse a release id with a slash",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "../release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release id of 65 characters",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse an empty release id",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release id with a trailing newline",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2\n",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release id with a letter outside ASCII",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "rélease-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release id that is a number",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": 2,
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a bundle id with a slash",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "../bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a bundle id with a dot",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle.2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a bundle id of 65 characters",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a revoked release id with a space",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release 1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a manifest hash in uppercase hex",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "BED516453D68AD6B6C03290F64DD604B80A276F4ABC75D7127BE6507935D59D1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a manifest hash of 63 characters",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "ed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a manifest hash that is not hex",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release without isMandatory",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release without rollout",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release without sizeBytes",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release without conditions",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a release without notes, which is null when there are none",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse an index without isPaused",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse an index without revokedReleaseIds",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse an index without cappedAt, which is null when uncapped",
+      "index": {
+        "appId": "app-1",
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse an index without rollBackToEmbedded, which is null when there is none",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a directive without signature, which is null when unsigned",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": {
+          "aboveNumber": 1
+        },
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse isMandatory as a string",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": "true",
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a fractional rollout",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 50.5,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a rollout above 100",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 101,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a negative size",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": -1
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a timestamp with an offset instead of Z",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T12:00:00.000+02:00",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a platform other than ios and android",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "web",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse another schema major",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 2,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a known condition type without its fields",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "rollBackToEmbedded": null,
+        "schema": 1,
+        "sequence": 7
+      }
+    }
+  ],
+  "acceptedManifests": [
+    {
+      "name": "should accept the manifest as the CLI writes it",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should accept path segments that only contain dots",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": ".well-known/assetlinks.json",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "assets/..hidden",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "assets/...",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "assets/app.min.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should accept a path with spaces and letters outside ASCII",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/ünïcödé file.png",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should accept a field it does not know, on the manifest and on a file",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37,
+            "laterField": "ignored"
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2",
+        "laterField": 1
+      }
+    },
+    {
+      "name": "should accept a manifest without deltas or patches entries",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [],
+        "version": "1.4.2"
+      }
+    }
+  ],
+  "refusedManifests": [
+    {
+      "name": "should refuse a bundle id with a slash",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "../bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a bundle id of 65 characters",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a delta base bundle id with a slash",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "../bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse an empty path",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse an absolute path",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "/index.html",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path with an empty segment",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets//index.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path with a trailing slash",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path that starts with a dot segment",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "./index.html",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path with a dot segment inside",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/./index.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path that is a dot-dot segment",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "..",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path that climbs out of the bundle",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "../index.html",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path that climbs out from inside",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/../../index.html",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a dot-dot segment followed by a combining mark",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "../́index.html",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path with a backslash",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets\\index.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a path with a NUL",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index.js\u0000.png",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a file hash in uppercase hex",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "BED516453D68AD6B6C03290F64DD604B80A276F4ABC75D7127BE6507935D59D1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a file hash of 65 characters",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d10",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a file without sizeBytes",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a pack without sizeBytes",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a delta without sizeBytes",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a null pack, which only an embedded bundle may have",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": null,
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a manifest without pack",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a manifest without deltas",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a manifest without patches",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a patch path that climbs out of the bundle",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "../index.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a patch hash that is not hex",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "nope",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    },
+    {
+      "name": "should refuse a timestamp with an offset instead of Z",
+      "manifest": {
+        "appId": "app-1",
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T12:00:00.000+02:00",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "patches": [
+          {
+            "format": "bsdiff",
+            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "path": "assets/index-a1b2c3.js",
+            "sizeBytes": 512,
+            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
+          }
+        ],
+        "version": "1.4.2"
+      }
+    }
+  ]
+}
