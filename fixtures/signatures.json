@@ -1,0 +1,251 @@
+{
+  "description": "Signatures over the bundle manifest and the rollBackToEmbedded directive. A key and a signature value are self-describing, `<scheme>:<base64>`, the scheme one of the pinned allow-list `ed25519` and `rsa-v1_5-sha256`; a public key is raw for ed25519 and SPKI DER for RSA, a private key PKCS #8 DER. A key fingerprint is `sha256:` and the SHA-256 of the public key bytes in hex, and a signature's keyId is the fingerprint of the key it is verified with. A manifest signature covers the UTF-8 bytes of the envelope's manifest string; a directive signature covers signedBytes, the canonical JSON of { aboveNumber, appId, channelId } for the app and channel the device is configured with. The keys are test keys.",
+  "keys": [
+    {
+      "fingerprint": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+      "name": "ed25519-a",
+      "privateKey": "ed25519:MC4CAQAwBQYDK2VwBCIEIAjN1Scub3Am52jlsFBD2tRBZIaFbv1sMbNJipZMjOL0",
+      "publicKey": "ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4=",
+      "scheme": "ed25519"
+    },
+    {
+      "fingerprint": "sha256:c5e6e2f0990dafaabe15f07429020eb31712c1e76235cbef647de3564e711317",
+      "name": "ed25519-b",
+      "privateKey": "ed25519:MC4CAQAwBQYDK2VwBCIEIPkSLDssq2Kjzu9zuCofh6JBLCC4T7C6Ll1AKjXWk8ge",
+      "publicKey": "ed25519:SV4Ctcb3oWnq+VIuN9A6Obd/H9VpDosTkk1z3PId9cA=",
+      "scheme": "ed25519"
+    },
+    {
+      "fingerprint": "sha256:c9bc201ed48b85a8e4dd9316b8aa7a4fdbc6a415cddd49fd9671d2806ffde2f1",
+      "name": "rsa-v1_5-sha256-a",
+      "privateKey": "rsa-v1_5-sha256:MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCPSBIxMC7MFqB1H61umKiapEGe9ETouRdvx4l9nYoecmgiKLvL+g+EgWYYs08dybyCKydja8wlZ8dbEVI5kubDgwxUk7X9IuRcNL3R/TDsyLu9m/HZUUZoZ53qLqnHpY0nYeaFdCKH73FsqIqz3zPOdFQ3/0tigNQQCuL//Ci+gI3f/RGpHebMRH5pWPrCfYW9kJRKHoGEzNGn0j0WJIKqUPv1Hx1fyQxEeKusJrMJQAVvvhDmrS9dL/1Lhvcq5Rg7ARsiBy1zEOdBEiCZeqnx8fHkcjtkMdNswJJBGpElE/wWcgmtl1h23uhniojmUm5Krt5D98DsW0oaZ1Ii9l09AgMBAAECggEAFfBMXs04oSXGyGBDEzfbOyBy7saKpZKvsL0eA4ajfyF36eEQTj158klI63fLIa3ByDGY3JuFHOYcy4glraydWmresLWUTE/zJN4rgXNx8hOTUYdG+wY7kGFrN9AQzYG/EPxnyl/bqLJETQWqhTukKFS+D3vu3ESLE/DCzLzctTxpqslMGY3Tor0dFM/nX5Ilw1BXsPUhb6mblb1k+SvTdPfEf9R2yS5qJw0aTpWkqe7hOtd+mLUlo5XYKgPmR1Rhe1z8VSdjpLGFWFbchGaZIYbBAcPXEXDm1lGjPAGuMXAbA0qY1GaHeT590W0N6CLE7lhOH6Pby+gkdCop1zGTcQKBgQDHLAVKBC/yY3XoYBBbp9DANdvIyTp+d0VQvDdt4g0mUrulZN0vZrvDEXAUwb60RaGi6bYp6dMFp9dHtPJYPMc4VxA8/YzVrRqqLMfAfqaSDju/TLDhZLuhC3tC1dPeRNFRDWE56a6ztc5PLlv9gkUNfH2yqdKhr1povpOirKLsjQKBgQC4Ka89wlvVaVR5ZtPqRITz31kHzf2SFMRcaT4E6NnERJJZB3xanzpKzRIo7nN4DKz6xQaB0txV1kt7UUcAXWmKJz2bdWnStDiN6mBh8pteNviO5HJAYjrK+7RPCgDp6epMTTkKNjqNDBGwA3OotHQCMzelBlhwkW2tUGhXAvp/cQKBgGcuxw6xXKWWIV9hZRgWuG7beCFtHoCmCaLp301t7qIL+mqU9oG4F03XmtkmBkYeTL65lUXhfRFRApaDh4lu80ac1CzErlGEfGvtBw8SjfjcptdUQ86BATNNX24gmMJtpIL5C4WVKoyvg1JCEiYjduKlu/jzQcvBrHTXRmTgSweBAoGBAJleDZSPMc9Ogoz/t2eXXGmEDS7Uu2FWbhjPhFiuWfx7Zq1B8Ku/gtocYg04V20YkU3dmweuxNOvPPkbvNdu85+cAlBevZw9fgOhtlabpgwWF3VYhlVb+L5mU8im+g/TP83/WYtJkgU4kdpVZZKPhTT31lVWLXzBf+cf2WTtFBPhAoGATfBjQvgmdXOQTUlFB/oUSQEZ8sm+J9zc6vB8JcGlRT/sjPkZgDdjlV0cjUnv/r22u7ue8tuQYEQZWRlBaUpGfC1zPPLXUDUUlXdlizlwyQnZ6Sk+SRIR4DcEC9k7ia85MCJYVEQ2gDcFVN2lTI8Auy+ME5zNXevURpJVKIxMXFA=",
+      "publicKey": "rsa-v1_5-sha256:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj0gSMTAuzBagdR+tbpiomqRBnvRE6LkXb8eJfZ2KHnJoIii7y/oPhIFmGLNPHcm8gisnY2vMJWfHWxFSOZLmw4MMVJO1/SLkXDS90f0w7Mi7vZvx2VFGaGed6i6px6WNJ2HmhXQih+9xbKiKs98zznRUN/9LYoDUEAri//wovoCN3/0RqR3mzER+aVj6wn2FvZCUSh6BhMzRp9I9FiSCqlD79R8dX8kMRHirrCazCUAFb74Q5q0vXS/9S4b3KuUYOwEbIgctcxDnQRIgmXqp8fHx5HI7ZDHTbMCSQRqRJRP8FnIJrZdYdt7oZ4qI5lJuSq7eQ/fA7FtKGmdSIvZdPQIDAQAB",
+      "scheme": "rsa-v1_5-sha256"
+    }
+  ],
+  "manifests": [
+    {
+      "name": "should accept a manifest signed with ed25519 by a listed key",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": true
+    },
+    {
+      "name": "should accept a manifest signed with rsa-v1_5-sha256 by a listed key",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c9bc201ed48b85a8e4dd9316b8aa7a4fdbc6a415cddd49fd9671d2806ffde2f1",
+          "value": "rsa-v1_5-sha256:QiLL8tY3GmhftfgcGOOnNFGb260oD4s0TEFqXVuPTW8VdUfvn8cu0xYypVXTkM2lUwbtbV/07zOSXncGkji6C0CVGS4GFHMw+0OfoEjZYX3XJ/3Y7O6UIiuCeVcj5sK88eLUDfHaQl+k4O8jTH0oDVL2DFZ0kgool0iDn3Id5CAzVI13KB1VsDXpU5CBzhvFVRwLWI/QdEvrQcS8tqtY1uG8DGcz+8PJTAORAJaXcKWxOyh2zYXj8pg2HGTjf8gplaDTQ90CximxnC1rbBqO/jFc9TafJvzMHyw+aDaFD5QN2g7FpgfuF0ErLaqccidfr5EsRGEYk8dcStr/cMPLYw=="
+        }
+      },
+      "publicKeys": [
+        "rsa-v1_5-sha256:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj0gSMTAuzBagdR+tbpiomqRBnvRE6LkXb8eJfZ2KHnJoIii7y/oPhIFmGLNPHcm8gisnY2vMJWfHWxFSOZLmw4MMVJO1/SLkXDS90f0w7Mi7vZvx2VFGaGed6i6px6WNJ2HmhXQih+9xbKiKs98zznRUN/9LYoDUEAri//wovoCN3/0RqR3mzER+aVj6wn2FvZCUSh6BhMzRp9I9FiSCqlD79R8dX8kMRHirrCazCUAFb74Q5q0vXS/9S4b3KuUYOwEbIgctcxDnQRIgmXqp8fHx5HI7ZDHTbMCSQRqRJRP8FnIJrZdYdt7oZ4qI5lJuSq7eQ/fA7FtKGmdSIvZdPQIDAQAB"
+      ],
+      "isValid": true
+    },
+    {
+      "name": "should select the key the keyId names among several",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": [
+        "ed25519:SV4Ctcb3oWnq+VIuN9A6Obd/H9VpDosTkk1z3PId9cA=",
+        "rsa-v1_5-sha256:MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj0gSMTAuzBagdR+tbpiomqRBnvRE6LkXb8eJfZ2KHnJoIii7y/oPhIFmGLNPHcm8gisnY2vMJWfHWxFSOZLmw4MMVJO1/SLkXDS90f0w7Mi7vZvx2VFGaGed6i6px6WNJ2HmhXQih+9xbKiKs98zznRUN/9LYoDUEAri//wovoCN3/0RqR3mzER+aVj6wn2FvZCUSh6BhMzRp9I9FiSCqlD79R8dX8kMRHirrCazCUAFb74Q5q0vXS/9S4b3KuUYOwEbIgctcxDnQRIgmXqp8fHx5HI7ZDHTbMCSQRqRJRP8FnIJrZdYdt7oZ4qI5lJuSq7eQ/fA7FtKGmdSIvZdPQIDAQAB",
+        "ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="
+      ],
+      "isValid": true
+    },
+    {
+      "name": "should refuse a manifest changed after signing",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":38},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse a signature changed after signing",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:ATxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse an unsigned manifest",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": null
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse a signature by a key not in the list",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c5e6e2f0990dafaabe15f07429020eb31712c1e76235cbef647de3564e711317",
+          "value": "ed25519:X1ryJZnM/ExBqlrLa+la7XYZL3P9/TDBj29x4sf4IVRZ+qFeQaj0kfo/UZNspnoZcjY2J28nMLqk149AsuSDBw=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse a signature checked against the key its keyId names when another listed key made it",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c5e6e2f0990dafaabe15f07429020eb31712c1e76235cbef647de3564e711317",
+          "value": "ed25519:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": [
+        "ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4=",
+        "ed25519:SV4Ctcb3oWnq+VIuN9A6Obd/H9VpDosTkk1z3PId9cA="
+      ],
+      "isValid": false
+    },
+    {
+      "name": "should refuse a scheme outside the allow-list",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ecdsa-p256-sha256:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse a prefix naming another scheme than the key's",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "rsa-v1_5-sha256:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "isValid": false
+    },
+    {
+      "name": "should refuse every signature when no key is listed",
+      "envelope": {
+        "encryption": null,
+        "manifest": "{\"appId\":\"a1\",\"bundleId\":\"b1\",\"createdAt\":\"2026-09-29T10:00:00.000Z\",\"deltas\":[],\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"pack\":{\"sizeBytes\":2048,\"url\":\"https://files.hotcodepush.com/apps/a1/bundles/b1/pack\"},\"patches\":[],\"version\":\"1.0.1\"}",
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:ITxkmH0nt0LS3FDJP9188tq5RMVaCKJZhlcF/HLDsMiFCjbmU4/aFwwmqj6sH3Koer6tnUMun8NTyRNgDboeAg=="
+        }
+      },
+      "publicKeys": [],
+      "isValid": false
+    }
+  ],
+  "directives": [
+    {
+      "name": "should accept a directive signed for its app and channel",
+      "appId": "a1",
+      "channelId": "c1",
+      "directive": {
+        "aboveNumber": 3,
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c1\"}",
+      "isValid": true
+    },
+    {
+      "name": "should refuse a directive replayed to another channel",
+      "appId": "a1",
+      "channelId": "c2",
+      "directive": {
+        "aboveNumber": 3,
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c2\"}",
+      "isValid": false
+    },
+    {
+      "name": "should refuse a directive replayed to another app",
+      "appId": "a2",
+      "channelId": "c1",
+      "directive": {
+        "aboveNumber": 3,
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a2\",\"channelId\":\"c1\"}",
+      "isValid": false
+    },
+    {
+      "name": "should refuse a directive whose aboveNumber changed after signing",
+      "appId": "a1",
+      "channelId": "c1",
+      "directive": {
+        "aboveNumber": 4,
+        "signature": {
+          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
+          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
+        }
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "signedBytes": "{\"aboveNumber\":4,\"appId\":\"a1\",\"channelId\":\"c1\"}",
+      "isValid": false
+    },
+    {
+      "name": "should refuse an unsigned directive",
+      "appId": "a1",
+      "channelId": "c1",
+      "directive": {
+        "aboveNumber": 3,
+        "signature": null
+      },
+      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c1\"}",
+      "isValid": false
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export * from './hash/sha256-stream.js';
 export * from './hash/sha256.js';
 export * from './pack/ustar.js';
 export * from './results.js';
+export * from './signing/index.js';
 export * from './wire/bundle-manifest.js';
 export * from './wire/channel-index.js';
 export * from './wire/channels-index.js';
