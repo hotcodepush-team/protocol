@@ -39,7 +39,7 @@ const FIXTURE = JSON.parse(
   ),
 ) as SignaturesFixture;
 
-function selectPrivateKey(keyId: string): string {
+function resolvePrivateKeyOfKeyId(keyId: string): string {
   const key = FIXTURE.keys.find(({ fingerprint }) => fingerprint === keyId);
   if (key === undefined) {
     throw new Error(`No fixture key has the fingerprint ${keyId}.`);
@@ -97,7 +97,7 @@ describe('signManifest', () => {
       expect(
         await signManifest(
           envelope.manifest,
-          selectPrivateKey(signature.keyId),
+          resolvePrivateKeyOfKeyId(signature.keyId),
         ),
       ).toEqual(signature);
     },
@@ -134,7 +134,7 @@ describe('signRollBackToEmbedded', () => {
       await signRollBackToEmbedded(
         signedCase.directive,
         { appId: signedCase.appId, channelId: signedCase.channelId },
-        selectPrivateKey(signature.keyId),
+        resolvePrivateKeyOfKeyId(signature.keyId),
       ),
     ).toEqual(signature);
   });

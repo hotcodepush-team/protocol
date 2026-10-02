@@ -119,7 +119,10 @@ async function signMessage(
     cryptoKey,
     new TextEncoder().encode(message),
   );
-  const publicKey = await derivePublicKey(cryptoKey, parsedKey.scheme);
+  const publicKey = await resolvePublicKeyOfPrivateKey(
+    cryptoKey,
+    parsedKey.scheme,
+  );
   return {
     keyId: resolveSigningKeyFingerprint(publicKey),
     value: formatSelfDescribingBytes(parsedKey.scheme, signatureBytes),
@@ -132,7 +135,7 @@ async function verifyMessage(
   publicKeys: readonly string[],
 ): Promise<boolean> {
   const parsedValue = parseSelfDescribingBytes(signature.value);
-  const parsedKey = selectPublicKey(publicKeys, signature.keyId);
+  const parsedKey = resolvePublicKeyOfKeyId(publicKeys, signature.keyId);
   if (
     parsedValue === null ||
     parsedKey === null ||
@@ -161,7 +164,7 @@ async function verifyMessage(
   }
 }
 
-function selectPublicKey(
+function resolvePublicKeyOfKeyId(
   publicKeys: readonly string[],
   keyId: string,
 ): SelfDescribingBytes | null {
@@ -174,7 +177,7 @@ function selectPublicKey(
 }
 
 /** The public half through the private key's JWK, which carries it. */
-async function derivePublicKey(
+async function resolvePublicKeyOfPrivateKey(
   privateKey: CryptoKey,
   scheme: SigningScheme,
 ): Promise<string> {
