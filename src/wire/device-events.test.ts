@@ -25,6 +25,13 @@ const REQUEST = {
     { releaseId: 'r1', type: 'applied' },
     { releaseId: 'r1', type: 'confirmed' },
     { reason: 'READY_TIMEOUT', releaseId: 'r1', type: 'failed' },
+    {
+      detail: 'checkout crashed on launch',
+      reason: 'REPORTED_BY_APP',
+      releaseId: 'r1',
+      type: 'failed',
+    },
+    { reason: 'INVALID_SIGNATURE', releaseId: 'r2', type: 'failed' },
     { fromReleaseId: 'r1', toReleaseId: null, type: 'rolledBack' },
   ],
   platform: 'android',
@@ -57,6 +64,32 @@ describe('DeviceEventsRequestSchema', () => {
     const events = [{ releaseId: 'r1', type: 'installed' }];
     expect(
       DeviceEventsRequestSchema.safeParse({ ...REQUEST, events }).success,
+    ).toBe(false);
+  });
+
+  test('should reject a failure detail above 256 characters or with a control character', () => {
+    const long = [
+      {
+        detail: 'a'.repeat(257),
+        reason: 'REPORTED_BY_APP',
+        releaseId: 'r1',
+        type: 'failed',
+      },
+    ];
+    const control = [
+      {
+        detail: 'a\nb',
+        reason: 'REPORTED_BY_APP',
+        releaseId: 'r1',
+        type: 'failed',
+      },
+    ];
+    expect(
+      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events: long }).success,
+    ).toBe(false);
+    expect(
+      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events: control })
+        .success,
     ).toBe(false);
   });
 

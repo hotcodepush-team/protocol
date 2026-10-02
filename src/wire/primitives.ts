@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 import { PLATFORMS } from '../results.js';
 
+/** A channel's name: `A–Z a–z 0–9 - _`, one to 64 characters, unique per app case-insensitively. */
+export const ChannelNameSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
+
 /** An ISO 8601 timestamp in UTC, `2026-09-29T10:00:00.000Z`. */
 export const IsoTimestampSchema = z.iso.datetime();
 

@@ -21,6 +21,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 ## `resource-files.json`
 
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — a bundle the embed step did not register carries only its files, and its absent `pack` reads as `null`, its absent `deltas` and `patches` as empty.
+The file carries `channelId`, the id the embed step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
 
 ## `version-ranges.json`
 

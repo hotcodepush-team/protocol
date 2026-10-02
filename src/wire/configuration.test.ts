@@ -13,7 +13,7 @@ interface ResourceFileCase {
   resourceFile: unknown;
 }
 
-const PROJECT = { appId: 'a1', channelId: 'c1', dir: 'dist' };
+const PROJECT = { appId: 'a1', channel: 'staging', dir: 'dist' };
 
 const RESOURCE_FILE_CASES = (
   JSON.parse(
@@ -25,19 +25,50 @@ const RESOURCE_FILE_CASES = (
 ).cases;
 
 describe('ProjectConfigurationSchema', () => {
-  test('should apply the defaults to a file with the two ids', () => {
+  test('should apply the defaults to a file with the app id and a channel', () => {
     expect(ProjectConfigurationSchema.parse(PROJECT)).toEqual({
       ...PROJECT,
-      autoSync: true,
+      autoCheck: true,
+      checkInterval: 900,
+      downloadStrategy: 'auto',
       enabledInDebugBuilds: true,
+      installOnResumeAfter: 300,
       installStrategy: 'next-start',
-      minimumBackgroundDuration: 300,
-      network: 'any',
+      mandatoryInstallStrategy: 'immediate',
       publicKeys: [],
       readySignal: 'render',
       readyTimeout: 10,
-      syncInterval: 900,
     });
+  });
+
+  test('should follow production when the file names no channel', () => {
+    expect(ProjectConfigurationSchema.parse({ appId: 'a1' }).channel).toBe(
+      'production',
+    );
+  });
+
+  test('should reject a channel name outside the charset or above 64 characters', () => {
+    expect(
+      ProjectConfigurationSchema.safeParse({
+        appId: 'a1',
+        channel: 'prod uction',
+      }).success,
+    ).toBe(false);
+    expect(
+      ProjectConfigurationSchema.safeParse({
+        appId: 'a1',
+        channel: 'a'.repeat(65),
+      }).success,
+    ).toBe(false);
+  });
+
+  test('should reject a mandatory install strategy of next-start', () => {
+    expect(
+      ProjectConfigurationSchema.safeParse({
+        ...PROJECT,
+        mandatoryInstallStrategy: 'next-start',
+      }).success,
+    ).toBe(false);
   });
 
   test('should keep the $schema line for the editor', () => {
@@ -59,6 +90,35 @@ describe('ProjectConfigurationSchema', () => {
 describe('ConfigurationSchema', () => {
   test('should require the build-time facts', () => {
     expect(ConfigurationSchema.safeParse(PROJECT).success).toBe(false);
+  });
+
+  test('should require the channel id the embed step resolved', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    const withoutChannelId = Object.fromEntries(
+      Object.entries(resourceFile).filter(([key]) => key !== 'channelId'),
+    );
+    expect(ConfigurationSchema.safeParse(withoutChannelId).success).toBe(false);
+  });
+
+  test('should type the hosts a staging or local build carries', () => {
+    const staging = RESOURCE_FILE_CASES.find(({ name }) =>
+      name.includes('hosts'),
+    );
+    const parsed = ConfigurationSchema.parse(staging?.resourceFile);
+    expect(parsed.filesBaseUrl).toBe('https://files.staging.hotcodepush.com');
+    expect(parsed.updatesBaseUrl).toBe(
+      'https://updates.staging.hotcodepush.com',
+    );
+  });
+
+  test('should reject a host that is not a URL', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    expect(
+      ConfigurationSchema.safeParse({ ...resourceFile, filesBaseUrl: 'files' })
+        .success,
+    ).toBe(false);
   });
 
   test.each(RESOURCE_FILE_CASES)(

@@ -1,3 +1,4 @@
+export * from './api.js';
 export * from './attributes.js';
 export * from './canonical-json.js';
 export * from './evaluation/conditions.js';

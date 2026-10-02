@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { AttributesSchema } from '../attributes.js';
+import { AttributesSchema, AttributeValueSchema } from '../attributes.js';
 import {
   CONDITION_TYPES,
   ROLLBACK_REASONS,
@@ -56,9 +56,12 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
     type: z.literal('confirmed'),
   }),
   z.looseObject({
+    /** The app's `rollback({ reason })` on `REPORTED_BY_APP`: printable, at most 256 characters. */
+    detail: AttributeValueSchema.optional(),
     reason: z.enum([
       ...ROLLBACK_REASONS,
       'DOWNLOAD_FAILED',
+      'INVALID_SIGNATURE',
       'VERIFICATION_FAILED',
     ]),
     releaseId: NonEmptyStringSchema,

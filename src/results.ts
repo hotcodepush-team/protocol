@@ -14,6 +14,10 @@ export const CONDITION_TYPES = [
 ] as const;
 export type ConditionType = (typeof CONDITION_TYPES)[number];
 
+/** When an update the check found is downloaded; `manual` stops the cycle after the check. */
+export const DOWNLOAD_STRATEGIES = ['auto', 'manual', 'unmetered'] as const;
+export type DownloadStrategy = (typeof DOWNLOAD_STRATEGIES)[number];
+
 export const FAILED_REASONS = [
   'DOWNLOAD_FAILED',
   'INVALID_INDEX',
@@ -24,21 +28,25 @@ export const FAILED_REASONS = [
 ] as const;
 export type FailedReason = (typeof FAILED_REASONS)[number];
 
+/** When a downloaded update is applied. */
 export const INSTALL_STRATEGIES = [
   'immediate',
   'manual',
+  'next-resume',
   'next-start',
-  'on-resume',
 ] as const;
 export type InstallStrategy = (typeof INSTALL_STRATEGIES)[number];
 
-export const NETWORK_POLICIES = ['any', 'unmetered'] as const;
-export type NetworkPolicy = (typeof NETWORK_POLICIES)[number];
+/** When a mandatory update is applied; `next-start` is excluded, since it would make the flag mean nothing. */
+export const MANDATORY_INSTALL_STRATEGIES = ['immediate', 'manual'] as const;
+export type MandatoryInstallStrategy =
+  (typeof MANDATORY_INSTALL_STRATEGIES)[number];
 
 export const PLATFORMS = ['android', 'ios'] as const;
 export type Platform = (typeof PLATFORMS)[number];
 
-export const READY_SIGNALS = ['call', 'render'] as const;
+/** What ends the readiness gate: the first render, or an explicit `notifyReady()`. */
+export const READY_SIGNALS = ['manual', 'render'] as const;
 export type ReadySignal = (typeof READY_SIGNALS)[number];
 
 export const ROLLBACK_REASONS = [
@@ -63,7 +71,8 @@ export const SKIPPED_REASONS = [
 ] as const;
 export type SkippedReason = (typeof SKIPPED_REASONS)[number];
 
-export const SYNC_TRIGGERS = ['call', 'interval', 'resume', 'start'] as const;
+/** What started a cycle: the SDK on its own, or the app's call. */
+export const SYNC_TRIGGERS = ['interval', 'manual', 'resume', 'start'] as const;
 export type SyncTrigger = (typeof SYNC_TRIGGERS)[number];
 
 /** The SDK's own release type: five fields mapped from an index entry. */
@@ -75,10 +84,17 @@ export interface Release {
   number: number;
 }
 
-export type InstallMoment = 'manual' | 'next-start' | 'now' | 'on-resume';
+/** When a downloaded update runs, in the strategies' vocabulary. */
+export type InstallMoment = InstallStrategy;
 
 export type SyncResult =
   | { release: Release | null; status: 'UP_TO_DATE' }
+  | {
+      downloadBytes: number | null;
+      notes: string | null;
+      release: Release;
+      status: 'AVAILABLE';
+    }
   | {
       installAt: InstallMoment;
       notes: string | null;
@@ -119,15 +135,38 @@ export type CheckResult =
       status: 'FAILED';
     };
 
-export interface ReadyResult {
+export type DownloadResult =
+  | { notes: string | null; release: Release; status: 'DOWNLOADED' }
+  | { release: Release | null; status: 'UP_TO_DATE' }
+  | {
+      condition?: ConditionType;
+      reason: SkippedReason;
+      release: Release | null;
+      status: 'SKIPPED';
+    }
+  | {
+      message: string;
+      reason: FailedReason;
+      release: Release | null;
+      status: 'FAILED';
+    };
+
+export type ApplyResult =
+  | { release: Release; status: 'APPLIED' }
+  | { release: Release | null; status: 'NOTHING_TO_APPLY' };
+
+export interface NotifyReadyResult {
   currentRelease: Release | null;
   isRolledBack: boolean;
+  /** The release before this start, when it changed. */
   previousRelease: Release | null;
   rollbackReason?: RollbackReason;
 }
 
-export interface GetStatusResult {
+/** The SDK's state, a snapshot: everything the debug screen shows. */
+export interface GetStateResult {
   currentRelease: Release | null;
+  /** From the resource file; `null` in a build the embed step did not register. */
   embeddedBundleId: string | null;
   failedBundleIds: string[];
   fallbackRelease: Release | null;
@@ -137,6 +176,7 @@ export interface GetStatusResult {
     result: CheckResult | SyncResult;
     trigger: SyncTrigger;
   } | null;
+  /** `reportedAt`, the server time of the last acknowledged report. */
   lastReportAt: string | null;
   nextRelease: Release | null;
 }
@@ -168,12 +208,15 @@ export interface GetDeviceResult {
 export type SetAttributesOptions = Record<string, string | null>;
 
 export interface RollbackOptions {
+  /** The app-side cause, carried as the `failed` event's `detail`: printable, at most 256 characters. */
   reason?: string;
 }
 
+/** Each stage's strategy for this call, overriding the configuration. */
 export interface SyncOptions {
+  downloadStrategy?: DownloadStrategy;
   installStrategy?: InstallStrategy;
-  network?: NetworkPolicy;
+  mandatoryInstallStrategy?: MandatoryInstallStrategy;
 }
 
 export interface SetRestartAllowedOptions {

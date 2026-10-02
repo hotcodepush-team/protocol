@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: a bundle the embed step did not register carries only its files, and its absent pack reads as null, its absent deltas and patches as empty.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone; a bundle the embed step did not register carries only its files, and its absent pack reads as null, its absent deltas and patches as empty.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -108,6 +108,79 @@
         "pack": null,
         "patches": [],
         "version": ""
+      }
+    },
+    {
+      "name": "should read the hosts and the SDK options of a build against staging",
+      "resourceFile": {
+        "appId": "a1",
+        "autoCheck": true,
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "checkInterval": 900,
+        "dir": "dist",
+        "downloadStrategy": "unmetered",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleId": "b0",
+          "createdAt": "2026-09-29T09:00:00.000Z",
+          "deltas": [],
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "pack": {
+            "sizeBytes": 2048,
+            "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
+          },
+          "patches": [],
+          "version": "1.4.1"
+        },
+        "enabledInDebugBuilds": false,
+        "filesBaseUrl": "https://files.staging.hotcodepush.com",
+        "fingerprint": null,
+        "installOnResumeAfter": 300,
+        "installStrategy": "next-resume",
+        "mandatoryInstallStrategy": "manual",
+        "publicKeys": [
+          "ed25519:MCowBQYDK2VwAyEAq0E0hJ2u3b9tQ4w4nQ0wFQyq7Uq9pG4b9r6b0Q4m0Yk="
+        ],
+        "readySignal": "manual",
+        "readyTimeout": 10,
+        "updatesBaseUrl": "https://updates.staging.hotcodepush.com"
+      },
+      "embeddedBundleManifest": {
+        "appId": "a1",
+        "bundleId": "b0",
+        "createdAt": "2026-09-29T09:00:00.000Z",
+        "deltas": [],
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
+        },
+        "patches": [],
+        "version": "1.4.1"
       }
     }
   ]
