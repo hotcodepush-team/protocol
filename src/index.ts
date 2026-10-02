@@ -16,4 +16,5 @@ export * from './wire/channel-index.js';
 export * from './wire/channels-index.js';
 export * from './wire/configuration.js';
 export * from './wire/device-events.js';
+export * from './wire/expo-updates.js';
 export * from './wire/primitives.js';
