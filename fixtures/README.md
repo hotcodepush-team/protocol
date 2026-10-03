@@ -57,8 +57,9 @@ npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn be
 
 ## `expo-updates.json`
 
-One uploaded Expo export as `input` — `bundleId`, `bundleManifest`, `createdAt`, `expoClientConfig`, `exportMetadata`, `filesBaseUrl`, `runtimeVersion` — and the documents the bridge serves from it: `manifests` per platform, the launch asset keyed by its SHA-256 hex and every asset by the MD5 hex of its export path, and the two `directives`, `noUpdateAvailable` and `rollBackToEmbedded`, Expo's own.
-The bytes are what the CLI signs at upload and the bridge serves verbatim.
+One uploaded Expo export as `input` — `bundleId`, `bundleManifest`, `createdAt`, `expoClientConfig`, `exportMetadata`, `filesBaseUrl`, `runtimeVersion` — and the documents built from it: `manifests` per platform, the launch asset keyed by its SHA-256 hex and every asset by the MD5 hex of its export path, each naming its own update id in the metadata under `hotcodepush-update`, and the two `directives`, `noUpdateAvailable` and `rollBackToEmbedded`, Expo's own.
+A manifest's bytes are what the CLI signs at upload and the bridge serves verbatim.
+The bridge serves no directive, since it holds no key to sign one with: it answers the protocol's empty `204` for no update and says which stored update a client runs through `expo-manifest-filters` on that metadata key.
 
 ## `bounds.json`
 

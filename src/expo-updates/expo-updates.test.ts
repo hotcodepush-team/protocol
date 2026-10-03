@@ -14,8 +14,12 @@ import {
   buildExpoManifest,
   buildExpoNoUpdateAvailableDirective,
   buildExpoRollBackToEmbeddedDirective,
+  EXPO_UPDATE_METADATA_KEY,
   ExpoExportMetadataSchema,
+  ExpoManifestEnvelopeSchema,
   ExpoManifestError,
+  ExpoManifestSchema,
+  resolveExpoUpdateId,
 } from './expo-updates.js';
 
 interface ExpoUpdatesFixture {
@@ -94,6 +98,77 @@ describe('buildExpoManifest', () => {
       platform => buildExpoManifest({ ...FIXTURE.input, platform }).id,
     );
     expect(android).not.toBe(ios);
+  });
+
+  test.each(PLATFORMS)(
+    'should name the %s update in the metadata the filters match',
+    platform => {
+      const manifest = buildExpoManifest({ ...FIXTURE.input, platform });
+      expect(manifest.metadata).toEqual({
+        [EXPO_UPDATE_METADATA_KEY]: manifest.id,
+      });
+    },
+  );
+});
+
+describe('resolveExpoUpdateId', () => {
+  test.each(PLATFORMS)(
+    'should resolve the pinned id of the %s update from the bundle alone',
+    platform => {
+      expect(resolveExpoUpdateId(FIXTURE.input.bundleId, platform)).toBe(
+        FIXTURE.manifests[platform].id,
+      );
+    },
+  );
+});
+
+describe('ExpoManifestSchema', () => {
+  test.each(PLATFORMS)('should parse the pinned %s manifest', platform => {
+    expect(ExpoManifestSchema.parse(FIXTURE.manifests[platform])).toEqual(
+      FIXTURE.manifests[platform],
+    );
+  });
+
+  test('should keep a field it does not know', () => {
+    const manifest = { ...FIXTURE.manifests.ios, later: true };
+    expect(ExpoManifestSchema.parse(manifest)).toEqual(manifest);
+  });
+
+  test('should refuse a manifest whose id is no UUID', () => {
+    expect(
+      ExpoManifestSchema.safeParse({ ...FIXTURE.manifests.ios, id: 'bundle-7' })
+        .success,
+    ).toBe(false);
+  });
+
+  test('should refuse a manifest without a runtime version', () => {
+    expect(
+      ExpoManifestSchema.safeParse({
+        ...FIXTURE.manifests.ios,
+        runtimeVersion: '',
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe('ExpoManifestEnvelopeSchema', () => {
+  test('should parse an unsigned envelope', () => {
+    const envelope = { manifest: '{}', signature: null };
+    expect(ExpoManifestEnvelopeSchema.parse(envelope)).toEqual(envelope);
+  });
+
+  test('should parse a signed envelope', () => {
+    const envelope = {
+      manifest: '{}',
+      signature: { keyId: 'sha256:abc', value: 'rsa-v1_5-sha256:AAAA' },
+    };
+    expect(ExpoManifestEnvelopeSchema.parse(envelope)).toEqual(envelope);
+  });
+
+  test('should refuse an envelope without the signature field', () => {
+    expect(
+      ExpoManifestEnvelopeSchema.safeParse({ manifest: '{}' }).success,
+    ).toBe(false);
   });
 });
 

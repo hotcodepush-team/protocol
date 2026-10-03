@@ -1,5 +1,5 @@
 {
-  "description": "The Expo Updates documents the bridge serves, built from one uploaded expo export: per platform, the manifest whose launch asset is the platform bundle keyed by its SHA-256 hex, whose assets are keyed by the MD5 hex of their export path with the extension and content type metadata.json gives them, each hashed base64url and fetched from the files host; the id a UUIDv8 of the bundle id and the platform, the timestamps with milliseconds. The served and signed bytes are the canonical JSON of each document.",
+  "description": "The Expo Updates documents the bridge serves, built from one uploaded expo export: per platform, the manifest whose launch asset is the platform bundle keyed by its SHA-256 hex, whose assets are keyed by the MD5 hex of their export path with the extension and content type metadata.json gives them, each hashed base64url and fetched from the files host; the id a UUIDv8 of the bundle id and the platform, repeated in the metadata under `hotcodepush-update` for the bridge's manifest filters, the timestamps with milliseconds. The served and signed bytes are the canonical JSON of each document.",
   "input": {
     "bundleId": "bundle-7",
     "bundleManifest": {
@@ -124,7 +124,9 @@
         "key": "0bdb95fb2f49967946cccb3d2a2c716e31b468370a65ad0d9ab0809e0e91ea7b",
         "url": "https://files.hotcodepush.com/apps/app-1/files/0bdb95fb2f49967946cccb3d2a2c716e31b468370a65ad0d9ab0809e0e91ea7b"
       },
-      "metadata": {},
+      "metadata": {
+        "hotcodepush-update": "67ed00e5-c430-8830-b0f5-1ce6565d52ce"
+      },
       "runtimeVersion": "2.1.0"
     },
     "ios": {
@@ -163,7 +165,9 @@
         "key": "47b3664099dcb2bceb4114b0f432dab53f5678d34769beabe7aa14cab6779f64",
         "url": "https://files.hotcodepush.com/apps/app-1/files/47b3664099dcb2bceb4114b0f432dab53f5678d34769beabe7aa14cab6779f64"
       },
-      "metadata": {},
+      "metadata": {
+        "hotcodepush-update": "2a8d676a-9cff-8891-bede-904c1ab3c4e9"
+      },
       "runtimeVersion": "2.1.0"
     }
   },
