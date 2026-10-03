@@ -130,7 +130,7 @@ describe('ConfigurationSchema', () => {
     );
   });
 
-  test('should ignore the native sources, which are the CLI's', () => {
+  test('should ignore the native sources, which only the CLI reads', () => {
     const [registered] = RESOURCE_FILE_CASES;
     const resourceFile = registered?.resourceFile as Record<string, unknown>;
     expect(
