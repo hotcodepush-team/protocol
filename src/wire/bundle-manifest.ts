@@ -17,53 +17,68 @@ export const ManifestFileSchema = z.looseObject({
 });
 export type ManifestFile = z.infer<typeof ManifestFileSchema>;
 
-export const ManifestDeltaSchema = z.looseObject({
-  baseBundleId: IdentifierSchema,
-  sizeBytes: SizeBytesSchema,
-  url: z.url(),
-});
-export type ManifestDelta = z.infer<typeof ManifestDeltaSchema>;
-
+/** A patch the bundle offers: the file at `path` from the bytes of `fromSha256` to those of `toSha256`; an unknown format means the full file. */
 export const ManifestPatchSchema = z.looseObject({
   format: NonEmptyStringSchema,
   fromSha256: Sha256HexSchema,
   path: RelativePathSchema,
-  sizeBytes: SizeBytesSchema,
   toSha256: Sha256HexSchema,
-  url: z.url(),
 });
 export type ManifestPatch = z.infer<typeof ManifestPatchSchema>;
 
-/** The bundle manifest: content only, additive with no majors, signed by the CLI when signing is on. */
+/**
+ * The bundle manifest: what the CLI knows before the upload, the bytes it
+ * signs as canonical JSON when signing is on. Additive with no majors; the
+ * file hashes bind the signature to the bytes, so the server's facts ride the
+ * envelope beside it, unsigned. A reader keeps a platform it does not know.
+ */
 export const BundleManifestSchema = z.looseObject({
   appId: NonEmptyStringSchema,
-  bundleId: IdentifierSchema,
-  createdAt: IsoTimestampSchema,
-  deltas: z.array(ManifestDeltaSchema),
+  bundleVersion: z.string(),
   files: z.array(ManifestFileSchema),
-  pack: z.looseObject({ sizeBytes: SizeBytesSchema, url: z.url() }),
+  fingerprint: NonEmptyStringSchema.nullable(),
+  /** The fingerprint of the key that signed the manifest, `null` when unsigned. */
+  keyId: NonEmptyStringSchema.nullable(),
   patches: z.array(ManifestPatchSchema),
-  version: z.string(),
+  platforms: z.array(NonEmptyStringSchema),
 });
 export type BundleManifest = z.infer<typeof BundleManifestSchema>;
 
-/**
- * The embedded bundle's manifest in the resource file: a bundle the embed step did not register
- * carries only its files, so an absent `pack` reads as `null` and absent `deltas` and `patches` as empty.
- */
-export const EmbeddedBundleManifestSchema = BundleManifestSchema.extend({
-  deltas: BundleManifestSchema.shape.deltas.default([]),
-  pack: BundleManifestSchema.shape.pack.nullable().default(null),
-  patches: BundleManifestSchema.shape.patches.default([]),
+/** The embedded bundle's manifest in the resource file: the bundle manifest without patches, since nothing is ever patched to the embedded bundle. */
+export const EmbeddedBundleManifestSchema = BundleManifestSchema.omit({
+  patches: true,
 });
 export type EmbeddedBundleManifest = z.infer<
   typeof EmbeddedBundleManifestSchema
 >;
 
-/** The envelope at the manifest's key: the manifest as the signed string, the signature, the reserved encryption slot. */
+export const EnvelopeDeltaSchema = z.looseObject({
+  baseBundleId: IdentifierSchema,
+  sizeBytes: SizeBytesSchema,
+  url: z.url(),
+});
+export type EnvelopeDelta = z.infer<typeof EnvelopeDeltaSchema>;
+
+export const EnvelopePatchSchema = ManifestPatchSchema.extend({
+  sizeBytes: SizeBytesSchema,
+  url: z.url(),
+});
+export type EnvelopePatch = z.infer<typeof EnvelopePatchSchema>;
+
+/**
+ * The document at the manifest's key, written by the server's `complete`:
+ * the manifest as the signed string, the signature, the reserved encryption
+ * slot and, unsigned beside them, the server's facts — the bundle's id and
+ * creation time, and the pack, the deltas and the patches as stored.
+ */
 export const ManifestEnvelopeSchema = z.looseObject({
+  bundleId: IdentifierSchema,
+  createdAt: IsoTimestampSchema,
+  deltas: z.array(EnvelopeDeltaSchema),
   encryption: z.null(),
   manifest: NonEmptyStringSchema,
+  pack: z.looseObject({ sizeBytes: SizeBytesSchema, url: z.url() }),
+  patches: z.array(EnvelopePatchSchema),
   signature: SignatureSchema.nullable(),
 });
 export type ManifestEnvelope = z.infer<typeof ManifestEnvelopeSchema>;

@@ -1,11 +1,10 @@
 {
   "description": "The Expo Updates documents the bridge serves, built from one uploaded expo export: per platform, the manifest whose launch asset is the platform bundle keyed by its SHA-256 hex, whose assets are keyed by the MD5 hex of their export path with the extension and content type metadata.json gives them, each hashed base64url and fetched from the files host; the id a UUIDv8 of the bundle id and the platform, the timestamps with milliseconds. The served and signed bytes are the canonical JSON of each document.",
   "input": {
+    "bundleId": "bundle-7",
     "bundleManifest": {
       "appId": "app-1",
-      "bundleId": "bundle-7",
-      "createdAt": "2026-09-29T10:00:00Z",
-      "deltas": [],
+      "bundleVersion": "2.1.0",
       "files": [
         {
           "path": "_expo/static/js/android/index-8679fa6d43c26fee2160d2ee1e3344e8.hbc",
@@ -38,13 +37,12 @@
           "sizeBytes": 494
         }
       ],
-      "pack": {
-        "sizeBytes": 4096,
-        "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-7/pack"
-      },
+      "fingerprint": null,
+      "keyId": null,
       "patches": [],
-      "version": "2.1.0"
+      "platforms": ["android", "ios"]
     },
+    "createdAt": "2026-09-29T10:00:00Z",
     "expoClientConfig": {
       "extra": {
         "apiUrl": "https://api.example.com"

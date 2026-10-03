@@ -11,4 +11,8 @@ export {
   verifyManifestSignature,
   verifyRollBackToEmbeddedSignature,
 } from './signatures.js';
-export type { RollBackToEmbeddedChannel } from './signatures.js';
+export type {
+  ManifestToSign,
+  RollBackToEmbeddedChannel,
+  SignedManifest,
+} from './signatures.js';

@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone; a bundle the embed step did not register carries only its files, and its absent pack reads as null, its absent deltas and patches as empty.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest without patches, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -11,9 +11,7 @@
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
-          "bundleId": "b0",
-          "createdAt": "2026-09-29T09:00:00.000Z",
-          "deltas": [],
+          "bundleVersion": "1.4.1",
           "files": [
             {
               "path": "assets/index-a1b2c3.js",
@@ -26,20 +24,15 @@
               "sizeBytes": 81
             }
           ],
-          "pack": {
-            "sizeBytes": 2048,
-            "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
-          },
-          "patches": [],
-          "version": "1.4.1"
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
         },
         "fingerprint": null
       },
       "embeddedBundleManifest": {
         "appId": "a1",
-        "bundleId": "b0",
-        "createdAt": "2026-09-29T09:00:00.000Z",
-        "deltas": [],
+        "bundleVersion": "1.4.1",
         "files": [
           {
             "path": "assets/index-a1b2c3.js",
@@ -52,16 +45,13 @@
             "sizeBytes": 81
           }
         ],
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
-        },
-        "patches": [],
-        "version": "1.4.1"
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
       }
     },
     {
-      "name": "should read the files-only manifest of an unregistered embedded bundle with no pack, deltas or patches",
+      "name": "should read the manifest of an unregistered embedded bundle as written",
       "resourceFile": {
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
@@ -70,8 +60,7 @@
         "embeddedBundleId": null,
         "embeddedBundleManifest": {
           "appId": "a1",
-          "bundleId": "embedded",
-          "createdAt": "2026-09-29T10:00:00.000Z",
+          "bundleVersion": "",
           "files": [
             {
               "path": "assets/index-a1b2c3.js",
@@ -84,15 +73,15 @@
               "sizeBytes": 81
             }
           ],
-          "version": ""
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
         },
         "fingerprint": null
       },
       "embeddedBundleManifest": {
         "appId": "a1",
-        "bundleId": "embedded",
-        "createdAt": "2026-09-29T10:00:00.000Z",
-        "deltas": [],
+        "bundleVersion": "",
         "files": [
           {
             "path": "assets/index-a1b2c3.js",
@@ -105,9 +94,9 @@
             "sizeBytes": 81
           }
         ],
-        "pack": null,
-        "patches": [],
-        "version": ""
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
       }
     },
     {
@@ -123,9 +112,7 @@
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
-          "bundleId": "b0",
-          "createdAt": "2026-09-29T09:00:00.000Z",
-          "deltas": [],
+          "bundleVersion": "1.4.1",
           "files": [
             {
               "path": "assets/index-a1b2c3.js",
@@ -138,12 +125,9 @@
               "sizeBytes": 81
             }
           ],
-          "pack": {
-            "sizeBytes": 2048,
-            "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
-          },
-          "patches": [],
-          "version": "1.4.1"
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
         },
         "enabledInDebugBuilds": false,
         "filesBaseUrl": "https://files.staging.hotcodepush.com",
@@ -160,9 +144,7 @@
       },
       "embeddedBundleManifest": {
         "appId": "a1",
-        "bundleId": "b0",
-        "createdAt": "2026-09-29T09:00:00.000Z",
-        "deltas": [],
+        "bundleVersion": "1.4.1",
         "files": [
           {
             "path": "assets/index-a1b2c3.js",
@@ -175,12 +157,9 @@
             "sizeBytes": 81
           }
         ],
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/a1/bundles/b0/pack"
-        },
-        "patches": [],
-        "version": "1.4.1"
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
       }
     }
   ]

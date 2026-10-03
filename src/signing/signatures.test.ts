@@ -4,6 +4,7 @@ import { describe, expect, test } from 'vitest';
 
 import { stringifyCanonicalJson } from '../canonical-json.js';
 import type { ManifestEnvelope } from '../wire/bundle-manifest.js';
+import { BundleManifestSchema } from '../wire/bundle-manifest.js';
 import type { RollBackToEmbeddedDirective } from '../wire/channel-index.js';
 import {
   signManifest,
@@ -38,6 +39,15 @@ const FIXTURE = JSON.parse(
     'utf8',
   ),
 ) as SignaturesFixture;
+
+const MANIFEST = {
+  appId: 'a1',
+  bundleVersion: '1.0.1',
+  files: [],
+  fingerprint: null,
+  patches: [],
+  platforms: ['ios'],
+};
 
 function resolvePrivateKeyOfKeyId(keyId: string): string {
   const key = FIXTURE.keys.find(({ fingerprint }) => fingerprint === keyId);
@@ -88,33 +98,38 @@ describe('signManifest', () => {
   const validCases = FIXTURE.manifests.filter(({ isValid }) => isValid);
 
   test.each(validCases)(
-    'should reproduce the signature of the case: $name',
+    'should reproduce the manifest and the signature of the case: $name',
     async ({ envelope }) => {
       const signature = envelope.signature;
       if (signature === null) {
         throw new Error('A valid case is signed.');
       }
+      const manifest = BundleManifestSchema.parse(
+        JSON.parse(envelope.manifest),
+      );
       expect(
-        await signManifest(
-          envelope.manifest,
-          resolvePrivateKeyOfKeyId(signature.keyId),
-        ),
-      ).toEqual(signature);
+        await signManifest(manifest, resolvePrivateKeyOfKeyId(signature.keyId)),
+      ).toEqual({ manifest: envelope.manifest, signature });
     },
   );
 
+  test('should name the signing key in the signed manifest', async () => {
+    const { privateKey } = await generateSigningKeyPair();
+    const { manifest, signature } = await signManifest(MANIFEST, privateKey);
+    expect(BundleManifestSchema.parse(JSON.parse(manifest)).keyId).toBe(
+      signature.keyId,
+    );
+  });
+
   test('should sign a manifest the verifier accepts with a generated key pair', async () => {
     const { privateKey, publicKey } = await generateSigningKeyPair();
-    const manifest = stringifyCanonicalJson({ bundleId: 'b1' });
-    const signature = await signManifest(manifest, privateKey);
-    expect(
-      await verifyManifestSignature({ manifest, signature }, [publicKey]),
-    ).toBe(true);
+    const signed = await signManifest(MANIFEST, privateKey);
+    expect(await verifyManifestSignature(signed, [publicKey])).toBe(true);
   });
 
   test('should refuse a private key that is not self-describing', async () => {
     await expect(
-      signManifest('{}', 'MC4CAQAwBQYDK2VwBCIEIA=='),
+      signManifest(MANIFEST, 'MC4CAQAwBQYDK2VwBCIEIA=='),
     ).rejects.toThrow(TypeError);
   });
 });

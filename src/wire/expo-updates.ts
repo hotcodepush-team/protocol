@@ -31,8 +31,12 @@ export const ExpoExportMetadataSchema = z.looseObject({
 export type ExpoExportMetadata = z.infer<typeof ExpoExportMetadataSchema>;
 
 export interface ExpoManifestInput {
+  /** The id the API gave the bundle. */
+  bundleId: string;
   /** The manifest of the uploaded `expo export` directory. */
   bundleManifest: BundleManifest;
+  /** When the API created the bundle. */
+  createdAt: string;
   /** The app's public Expo config, which `Constants.expoConfig` reads from the manifest's `extra.expoClient`. */
   expoClientConfig: Record<string, unknown>;
   exportMetadata: ExpoExportMetadata;
@@ -90,17 +94,17 @@ const UNKNOWN_CONTENT_TYPE = 'application/octet-stream';
  * the same update on every upload of its manifest.
  */
 export function buildExpoManifest(input: ExpoManifestInput): ExpoManifest {
-  const { bundleManifest, platform } = input;
+  const { bundleId, platform } = input;
   const platformMetadata = input.exportMetadata.fileMetadata[platform];
   if (platformMetadata === undefined) {
     throw new ExpoManifestError(
       `the export holds no ${platform} bundle; export it with --platform ${platform}`,
     );
   }
-  const launchFile = findManifestFile(bundleManifest, platformMetadata.bundle);
+  const launchFile = findManifestFile(input, platformMetadata.bundle);
   return {
     assets: platformMetadata.assets.map(asset => {
-      const file = findManifestFile(bundleManifest, asset.path);
+      const file = findManifestFile(input, asset.path);
       return {
         contentType: mime.getType(asset.ext) ?? UNKNOWN_CONTENT_TYPE,
         fileExtension: `.${asset.ext}`,
@@ -109,9 +113,9 @@ export function buildExpoManifest(input: ExpoManifestInput): ExpoManifest {
         url: resolveFileUrl(input, file.sha256),
       };
     }),
-    createdAt: new Date(bundleManifest.createdAt).toISOString(),
+    createdAt: new Date(input.createdAt).toISOString(),
     extra: { expoClient: input.expoClientConfig },
-    id: resolveExpoUpdateId(bundleManifest.bundleId, platform),
+    id: resolveExpoUpdateId(bundleId, platform),
     launchAsset: {
       contentType: LAUNCH_ASSET_CONTENT_TYPE,
       hash: resolveBase64UrlSha256(launchFile.sha256),
@@ -139,13 +143,13 @@ export function buildExpoRollBackToEmbeddedDirective(
 }
 
 function findManifestFile(
-  bundleManifest: BundleManifest,
+  { bundleId, bundleManifest }: ExpoManifestInput,
   path: string,
 ): ManifestFile {
   const file = bundleManifest.files.find(candidate => candidate.path === path);
   if (file === undefined) {
     throw new ExpoManifestError(
-      `metadata.json names ${path}, which bundle ${bundleManifest.bundleId} does not hold`,
+      `metadata.json names ${path}, which bundle ${bundleId} does not hold`,
     );
   }
   return file;

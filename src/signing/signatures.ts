@@ -1,5 +1,8 @@
 import { stringifyCanonicalJson } from '../canonical-json.js';
-import type { ManifestEnvelope } from '../wire/bundle-manifest.js';
+import type {
+  BundleManifest,
+  ManifestEnvelope,
+} from '../wire/bundle-manifest.js';
 import type { RollBackToEmbeddedDirective } from '../wire/channel-index.js';
 import type { Signature } from '../wire/primitives.js';
 import {
@@ -10,10 +13,30 @@ import {
 } from './signing-keys.js';
 import type { SelfDescribingBytes, SigningScheme } from './signing-keys.js';
 
+/** The manifest the CLI built: every field but `keyId`, which signing sets to the signing key's fingerprint. */
+export type ManifestToSign = Pick<
+  BundleManifest,
+  'appId' | 'bundleVersion' | 'files' | 'fingerprint' | 'patches' | 'platforms'
+>;
+
+/** The envelope's signed half, what the CLI sends with the bundle. */
+export interface SignedManifest {
+  /** The canonical JSON of the bundle manifest, the signed bytes. */
+  manifest: string;
+  signature: Signature;
+}
+
 /** The app and channel a `rollBackToEmbedded` directive is signed for, so it cannot be replayed elsewhere. */
 export interface RollBackToEmbeddedChannel {
   appId: string;
   channelId: string;
+}
+
+interface SigningPrivateKey {
+  cryptoKey: CryptoKey;
+  /** The fingerprint of the key's public half. */
+  keyId: string;
+  scheme: SigningScheme;
 }
 
 interface SchemeAlgorithms {
@@ -35,12 +58,23 @@ const SCHEME_ALGORITHMS: Record<SigningScheme, SchemeAlgorithms> = {
   },
 };
 
-/** Signs the envelope's `manifest` string, the canonical JSON of the bundle manifest, byte for byte. */
-export function signManifest(
-  manifest: string,
+/**
+ * Signs the bundle manifest: `keyId` set to the signing key's fingerprint, the
+ * canonical JSON of the result, the signature over those bytes.
+ */
+export async function signManifest(
+  manifest: ManifestToSign,
   privateKey: string,
-): Promise<Signature> {
-  return signMessage(manifest, privateKey);
+): Promise<SignedManifest> {
+  const signingKey = await importSigningPrivateKey(privateKey);
+  const signedManifest = stringifyCanonicalJson({
+    ...manifest,
+    keyId: signingKey.keyId,
+  });
+  return {
+    manifest: signedManifest,
+    signature: await signMessage(signedManifest, signingKey),
+  };
 }
 
 /**
@@ -59,14 +93,14 @@ export async function verifyManifestSignature(
 }
 
 /** Signs the canonical JSON of `{ aboveNumber, appId, channelId }`. */
-export function signRollBackToEmbedded(
+export async function signRollBackToEmbedded(
   directive: Pick<RollBackToEmbeddedDirective, 'aboveNumber'>,
   channel: RollBackToEmbeddedChannel,
   privateKey: string,
 ): Promise<Signature> {
   return signMessage(
     buildRollBackToEmbeddedMessage(directive, channel),
-    privateKey,
+    await importSigningPrivateKey(privateKey),
   );
 }
 
@@ -96,36 +130,45 @@ function buildRollBackToEmbeddedMessage(
   return stringifyCanonicalJson({ aboveNumber, appId, channelId });
 }
 
-async function signMessage(
-  message: string,
+async function importSigningPrivateKey(
   privateKey: string,
-): Promise<Signature> {
+): Promise<SigningPrivateKey> {
   const parsedKey = parseSelfDescribingBytes(privateKey);
   if (parsedKey === null) {
     throw new TypeError(
       'The private key is not a self-describing signing key.',
     );
   }
-  const algorithms = SCHEME_ALGORITHMS[parsedKey.scheme];
   const cryptoKey = await crypto.subtle.importKey(
     'pkcs8',
     parsedKey.bytes,
-    algorithms.imported,
+    SCHEME_ALGORITHMS[parsedKey.scheme].imported,
     true,
     ['sign'],
-  );
-  const signatureBytes = await crypto.subtle.sign(
-    algorithms.signed,
-    cryptoKey,
-    new TextEncoder().encode(message),
   );
   const publicKey = await resolvePublicKeyOfPrivateKey(
     cryptoKey,
     parsedKey.scheme,
   );
   return {
+    cryptoKey,
     keyId: resolveSigningKeyFingerprint(publicKey),
-    value: formatSelfDescribingBytes(parsedKey.scheme, signatureBytes),
+    scheme: parsedKey.scheme,
+  };
+}
+
+async function signMessage(
+  message: string,
+  signingKey: SigningPrivateKey,
+): Promise<Signature> {
+  const signatureBytes = await crypto.subtle.sign(
+    SCHEME_ALGORITHMS[signingKey.scheme].signed,
+    signingKey.cryptoKey,
+    new TextEncoder().encode(message),
+  );
+  return {
+    keyId: signingKey.keyId,
+    value: formatSelfDescribingBytes(signingKey.scheme, signatureBytes),
   };
 }
 
