@@ -26,6 +26,14 @@ export function parseVersion(value: string): Version | null {
 }
 
 /**
+ * Whether the range parses in the shared subset, so the API and the CLI
+ * refuse one that does not before a write, the rule `range_syntax`.
+ */
+export function isValidVersionRange(range: string): boolean {
+  return parseVersionRange(range) !== null;
+}
+
+/**
  * Whether the version satisfies the range: `null` when the range does not parse.
  * A comparator compares only as many components as it names, so `2.4.1`
  * matches a device on `2.4.1` with any build, while `2.4.1.57` names the build.
@@ -34,18 +42,12 @@ export function isVersionInRange(
   version: Version,
   range: string,
 ): boolean | null {
-  const alternatives = range
-    .split('||')
-    .map(alternative => parseAlternative(alternative));
-  if (alternatives.some(alternative => alternative === null)) {
+  const alternatives = parseVersionRange(range);
+  if (alternatives === null) {
     return null;
   }
-  return alternatives.some(
-    alternative =>
-      alternative !== null &&
-      alternative.every(comparator =>
-        isComparatorSatisfied(version, comparator),
-      ),
+  return alternatives.some(alternative =>
+    alternative.every(comparator => isComparatorSatisfied(version, comparator)),
   );
 }
 
@@ -84,6 +86,19 @@ function isComparatorSatisfied(
     case '>=':
       return order >= 0;
   }
+}
+
+/** The alternatives of the range, each its comparators; `null` when one does not parse. */
+function parseVersionRange(range: string): Comparator[][] | null {
+  const alternatives: Comparator[][] = [];
+  for (const alternative of range.split('||')) {
+    const comparators = parseAlternative(alternative);
+    if (comparators === null) {
+      return null;
+    }
+    alternatives.push(comparators);
+  }
+  return alternatives;
 }
 
 function parseAlternative(alternative: string): Comparator[] | null {

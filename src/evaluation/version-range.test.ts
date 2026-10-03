@@ -2,7 +2,11 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, test } from 'vitest';
 
-import { isVersionInRange, parseVersion } from './version-range.js';
+import {
+  isValidVersionRange,
+  isVersionInRange,
+  parseVersion,
+} from './version-range.js';
 
 interface RangeCase {
   range: string;
@@ -18,6 +22,26 @@ const CASES = (
     ),
   ) as { cases: RangeCase[] }
 ).cases;
+
+const RANGE_VALIDITY = [
+  ...new Map(CASES.map(entry => [entry.range, entry.satisfied !== null])),
+];
+
+describe('isValidVersionRange', () => {
+  test.each(RANGE_VALIDITY.filter(([, isValid]) => isValid))(
+    'should accept %j',
+    range => {
+      expect(isValidVersionRange(range)).toBe(true);
+    },
+  );
+
+  test.each(RANGE_VALIDITY.filter(([, isValid]) => !isValid))(
+    'should refuse %j',
+    range => {
+      expect(isValidVersionRange(range)).toBe(false);
+    },
+  );
+});
 
 describe('parseVersion', () => {
   test.each([
