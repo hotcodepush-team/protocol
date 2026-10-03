@@ -3,7 +3,6 @@ import type {
   BundleManifest,
   ManifestEnvelope,
 } from '../wire/bundle-manifest.js';
-import type { RollBackToEmbeddedDirective } from '../wire/channel-index.js';
 import type { Signature } from '../wire/primitives.js';
 import {
   formatSelfDescribingBytes,
@@ -24,12 +23,6 @@ export interface SignedManifest {
   /** The canonical JSON of the bundle manifest, the signed bytes. */
   manifest: string;
   signature: Signature;
-}
-
-/** The app and channel a `rollBackToEmbedded` directive is signed for, so it cannot be replayed elsewhere. */
-export interface RollBackToEmbeddedChannel {
-  appId: string;
-  channelId: string;
 }
 
 interface SigningPrivateKey {
@@ -90,44 +83,6 @@ export async function verifyManifestSignature(
     return false;
   }
   return verifyMessage(envelope.manifest, envelope.signature, publicKeys);
-}
-
-/** Signs the canonical JSON of `{ aboveNumber, appId, channelId }`. */
-export async function signRollBackToEmbedded(
-  directive: Pick<RollBackToEmbeddedDirective, 'aboveNumber'>,
-  channel: RollBackToEmbeddedChannel,
-  privateKey: string,
-): Promise<Signature> {
-  return signMessage(
-    buildRollBackToEmbeddedMessage(directive, channel),
-    await importSigningPrivateKey(privateKey),
-  );
-}
-
-/**
- * Whether the directive's signature covers its `aboveNumber` for this app and
- * channel, the ones the device is configured with, never the index's own.
- */
-export async function verifyRollBackToEmbeddedSignature(
-  directive: RollBackToEmbeddedDirective,
-  channel: RollBackToEmbeddedChannel,
-  publicKeys: readonly string[],
-): Promise<boolean> {
-  if (directive.signature === null) {
-    return false;
-  }
-  return verifyMessage(
-    buildRollBackToEmbeddedMessage(directive, channel),
-    directive.signature,
-    publicKeys,
-  );
-}
-
-function buildRollBackToEmbeddedMessage(
-  { aboveNumber }: Pick<RollBackToEmbeddedDirective, 'aboveNumber'>,
-  { appId, channelId }: RollBackToEmbeddedChannel,
-): string {
-  return stringifyCanonicalJson({ aboveNumber, appId, channelId });
 }
 
 async function importSigningPrivateKey(

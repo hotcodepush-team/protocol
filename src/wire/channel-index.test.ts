@@ -56,7 +56,6 @@ const INDEX = {
   platform: 'ios',
   releases: [RELEASE],
   revokedReleaseIds: [],
-  rollBackToEmbedded: null,
   schema: 1,
   sequence: 17,
 };
@@ -79,17 +78,6 @@ describe('ChannelIndexSchema', () => {
 
   test('should match the constant to the v1 in the path', () => {
     expect(CHANNEL_INDEX_SCHEMA).toBe(1);
-  });
-
-  test('should parse the directive with its signature', () => {
-    const parsed = ChannelIndexSchema.parse({
-      ...INDEX,
-      rollBackToEmbedded: {
-        aboveNumber: 41,
-        signature: { keyId: 'k1', value: 'ed25519:AAAA' },
-      },
-    });
-    expect(parsed.rollBackToEmbedded?.aboveNumber).toBe(41);
   });
 });
 

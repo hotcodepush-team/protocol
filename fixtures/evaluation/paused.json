@@ -40,7 +40,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -92,7 +91,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -143,7 +141,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -206,7 +203,6 @@
           }
         ],
         "revokedReleaseIds": ["release-2"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -286,7 +282,6 @@
           }
         ],
         "revokedReleaseIds": ["release-2"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -352,7 +347,6 @@
           }
         ],
         "revokedReleaseIds": ["release-2"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },

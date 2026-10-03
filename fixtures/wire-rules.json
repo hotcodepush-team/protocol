@@ -31,7 +31,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -68,7 +67,6 @@
         "revokedReleaseIds": [
           "aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-aZ09_-abcd"
         ],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -104,7 +102,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7,
         "laterField": {
@@ -142,7 +139,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -177,13 +173,12 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
     },
     {
-      "name": "should accept the directive with its signature and a capped channel",
+      "name": "should accept a capped channel",
       "index": {
         "appId": "app-1",
         "cappedAt": "2026-09-30T00:00:00.000Z",
@@ -212,13 +207,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": {
-          "aboveNumber": 1,
-          "signature": {
-            "keyId": "key-1",
-            "value": "ed25519:AAAA"
-          }
-        },
         "schema": 1,
         "sequence": 7
       }
@@ -255,7 +243,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -290,7 +277,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -325,7 +311,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -360,7 +345,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -395,7 +379,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -430,7 +413,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -465,7 +447,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -500,7 +481,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -535,7 +515,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -570,7 +549,6 @@
           }
         ],
         "revokedReleaseIds": ["release 1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -605,7 +583,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -640,7 +617,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -675,7 +651,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -709,7 +684,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -743,7 +717,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -777,7 +750,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -806,7 +778,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -840,7 +811,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -874,7 +844,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -908,7 +877,6 @@
             "sizeBytes": 4096
           }
         ],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -942,78 +910,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
-        "schema": 1,
-        "sequence": 7
-      }
-    },
-    {
-      "name": "should refuse an index without rollBackToEmbedded, which is null when there is none",
-      "index": {
-        "appId": "app-1",
-        "cappedAt": null,
-        "channelId": "channel-1",
-        "isPaused": false,
-        "platform": "ios",
-        "releases": [
-          {
-            "bundleId": "bundle-2",
-            "bundleVersion": "1.4.2",
-            "conditions": [
-              {
-                "range": ">=2.3.0",
-                "type": "binary"
-              }
-            ],
-            "createdAt": "2026-09-29T10:00:00.000Z",
-            "id": "release-2",
-            "isMandatory": false,
-            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
-            "notes": null,
-            "number": 2,
-            "rollout": 100,
-            "sizeBytes": 4096
-          }
-        ],
-        "revokedReleaseIds": ["release-1"],
-        "schema": 1,
-        "sequence": 7
-      }
-    },
-    {
-      "name": "should refuse a directive without signature, which is null when unsigned",
-      "index": {
-        "appId": "app-1",
-        "cappedAt": null,
-        "channelId": "channel-1",
-        "isPaused": false,
-        "platform": "ios",
-        "releases": [
-          {
-            "bundleId": "bundle-2",
-            "bundleVersion": "1.4.2",
-            "conditions": [
-              {
-                "range": ">=2.3.0",
-                "type": "binary"
-              }
-            ],
-            "createdAt": "2026-09-29T10:00:00.000Z",
-            "id": "release-2",
-            "isMandatory": false,
-            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
-            "notes": null,
-            "number": 2,
-            "rollout": 100,
-            "sizeBytes": 4096
-          }
-        ],
-        "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": {
-          "aboveNumber": 1
-        },
         "schema": 1,
         "sequence": 7
       }
@@ -1048,7 +944,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1083,7 +978,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1118,7 +1012,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1153,7 +1046,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1188,7 +1080,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1223,7 +1114,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }
@@ -1258,7 +1148,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 2,
         "sequence": 7
       }
@@ -1292,7 +1181,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       }

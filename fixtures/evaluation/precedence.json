@@ -26,7 +26,6 @@
           }
         ],
         "revokedReleaseIds": ["release-1"],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -81,7 +80,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -142,7 +140,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -196,7 +193,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },
@@ -265,7 +261,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 10
       },

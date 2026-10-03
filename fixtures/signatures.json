@@ -1,5 +1,5 @@
 {
-  "description": "Signatures over the bundle manifest and the rollBackToEmbedded directive. A key and a signature value are self-describing, `<scheme>:<base64>`, the scheme one of the pinned allow-list `ed25519` and `rsa-v1_5-sha256`; a public key is raw for ed25519 and SPKI DER for RSA, a private key PKCS #8 DER. A key fingerprint is `sha256:` and the SHA-256 of the public key bytes in hex, and a signature's keyId is the fingerprint of the key it is verified with. A manifest signature covers the UTF-8 bytes of the envelope's manifest string, the canonical JSON of the bundle manifest, whose keyId is the fingerprint of the key that signs it and null when unsigned; a directive signature covers signedBytes, the canonical JSON of { aboveNumber, appId, channelId } for the app and channel the device is configured with. The keys are test keys.",
+  "description": "Signatures over the bundle manifest. A key and a signature value are self-describing, `<scheme>:<base64>`, the scheme one of the pinned allow-list `ed25519` and `rsa-v1_5-sha256`; a public key is raw for ed25519 and SPKI DER for RSA, a private key PKCS #8 DER. A key fingerprint is `sha256:` and the SHA-256 of the public key bytes in hex, and a signature's keyId is the fingerprint of the key it is verified with. A manifest signature covers the UTF-8 bytes of the envelope's manifest string, the canonical JSON of the bundle manifest, whose keyId is the fingerprint of the key that signs it and null when unsigned. The keys are test keys.",
   "keys": [
     {
       "fingerprint": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
@@ -171,80 +171,6 @@
         }
       },
       "publicKeys": [],
-      "isValid": false
-    }
-  ],
-  "directives": [
-    {
-      "name": "should accept a directive signed for its app and channel",
-      "appId": "a1",
-      "channelId": "c1",
-      "directive": {
-        "aboveNumber": 3,
-        "signature": {
-          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
-        }
-      },
-      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
-      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c1\"}",
-      "isValid": true
-    },
-    {
-      "name": "should refuse a directive replayed to another channel",
-      "appId": "a1",
-      "channelId": "c2",
-      "directive": {
-        "aboveNumber": 3,
-        "signature": {
-          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
-        }
-      },
-      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
-      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c2\"}",
-      "isValid": false
-    },
-    {
-      "name": "should refuse a directive replayed to another app",
-      "appId": "a2",
-      "channelId": "c1",
-      "directive": {
-        "aboveNumber": 3,
-        "signature": {
-          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
-        }
-      },
-      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
-      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a2\",\"channelId\":\"c1\"}",
-      "isValid": false
-    },
-    {
-      "name": "should refuse a directive whose aboveNumber changed after signing",
-      "appId": "a1",
-      "channelId": "c1",
-      "directive": {
-        "aboveNumber": 4,
-        "signature": {
-          "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-          "value": "ed25519:KYbnBrbKBt0A1c2F+aJ5ZLHFWn/HDwAvonVJct3L275OcuwDwjTFfJPkCkq2jb9s+rMw0SKrCvh8DID59gUPCQ=="
-        }
-      },
-      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
-      "signedBytes": "{\"aboveNumber\":4,\"appId\":\"a1\",\"channelId\":\"c1\"}",
-      "isValid": false
-    },
-    {
-      "name": "should refuse an unsigned directive",
-      "appId": "a1",
-      "channelId": "c1",
-      "directive": {
-        "aboveNumber": 3,
-        "signature": null
-      },
-      "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
-      "signedBytes": "{\"aboveNumber\":3,\"appId\":\"a1\",\"channelId\":\"c1\"}",
       "isValid": false
     }
   ]

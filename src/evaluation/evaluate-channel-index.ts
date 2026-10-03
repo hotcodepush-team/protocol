@@ -182,16 +182,10 @@ function isMandatoryTransitively(
 }
 
 function isReleaseRevoked(
-  release: { id: string; number: number },
+  release: { id: string },
   index: ChannelIndex,
 ): boolean {
-  if (index.revokedReleaseIds.includes(release.id)) {
-    return true;
-  }
-  return (
-    index.rollBackToEmbedded !== null &&
-    release.number <= index.rollBackToEmbedded.aboveNumber
-  );
+  return index.revokedReleaseIds.includes(release.id);
 }
 
 function resolveCurrentIndexRelease(

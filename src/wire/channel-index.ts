@@ -7,7 +7,6 @@ import {
   NonEmptyStringSchema,
   PlatformSchema,
   Sha256HexSchema,
-  SignatureSchema,
   SizeBytesSchema,
 } from './primitives.js';
 
@@ -91,14 +90,6 @@ export const IndexReleaseSchema = z.looseObject({
 });
 export type IndexRelease = z.infer<typeof IndexReleaseSchema>;
 
-export const RollBackToEmbeddedDirectiveSchema = z.looseObject({
-  aboveNumber: z.int().nonnegative(),
-  signature: SignatureSchema.nullable(),
-});
-export type RollBackToEmbeddedDirective = z.infer<
-  typeof RollBackToEmbeddedDirectiveSchema
->;
-
 /** The channel's index for a platform, one object per app, channel and platform. */
 export const ChannelIndexSchema = z.looseObject({
   appId: NonEmptyStringSchema,
@@ -108,7 +99,6 @@ export const ChannelIndexSchema = z.looseObject({
   platform: PlatformSchema,
   releases: z.array(IndexReleaseSchema),
   revokedReleaseIds: z.array(IdentifierSchema),
-  rollBackToEmbedded: RollBackToEmbeddedDirectiveSchema.nullable(),
   schema: z.literal(CHANNEL_INDEX_SCHEMA),
   sequence: z.int().nonnegative(),
 });

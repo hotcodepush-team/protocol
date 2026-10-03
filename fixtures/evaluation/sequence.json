@@ -26,7 +26,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 5
       },
@@ -75,7 +74,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 7
       },
@@ -124,7 +122,6 @@
           }
         ],
         "revokedReleaseIds": [],
-        "rollBackToEmbedded": null,
         "schema": 1,
         "sequence": 8
       },
