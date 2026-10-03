@@ -35,6 +35,7 @@ describe('ProjectConfigurationSchema', () => {
       installOnResumeAfter: 300,
       installStrategy: 'next-start',
       mandatoryInstallStrategy: 'immediate',
+      nativeSources: [],
       publicKeys: [],
       readySignal: 'render',
       readyTimeout: 10,
@@ -79,6 +80,23 @@ describe('ProjectConfigurationSchema', () => {
     expect(parsed).toHaveProperty('$schema');
   });
 
+  test('should read the native sources the CLI hashes', () => {
+    const nativeSources = ['ios/App/App/Plugins', 'android/app/src/main/java'];
+    expect(
+      ProjectConfigurationSchema.parse({ ...PROJECT, nativeSources })
+        .nativeSources,
+    ).toEqual(nativeSources);
+  });
+
+  test('should reject a native source that is not a clean relative path', () => {
+    expect(
+      ProjectConfigurationSchema.safeParse({
+        ...PROJECT,
+        nativeSources: ['../shared/Plugins'],
+      }).success,
+    ).toBe(false);
+  });
+
   test('should reject a ready timeout below one second', () => {
     expect(
       ProjectConfigurationSchema.safeParse({ ...PROJECT, readyTimeout: 0 })
@@ -110,6 +128,17 @@ describe('ConfigurationSchema', () => {
     expect(parsed.updatesBaseUrl).toBe(
       'https://updates.staging.hotcodepush.com',
     );
+  });
+
+  test('should ignore the native sources, which are the CLI's', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    expect(
+      ConfigurationSchema.safeParse({
+        ...resourceFile,
+        nativeSources: ['../shared/Plugins'],
+      }).success,
+    ).toBe(true);
   });
 
   test('should reject a host that is not a URL', () => {

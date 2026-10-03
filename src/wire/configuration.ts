@@ -11,6 +11,7 @@ import {
   ChannelNameSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
+  RelativePathSchema,
 } from './primitives.js';
 
 /** Every duration in seconds, one unit, no suffix in the key. */
@@ -35,13 +36,15 @@ const SDK_OPTIONS_SHAPE = {
 /**
  * `hotcodepush.json` in the project root, written by `init` and read by every
  * CLI command: the app id, the channel by name, the SDK options and, for the
- * CLI alone, `dir`.
+ * CLI alone, `dir` and `nativeSources`.
  */
 export const ProjectConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   channel: ChannelNameSchema.default('production'),
   dir: z.string().optional(),
+  /** The custom native sources the fingerprint hashes: files or directories, relative to the project root. */
+  nativeSources: z.array(RelativePathSchema).default([]),
 });
 export type ProjectConfiguration = z.infer<typeof ProjectConfigurationSchema>;
 

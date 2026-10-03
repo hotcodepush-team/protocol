@@ -64,7 +64,7 @@ export function computeFingerprint(
  * one entry per version, sorted by name and version; native sources sorted by
  * path, hidden files inside a declared directory skipped.
  */
-export async function resolveFingerprintContributors(
+export async function readFingerprintContributors(
   project: FingerprintProject,
 ): Promise<FingerprintContributors> {
   const { reader } = project;

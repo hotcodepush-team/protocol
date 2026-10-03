@@ -1,7 +1,7 @@
 export {
   computeFingerprint,
   FINGERPRINT_RUNTIME_PACKAGES,
-  resolveFingerprintContributors,
+  readFingerprintContributors,
 } from './fingerprint.js';
 export type {
   FingerprintContributors,

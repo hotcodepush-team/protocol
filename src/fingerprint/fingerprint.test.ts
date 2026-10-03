@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import type { FingerprintContributors } from './fingerprint.js';
 import {
   computeFingerprint,
-  resolveFingerprintContributors,
+  readFingerprintContributors,
 } from './fingerprint.js';
 import type { ProjectReader } from './project-reader.js';
 import { FingerprintError } from './project-reader.js';
@@ -65,11 +65,11 @@ function projectOf(fixture: FingerprintProjectFixture) {
   };
 }
 
-describe('resolveFingerprintContributors', () => {
+describe('readFingerprintContributors', () => {
   test.each(FIXTURE.cases.map(fixtureCase => [fixtureCase.name, fixtureCase]))(
     '%s',
     async (_name, fixtureCase) => {
-      const contributors = await resolveFingerprintContributors(
+      const contributors = await readFingerprintContributors(
         projectOf(fixtureCase),
       );
       expect(contributors).toEqual(fixtureCase.contributors);
@@ -81,7 +81,7 @@ describe('resolveFingerprintContributors', () => {
     '%s',
     async (_name, refused) => {
       await expect(
-        resolveFingerprintContributors(projectOf(refused)),
+        readFingerprintContributors(projectOf(refused)),
       ).rejects.toThrow(FingerprintError);
     },
   );
