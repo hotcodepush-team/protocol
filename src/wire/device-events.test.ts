@@ -45,6 +45,7 @@ const REQUEST = {
     fingerprint: 'fp1:a41b',
     osVersion: '14',
     releaseId: 'r1',
+    runtimeVersion: '2.4',
   },
   sdkVersion: '0.3.1',
 };
@@ -57,6 +58,18 @@ describe('DeviceEventsRequestSchema', () => {
   test('should parse a batch without a report', () => {
     expect(
       DeviceEventsRequestSchema.parse({ ...REQUEST, report: null }).report,
+    ).toBeNull();
+  });
+
+  test('should read a report without runtimeVersion as reporting none', () => {
+    const report = Object.fromEntries(
+      Object.entries(REQUEST.report).filter(
+        ([key]) => key !== 'runtimeVersion',
+      ),
+    );
+    expect(
+      DeviceEventsRequestSchema.parse({ ...REQUEST, report }).report
+        ?.runtimeVersion,
     ).toBeNull();
   });
 
