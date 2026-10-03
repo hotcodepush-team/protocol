@@ -7,6 +7,7 @@ import {
   SKIPPED_REASONS,
 } from '../results.js';
 import {
+  IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
   PlatformSchema,
@@ -22,10 +23,10 @@ export const DeviceReportSchema = z.looseObject({
   binaryVersion: NonEmptyStringSchema,
   channelId: NonEmptyStringSchema,
   channelSource: ChannelSourceSchema,
-  embeddedBundleId: NonEmptyStringSchema.nullable(),
+  embeddedBundleId: IdentifierSchema.nullable(),
   fingerprint: NonEmptyStringSchema.nullable(),
   osVersion: NonEmptyStringSchema,
-  releaseId: NonEmptyStringSchema.nullable(),
+  releaseId: IdentifierSchema.nullable(),
   /** The runtime version the binary declares, for the `runtime` strategy; an SDK that does not send it reports none. */
   runtimeVersion: NonEmptyStringSchema.nullable().default(null),
 });
@@ -38,23 +39,23 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
   z.looseObject({
     condition: z.enum(CONDITION_TYPES).optional(),
     reason: z.enum(SKIPPED_REASONS).optional(),
-    releaseId: NonEmptyStringSchema,
+    releaseId: IdentifierSchema,
     status: z.enum(['AVAILABLE', 'SKIPPED']),
     type: z.literal('checked'),
   }),
   z.looseObject({
-    bundleId: NonEmptyStringSchema,
+    bundleId: IdentifierSchema,
     bytes: SizeBytesSchema,
     packKind: z.enum(PACK_KINDS),
-    releaseId: NonEmptyStringSchema,
+    releaseId: IdentifierSchema,
     type: z.literal('downloaded'),
   }),
   z.looseObject({
-    releaseId: NonEmptyStringSchema,
+    releaseId: IdentifierSchema,
     type: z.literal('applied'),
   }),
   z.looseObject({
-    releaseId: NonEmptyStringSchema,
+    releaseId: IdentifierSchema,
     type: z.literal('confirmed'),
   }),
   z.looseObject({
@@ -66,12 +67,12 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
       'INVALID_SIGNATURE',
       'VERIFICATION_FAILED',
     ]),
-    releaseId: NonEmptyStringSchema,
+    releaseId: IdentifierSchema,
     type: z.literal('failed'),
   }),
   z.looseObject({
-    fromReleaseId: NonEmptyStringSchema,
-    toReleaseId: NonEmptyStringSchema.nullable(),
+    fromReleaseId: IdentifierSchema,
+    toReleaseId: IdentifierSchema.nullable(),
     type: z.literal('rolledBack'),
   }),
 ]);

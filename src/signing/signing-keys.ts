@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { encodeBase64 } from '../base64.js';
 import { computeSha256Hex } from '../hash/sha256.js';
 
 /**
@@ -110,14 +111,6 @@ export function formatSelfDescribingBytes(
   bytes: ArrayBuffer | Uint8Array,
 ): string {
   return `${scheme}:${encodeBase64(new Uint8Array(bytes))}`;
-}
-
-function encodeBase64(bytes: Uint8Array): string {
-  let binary = '';
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-  return btoa(binary);
 }
 
 function isSigningScheme(scheme: string): scheme is SigningScheme {

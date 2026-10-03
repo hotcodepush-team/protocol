@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import { PLATFORMS } from '../results.js';
-import type { BundleManifest } from './bundle-manifest.js';
+import type { BundleManifest } from '../wire/bundle-manifest.js';
 import type {
   ExpoExportMetadata,
   ExpoManifest,

@@ -97,6 +97,15 @@ describe('ProjectConfigurationSchema', () => {
     ).toBe(false);
   });
 
+  test('should reject a public key outside the signing schemes', () => {
+    expect(
+      ProjectConfigurationSchema.safeParse({
+        ...PROJECT,
+        publicKeys: ['ecdsa-p256-sha256:AAAA'],
+      }).success,
+    ).toBe(false);
+  });
+
   test('should reject a ready timeout below one second', () => {
     expect(
       ProjectConfigurationSchema.safeParse({ ...PROJECT, readyTimeout: 0 })
@@ -139,6 +148,17 @@ describe('ConfigurationSchema', () => {
         nativeSources: ['../shared/Plugins'],
       }).success,
     ).toBe(true);
+  });
+
+  test('should reject an embedded bundle id outside the identifier charset', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    expect(
+      ConfigurationSchema.safeParse({
+        ...resourceFile,
+        embeddedBundleId: '../b0',
+      }).success,
+    ).toBe(false);
   });
 
   test('should reject a host that is not a URL', () => {

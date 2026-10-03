@@ -135,9 +135,7 @@
         "installOnResumeAfter": 300,
         "installStrategy": "next-resume",
         "mandatoryInstallStrategy": "manual",
-        "publicKeys": [
-          "ed25519:MCowBQYDK2VwAyEAq0E0hJ2u3b9tQ4w4nQ0wFQyq7Uq9pG4b9r6b0Q4m0Yk="
-        ],
+        "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
         "readySignal": "manual",
         "readyTimeout": 10,
         "updatesBaseUrl": "https://updates.staging.hotcodepush.com"

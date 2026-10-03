@@ -20,6 +20,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./expo-updates": {
+      "types": "./dist/expo-updates/index.d.ts",
+      "default": "./dist/expo-updates/index.js"
+    },
     "./fingerprint": {
       "types": "./dist/fingerprint/index.d.ts",
       "default": "./dist/fingerprint/index.js"

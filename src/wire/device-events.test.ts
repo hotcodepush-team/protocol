@@ -73,6 +73,13 @@ describe('DeviceEventsRequestSchema', () => {
     ).toBeNull();
   });
 
+  test('should reject a release id outside the identifier charset', () => {
+    const events = [{ releaseId: '../r1', type: 'applied' }];
+    expect(
+      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events }).success,
+    ).toBe(false);
+  });
+
   test('should reject an event type it does not know', () => {
     const events = [{ releaseId: 'r1', type: 'installed' }];
     expect(

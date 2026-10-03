@@ -6,9 +6,11 @@ import {
   MANDATORY_INSTALL_STRATEGIES,
   READY_SIGNALS,
 } from '../results.js';
+import { SigningPublicKeySchema } from '../signing/signing-keys.js';
 import { EmbeddedBundleManifestSchema } from './bundle-manifest.js';
 import {
   ChannelNameSchema,
+  IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
   RelativePathSchema,
@@ -28,7 +30,7 @@ const SDK_OPTIONS_SHAPE = {
   mandatoryInstallStrategy: z
     .enum(MANDATORY_INSTALL_STRATEGIES)
     .default('immediate'),
-  publicKeys: z.array(NonEmptyStringSchema).default([]),
+  publicKeys: z.array(SigningPublicKeySchema).default([]),
   readySignal: z.enum(READY_SIGNALS).default('render'),
   readyTimeout: z.number().min(1).default(10),
 };
@@ -59,7 +61,7 @@ export const ConfigurationSchema = z.looseObject({
   builtAt: IsoTimestampSchema,
   channelId: NonEmptyStringSchema,
   dir: z.string().optional(),
-  embeddedBundleId: NonEmptyStringSchema.nullable(),
+  embeddedBundleId: IdentifierSchema.nullable(),
   embeddedBundleManifest: EmbeddedBundleManifestSchema,
   filesBaseUrl: z.url().optional(),
   fingerprint: NonEmptyStringSchema.nullable(),

@@ -11,9 +11,10 @@ import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import mime from 'mime/lite';
 import { z } from 'zod';
 
+import { encodeBase64 } from '../base64.js';
 import { computeSha256 } from '../hash/sha256.js';
 import type { Platform } from '../results.js';
-import type { BundleManifest, ManifestFile } from './bundle-manifest.js';
+import type { BundleManifest, ManifestFile } from '../wire/bundle-manifest.js';
 
 const ExpoExportPlatformMetadataSchema = z.looseObject({
   assets: z.array(z.looseObject({ ext: z.string(), path: z.string() })),
@@ -156,11 +157,7 @@ function findManifestFile(
 }
 
 function resolveBase64UrlSha256(sha256: string): string {
-  let binary = '';
-  for (const byte of hexToBytes(sha256)) {
-    binary += String.fromCharCode(byte);
-  }
-  return btoa(binary)
+  return encodeBase64(hexToBytes(sha256))
     .replaceAll('+', '-')
     .replaceAll('/', '_')
     .replace(/=+$/, '');
