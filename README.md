@@ -1,6 +1,6 @@
 # @hotcodepush/protocol
 
-The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator and the fixture suite behind every HotCodePush SDK.
+The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator, the signatures, the fingerprint recipe, the Expo Updates documents and the fixture suite behind every HotCodePush SDK.
 
 ## Installation
 

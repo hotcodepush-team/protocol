@@ -20,12 +20,12 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 
 ## `resource-files.json`
 
-`{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — a bundle the embed step did not register carries only its files, and its absent `pack` reads as `null`, its absent `deltas` and `patches` as empty.
+`{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest without `patches`, the same shape whether the embed step registered the bundle or not, `embeddedBundleId` null when it did not.
 The file carries `channelId`, the id the embed step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
 
 ## `version-ranges.json`
 
-`{ version, range, satisfied }` over the shared range subset — `satisfied` is `true`, `false`, or `null` when the range does not parse, which a condition treats as not satisfied.
+`{ version, range, satisfied }` over the shared range subset — `satisfied` is `true`, `false`, or `null` when the range does not parse, which a condition treats as not satisfied and `isValidVersionRange` refuses, the API's and the CLI's `range_syntax` rule.
 
 ## `rollout-buckets.json`
 
@@ -35,7 +35,30 @@ The file carries `channelId`, the id the embed step resolved from the project's 
 
 One pack as the writer produces it — `packBase64`, its `packSha256`, and `entries` in order with each content and its `sha256` — so a reader is tested against exact bytes and a writer against exact output.
 
-`refusedPacks` lists the cuts and malformed ends every reader must refuse with a format error — an empty body, a cut between entries, a cut on a block boundary inside an entry, a cut inside a block, no end blocks, one end block, a zero block between entries — each as `name` and `packBase64`.
+`refusedPacks` lists the cuts and malformed ends every reader must refuse with a format error — an empty body, a cut between entries, a cut on a block boundary inside an entry, a cut inside a block, no end blocks, one end block, a zero block between entries, a header whose checksum does not match — each as `name` and `packBase64`.
+
+## `wire-rules.json`
+
+The rules every reader enforces before a byte is written, as whole documents in six arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | manifest | envelope }`.
+Ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is relative and `/`-separated with no empty, `.` or `..` segment, no backslash and no NUL, timestamps are UTC with a `Z`, and every field of a shape is present, a nullable one as `null`, never absent.
+The refused cases pin where the three readers once diverged — a default for an absent field, a lenient type, an offset timestamp, a `..` segment hidden behind a combining mark — so a refusal is the same refusal on every platform.
+
+## `signatures.json`
+
+`keys` are test key pairs, `{ name, scheme, publicKey, privateKey, fingerprint }`, self-describing as `<scheme>:<base64>` — raw bytes for `ed25519`, SPKI DER for `rsa-v1_5-sha256`, PKCS #8 DER for a private key — the fingerprint `sha256:` and the hex SHA-256 of the decoded public key.
+`manifests` are `{ name, envelope, publicKeys, isValid }`: an envelope whose `manifest` is the canonical JSON of the signed content, verified against the configured keys with the pinned scheme list; tampered bytes, a key the device does not hold, a foreign scheme and a null signature are refused.
+They are test keys, generated once, and sign nothing real.
+
+## `fingerprints.json`
+
+`cases` are sample projects, `{ name, files, nativeSourcePaths, contributors, fingerprint }`: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
+npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
+`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a missing `node_modules`, a declared native source that does not exist.
+
+## `expo-updates.json`
+
+One uploaded Expo export as `input` — `bundleId`, `bundleManifest`, `createdAt`, `expoClientConfig`, `exportMetadata`, `filesBaseUrl`, `runtimeVersion` — and the documents the bridge serves from it: `manifests` per platform, the launch asset keyed by its SHA-256 hex and every asset by the MD5 hex of its export path, and the two `directives`, `noUpdateAvailable` and `rollBackToEmbedded`, Expo's own.
+The bytes are what the CLI signs at upload and the bridge serves verbatim.
 
 ## `bounds.json`
 
