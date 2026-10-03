@@ -101,7 +101,7 @@ async function importSigningPrivateKey(
     true,
     ['sign'],
   );
-  const publicKey = await resolvePublicKeyOfPrivateKey(
+  const publicKey = await resolvePublicKeyOfCryptoKey(
     cryptoKey,
     parsedKey.scheme,
   );
@@ -174,8 +174,19 @@ function resolvePublicKeyOfKeyId(
   return publicKey === undefined ? null : parseSigningPublicKey(publicKey);
 }
 
+/**
+ * The public half of a self-describing private key, in the same form: what a
+ * signer holds names the `keyId` it signs under and the key a config lists.
+ */
+export async function resolvePublicKeyOfPrivateKey(
+  privateKey: string,
+): Promise<string> {
+  const signingKey = await importSigningPrivateKey(privateKey);
+  return resolvePublicKeyOfCryptoKey(signingKey.cryptoKey, signingKey.scheme);
+}
+
 /** The public half through the private key's JWK, which carries it. */
-async function resolvePublicKeyOfPrivateKey(
+async function resolvePublicKeyOfCryptoKey(
   privateKey: CryptoKey,
   scheme: SigningScheme,
 ): Promise<string> {

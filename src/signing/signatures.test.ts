@@ -4,11 +4,20 @@ import { describe, expect, test } from 'vitest';
 
 import type { ManifestEnvelope } from '../wire/bundle-manifest.js';
 import { BundleManifestSchema } from '../wire/bundle-manifest.js';
-import { signManifest, verifyManifestSignature } from './signatures.js';
+import {
+  resolvePublicKeyOfPrivateKey,
+  signManifest,
+  verifyManifestSignature,
+} from './signatures.js';
 import { generateSigningKeyPair } from './signing-keys.js';
 
 interface SignaturesFixture {
-  keys: { fingerprint: string; name: string; privateKey: string }[];
+  keys: {
+    fingerprint: string;
+    name: string;
+    privateKey: string;
+    publicKey: string;
+  }[];
   manifests: {
     envelope: ManifestEnvelope;
     isValid: boolean;
@@ -87,5 +96,20 @@ describe('signManifest', () => {
     await expect(
       signManifest(MANIFEST, 'MC4CAQAwBQYDK2VwBCIEIA=='),
     ).rejects.toThrow(TypeError);
+  });
+});
+
+describe('resolvePublicKeyOfPrivateKey', () => {
+  test.each(FIXTURE.keys)(
+    'should resolve the public half of $name',
+    async ({ privateKey, publicKey }) => {
+      expect(await resolvePublicKeyOfPrivateKey(privateKey)).toBe(publicKey);
+    },
+  );
+
+  test('should refuse a private key that does not parse', async () => {
+    await expect(resolvePublicKeyOfPrivateKey('ed25519:')).rejects.toThrow(
+      TypeError,
+    );
   });
 });

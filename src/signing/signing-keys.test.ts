@@ -52,9 +52,17 @@ describe('SigningPublicKeySchema', () => {
 });
 
 describe('generateSigningKeyPair', () => {
-  test('should generate an ed25519 pair in the self-describing form', async () => {
+  test('should generate an ed25519 pair in the self-describing form by default', async () => {
     const { privateKey, publicKey } = await generateSigningKeyPair();
     expect(privateKey).toMatch(/^ed25519:/);
+    expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
+  });
+
+  test('should generate an rsa-v1_5-sha256 pair when asked for the scheme', async () => {
+    const { privateKey, publicKey } =
+      await generateSigningKeyPair('rsa-v1_5-sha256');
+    expect(privateKey).toMatch(/^rsa-v1_5-sha256:/);
+    expect(publicKey).toMatch(/^rsa-v1_5-sha256:/);
     expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
   });
 });

@@ -37,9 +37,35 @@ export const SigningPublicKeySchema = z
     'must be `ed25519:<base64>` or `rsa-v1_5-sha256:<base64>`',
   );
 
-/** The pair Web Crypto generates for the platform's default scheme, `ed25519`. */
-export async function generateSigningKeyPair(): Promise<SigningKeyPair> {
-  const keyPair = (await crypto.subtle.generateKey({ name: 'Ed25519' }, true, [
+const SCHEME_GENERATION: Record<
+  SigningScheme,
+  {
+    algorithm: AlgorithmIdentifier | RsaHashedKeyGenParams;
+    publicKeyFormat: 'raw' | 'spki';
+  }
+> = {
+  'ed25519': { algorithm: { name: 'Ed25519' }, publicKeyFormat: 'raw' },
+  'rsa-v1_5-sha256': {
+    algorithm: {
+      hash: 'SHA-256',
+      modulusLength: 2048,
+      name: 'RSASSA-PKCS1-v1_5',
+      publicExponent: new Uint8Array([1, 0, 1]),
+    },
+    publicKeyFormat: 'spki',
+  },
+};
+
+/**
+ * The pair Web Crypto generates for a scheme of the allow-list: `ed25519`,
+ * the platform's default, or `rsa-v1_5-sha256`, the pair an Expo-bridge app
+ * carries beside it, 2048 bits as Expo's own certificates are.
+ */
+export async function generateSigningKeyPair(
+  scheme: SigningScheme = 'ed25519',
+): Promise<SigningKeyPair> {
+  const generation = SCHEME_GENERATION[scheme];
+  const keyPair = (await crypto.subtle.generateKey(generation.algorithm, true, [
     'sign',
     'verify',
   ])) as CryptoKeyPair;
@@ -48,12 +74,12 @@ export async function generateSigningKeyPair(): Promise<SigningKeyPair> {
     keyPair.privateKey,
   );
   const publicKeyBytes = await crypto.subtle.exportKey(
-    'raw',
+    generation.publicKeyFormat,
     keyPair.publicKey,
   );
   return {
-    privateKey: formatSelfDescribingBytes('ed25519', privateKeyBytes),
-    publicKey: formatSelfDescribingBytes('ed25519', publicKeyBytes),
+    privateKey: formatSelfDescribingBytes(scheme, privateKeyBytes),
+    publicKey: formatSelfDescribingBytes(scheme, publicKeyBytes),
   };
 }
 
