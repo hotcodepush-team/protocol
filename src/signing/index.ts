@@ -7,6 +7,7 @@ export {
 export type { SigningKeyPair, SigningScheme } from './signing-keys.js';
 export {
   resolvePublicKeyOfPrivateKey,
+  signDocument,
   signManifest,
   verifyManifestSignature,
 } from './signatures.js';

@@ -18,8 +18,10 @@ import mime from 'mime/lite';
 import { z } from 'zod';
 
 import { encodeBase64 } from '../base64.js';
+import { stringifyCanonicalJson } from '../canonical-json.js';
 import { computeSha256 } from '../hash/sha256.js';
 import type { Platform } from '../results.js';
+import { signDocument } from '../signing/signatures.js';
 import type { BundleManifest, ManifestFile } from '../wire/bundle-manifest.js';
 import {
   IsoTimestampSchema,
@@ -175,6 +177,25 @@ export function buildExpoManifest(input: ExpoManifestInput): ExpoManifest {
     },
     metadata: { [EXPO_UPDATE_METADATA_KEY]: id },
     runtimeVersion: input.runtimeVersion,
+  };
+}
+
+/**
+ * The envelope of a manifest: its canonical JSON, the bytes a client
+ * receives, and the signature over them when the app signs — with its
+ * `rsa-v1_5-sha256` key, the one scheme `expo-updates` verifies.
+ */
+export async function signExpoManifest(
+  manifest: ExpoManifest,
+  privateKey: string | null,
+): Promise<ExpoManifestEnvelope> {
+  const manifestBytes = stringifyCanonicalJson(manifest);
+  return {
+    manifest: manifestBytes,
+    signature:
+      privateKey === null
+        ? null
+        : await signDocument(manifestBytes, privateKey),
   };
 }
 

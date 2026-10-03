@@ -2,7 +2,10 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, test } from 'vitest';
 
+import { stringifyCanonicalJson } from '../canonical-json.js';
 import { PLATFORMS } from '../results.js';
+import { verifyManifestSignature } from '../signing/signatures.js';
+import { generateSigningKeyPair } from '../signing/signing-keys.js';
 import type { BundleManifest } from '../wire/bundle-manifest.js';
 import type {
   ExpoExportMetadata,
@@ -20,6 +23,7 @@ import {
   ExpoManifestError,
   ExpoManifestSchema,
   resolveExpoUpdateId,
+  signExpoManifest,
 } from './expo-updates.js';
 
 interface ExpoUpdatesFixture {
@@ -148,6 +152,28 @@ describe('ExpoManifestSchema', () => {
         runtimeVersion: '',
       }).success,
     ).toBe(false);
+  });
+});
+
+describe('signExpoManifest', () => {
+  test('should sign the canonical JSON of the manifest with the key Expo clients verify', async () => {
+    const { privateKey, publicKey } =
+      await generateSigningKeyPair('rsa-v1_5-sha256');
+
+    const envelope = await signExpoManifest(FIXTURE.manifests.ios, privateKey);
+
+    expect(envelope.manifest).toBe(
+      stringifyCanonicalJson(FIXTURE.manifests.ios),
+    );
+    expect(envelope.signature?.value).toMatch(/^rsa-v1_5-sha256:/);
+    expect(await verifyManifestSignature(envelope, [publicKey])).toBe(true);
+  });
+
+  test('should leave the envelope unsigned when the app holds no key', async () => {
+    expect(await signExpoManifest(FIXTURE.manifests.ios, null)).toEqual({
+      manifest: stringifyCanonicalJson(FIXTURE.manifests.ios),
+      signature: null,
+    });
   });
 });
 
