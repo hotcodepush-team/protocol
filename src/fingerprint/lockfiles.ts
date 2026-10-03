@@ -11,8 +11,15 @@ export const LOCKFILE_NAMES = [
 ] as const;
 export type LockfileName = (typeof LOCKFILE_NAMES)[number];
 
-/** A package the lockfile installs, under the name it is installed by. */
+/**
+ * A package the lockfile installs, under the name it is installed by, with
+ * the lockfile's record of its bytes: the integrity hash, or the resolved
+ * URL where the lockfile keeps no hash, or null where it keeps neither. So
+ * a package built again under the same version, from a git URL, a tarball
+ * or pkg.pr.new, differs, while a published version never does.
+ */
 export interface LockedPackage {
+  integrity: string | null;
   name: string;
   version: string;
 }
@@ -23,7 +30,9 @@ const NpmLockfileSchema = z.looseObject({
     z.string(),
     z.looseObject({
       inBundle: z.boolean().optional(),
+      integrity: z.string().optional(),
       link: z.boolean().optional(),
+      resolved: z.string().optional(),
       version: z.string().optional(),
     }),
   ),
@@ -31,11 +40,28 @@ const NpmLockfileSchema = z.looseObject({
 
 const PnpmLockfileSchema = z.looseObject({
   lockfileVersion: z.literal('9.0'),
-  packages: z.record(z.string(), z.unknown()).default({}),
+  packages: z
+    .record(
+      z.string(),
+      z.looseObject({
+        resolution: z
+          .looseObject({
+            integrity: z.string().optional(),
+            tarball: z.string().optional(),
+          })
+          .optional(),
+      }),
+    )
+    .default({}),
 });
 
+/** An entry of either yarn format: classic records `integrity` and `resolved`, berry `checksum` and `resolution`. */
 const YarnLockfileEntrySchema = z.looseObject({
+  checksum: z.string().optional(),
+  integrity: z.string().optional(),
   linkType: z.string().optional(),
+  resolution: z.string().optional(),
+  resolved: z.string().optional(),
   version: z.string(),
 });
 
@@ -84,6 +110,7 @@ function resolveNpmLockedPackages(text: string): LockedPackage[] {
     }
     return [
       {
+        integrity: entry.integrity ?? entry.resolved ?? null,
         name: path.slice(nameIndex + NODE_MODULES_SEGMENT.length),
         version: entry.version,
       },
@@ -100,9 +127,14 @@ function resolvePnpmLockedPackages(text: string): LockedPackage[] {
       'pnpm-lock.yaml is not a lockfile of version 9.0; run pnpm install with pnpm 9 or later',
     );
   }
-  return Object.keys(lockfile.data.packages).map(key => {
+  return Object.entries(lockfile.data.packages).map(([key, entry]) => {
     const name = resolvePackageName(key);
-    return { name, version: key.slice(name.length + 1) };
+    return {
+      integrity:
+        entry.resolution?.integrity ?? entry.resolution?.tarball ?? null,
+      name,
+      version: key.slice(name.length + 1),
+    };
   });
 }
 
@@ -122,10 +154,12 @@ function resolveYarnLockedPackages(text: string): LockedPackage[] {
     if (entry.data.linkType === 'soft') {
       return [];
     }
+    const { checksum, integrity, resolution, resolved, version } = entry.data;
     return [
       {
+        integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
         name: resolvePackageName(descriptors),
-        version: entry.data.version,
+        version,
       },
     ];
   });

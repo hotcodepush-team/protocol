@@ -88,7 +88,7 @@ describe('readFingerprintContributors', () => {
 });
 
 describe('computeFingerprint', () => {
-  test('should yield one fingerprint for the four lockfile formats of one dependency set', () => {
+  test('should yield one fingerprint for one dependency set in npm, pnpm and yarn classic', () => {
     const fingerprints = new Set(
       FIXTURE.cases
         .filter(fixtureCase => fixtureCase.name.includes('same'))

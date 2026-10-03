@@ -61,8 +61,9 @@ export function computeFingerprint(
  * reader: the lockfile, the markers of every package it installs, found in
  * `node_modules` or, for pnpm's hidden hoisting, `node_modules/.pnpm/node_modules`,
  * and the declared native sources. Every package of a kept name contributes,
- * one entry per version, sorted by name and version; native sources sorted by
- * path, hidden files inside a declared directory skipped.
+ * one entry per version and integrity, sorted by name, version and integrity;
+ * native sources sorted by path, hidden files inside a declared directory
+ * skipped.
  */
 export async function readFingerprintContributors(
   project: FingerprintProject,
@@ -119,12 +120,16 @@ async function readLockfile(
 
 function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
   const packagesByKey = new Map(
-    packages.map(locked => [`${locked.name}@${locked.version}`, locked]),
+    packages.map(locked => [
+      JSON.stringify([locked.name, locked.version, locked.integrity]),
+      locked,
+    ]),
   );
   return [...packagesByKey.values()].sort(
     (first, second) =>
       compareCodeUnits(first.name, second.name) ||
-      compareCodeUnits(first.version, second.version),
+      compareCodeUnits(first.version, second.version) ||
+      compareCodeUnits(first.integrity ?? '', second.integrity ?? ''),
   );
 }
 
