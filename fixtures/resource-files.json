@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest without patches, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest without patches, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -139,6 +139,55 @@
         "readySignal": "manual",
         "readyTimeout": 10,
         "updatesBaseUrl": "https://updates.staging.hotcodepush.com"
+      },
+      "embeddedBundleManifest": {
+        "appId": "a1",
+        "bundleVersion": "1.4.1",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
+      }
+    },
+    {
+      "name": "should read a build without a channel, whose embed step ran without a token or offline",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": null,
+        "dir": "dist",
+        "embeddedBundleId": null,
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null
       },
       "embeddedBundleManifest": {
         "appId": "a1",

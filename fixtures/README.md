@@ -22,6 +22,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest without `patches`, the same shape whether the embed step registered the bundle or not, `embeddedBundleId` null when it did not.
 The file carries `channelId`, the id the embed step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
+`channelId` is `null` in a build whose embed step ran without a token or offline and could not resolve the name: a reader takes the file, and the device then answers `FAILED` with `UNKNOWN_CHANNEL`, requests nothing and reports nothing until a channel is set at runtime.
 
 ## `version-ranges.json`
 

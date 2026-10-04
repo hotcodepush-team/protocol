@@ -119,13 +119,30 @@ describe('ConfigurationSchema', () => {
     expect(ConfigurationSchema.safeParse(PROJECT).success).toBe(false);
   });
 
-  test('should require the channel id the embed step resolved', () => {
+  test('should require the channel id key, resolved or null', () => {
     const [registered] = RESOURCE_FILE_CASES;
     const resourceFile = registered?.resourceFile as Record<string, unknown>;
     const withoutChannelId = Object.fromEntries(
       Object.entries(resourceFile).filter(([key]) => key !== 'channelId'),
     );
     expect(ConfigurationSchema.safeParse(withoutChannelId).success).toBe(false);
+  });
+
+  test('should read a null channel id from a build that could not resolve its channel', () => {
+    const withoutChannel = RESOURCE_FILE_CASES.find(({ name }) =>
+      name.includes('without a channel'),
+    );
+    const parsed = ConfigurationSchema.parse(withoutChannel?.resourceFile);
+    expect(parsed.channelId).toBeNull();
+    expect(parsed.embeddedBundleId).toBeNull();
+  });
+
+  test('should reject an empty channel id', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    expect(
+      ConfigurationSchema.safeParse({ ...resourceFile, channelId: '' }).success,
+    ).toBe(false);
   });
 
   test('should type the hosts a staging or local build carries', () => {

@@ -59,7 +59,12 @@ export const ConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   builtAt: IsoTimestampSchema,
-  channelId: NonEmptyStringSchema,
+  /**
+   * Null in a build whose embed step ran without a token or offline and could
+   * not resolve the channel's name: such a build answers `FAILED` with
+   * `UNKNOWN_CHANNEL`, requests nothing and reports nothing.
+   */
+  channelId: NonEmptyStringSchema.nullable(),
   dir: z.string().optional(),
   embeddedBundleId: IdentifierSchema.nullable(),
   embeddedBundleManifest: EmbeddedBundleManifestSchema,
