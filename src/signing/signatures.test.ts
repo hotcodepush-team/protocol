@@ -42,7 +42,6 @@ const MANIFEST = {
   bundleVersion: '1.0.1',
   files: [],
   fingerprint: null,
-  patches: [],
   platforms: ['ios'],
 };
 

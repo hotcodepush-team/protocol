@@ -1206,14 +1206,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1246,14 +1238,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1276,14 +1260,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1308,37 +1284,6 @@
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
         "laterField": 1,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
-        "platforms": ["android", "ios"]
-      }
-    },
-    {
-      "name": "should accept a manifest without patches entries",
-      "manifest": {
-        "appId": "app-1",
-        "bundleVersion": "1.4.2",
-        "files": [
-          {
-            "path": "assets/index-a1b2c3.js",
-            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "sizeBytes": 37
-          },
-          {
-            "path": "index.html",
-            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "sizeBytes": 81
-          }
-        ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "keyId": null,
-        "patches": [],
         "platforms": ["android", "ios"]
       }
     },
@@ -1361,14 +1306,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1391,14 +1328,6 @@
         ],
         "fingerprint": null,
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1421,14 +1350,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["electron", "ios"]
       }
     }
@@ -1453,14 +1374,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1483,14 +1396,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1513,14 +1418,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1543,14 +1440,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1573,14 +1462,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1603,14 +1484,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1633,14 +1506,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1663,14 +1528,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1693,14 +1550,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1723,14 +1572,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1753,14 +1594,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1783,14 +1616,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1813,14 +1638,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1843,14 +1660,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1872,96 +1681,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
-        "platforms": ["android", "ios"]
-      }
-    },
-    {
-      "name": "should refuse a manifest without patches",
-      "manifest": {
-        "appId": "app-1",
-        "bundleVersion": "1.4.2",
-        "files": [
-          {
-            "path": "assets/index-a1b2c3.js",
-            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "sizeBytes": 37
-          },
-          {
-            "path": "index.html",
-            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "sizeBytes": 81
-          }
-        ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "keyId": null,
-        "platforms": ["android", "ios"]
-      }
-    },
-    {
-      "name": "should refuse a patch path that climbs out of the bundle",
-      "manifest": {
-        "appId": "app-1",
-        "bundleVersion": "1.4.2",
-        "files": [
-          {
-            "path": "assets/index-a1b2c3.js",
-            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "sizeBytes": 37
-          },
-          {
-            "path": "index.html",
-            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "sizeBytes": 81
-          }
-        ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "../index.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
-        "platforms": ["android", "ios"]
-      }
-    },
-    {
-      "name": "should refuse a patch hash that is not hex",
-      "manifest": {
-        "appId": "app-1",
-        "bundleVersion": "1.4.2",
-        "files": [
-          {
-            "path": "assets/index-a1b2c3.js",
-            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "sizeBytes": 37
-          },
-          {
-            "path": "index.html",
-            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "sizeBytes": 81
-          }
-        ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "nope",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -1983,14 +1702,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -2012,14 +1723,6 @@
           }
         ],
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -2041,14 +1744,6 @@
           }
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": ["android", "ios"]
       }
     },
@@ -2070,15 +1765,7 @@
           }
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
-        "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ]
+        "keyId": null
       }
     },
     {
@@ -2100,14 +1787,6 @@
         ],
         "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
         "keyId": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "platforms": [""]
       }
     }
@@ -2126,21 +1805,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2157,21 +1826,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": {
           "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
           "value": "rsa-v1_5-sha256:AAAA"
@@ -2179,7 +1838,7 @@
       }
     },
     {
-      "name": "should accept a field it does not know, on the envelope, a delta and a patch",
+      "name": "should accept a field it does not know, on the envelope and on a delta",
       "envelope": {
         "bundleId": "bundle-2",
         "createdAt": "2026-09-29T10:00:00.000Z",
@@ -2193,6 +1852,42 @@
         ],
         "encryption": null,
         "laterField": "ignored",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      }
+    },
+    {
+      "name": "should accept an envelope without deltas entries",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      }
+    },
+    {
+      "name": "should accept an envelope stored while bundles carried patches, on the envelope and in its manifest",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
         "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
@@ -2202,29 +1897,12 @@
           {
             "format": "bsdiff",
             "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "laterField": "ignored",
             "path": "assets/index-a1b2c3.js",
             "sizeBytes": 512,
             "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
             "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
           }
         ],
-        "signature": null
-      }
-    },
-    {
-      "name": "should accept an envelope without deltas or patches entries",
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-09-29T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "patches": [],
         "signature": null
       }
     }
@@ -2243,21 +1921,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2274,21 +1942,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2305,21 +1963,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2336,20 +1984,10 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2365,21 +2003,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2396,18 +2024,8 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": null,
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2424,17 +2042,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "signature": null
       }
     },
@@ -2444,21 +2052,11 @@
         "bundleId": "bundle-2",
         "createdAt": "2026-09-29T10:00:00.000Z",
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2475,103 +2073,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
-        "signature": null
-      }
-    },
-    {
-      "name": "should refuse an envelope without patches",
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-09-29T10:00:00.000Z",
-        "deltas": [
-          {
-            "baseBundleId": "bundle-1",
-            "sizeBytes": 1024,
-            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-          }
-        ],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      }
-    },
-    {
-      "name": "should refuse a patch without sizeBytes",
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-09-29T10:00:00.000Z",
-        "deltas": [
-          {
-            "baseBundleId": "bundle-1",
-            "sizeBytes": 1024,
-            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-          }
-        ],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
-        "signature": null
-      }
-    },
-    {
-      "name": "should refuse a patch path that climbs out of the bundle",
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-09-29T10:00:00.000Z",
-        "deltas": [
-          {
-            "baseBundleId": "bundle-1",
-            "sizeBytes": 1024,
-            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-          }
-        ],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "../index.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2593,16 +2099,6 @@
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     },
@@ -2619,21 +2115,11 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ]
+        }
       }
     },
     {
@@ -2651,21 +2137,11 @@
         "encryption": {
           "keyId": "k1"
         },
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
-        "patches": [
-          {
-            "format": "bsdiff",
-            "fromSha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
-            "path": "assets/index-a1b2c3.js",
-            "sizeBytes": 512,
-            "toSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
-            "url": "https://files.hotcodepush.com/apps/app-1/patches/8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870/bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1"
-          }
-        ],
         "signature": null
       }
     }

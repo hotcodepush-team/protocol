@@ -16,7 +16,7 @@ import {
 /** The manifest the CLI built: every field but `keyId`, which signing sets to the signing key's fingerprint. */
 export type ManifestToSign = Pick<
   BundleManifest,
-  'appId' | 'bundleVersion' | 'files' | 'fingerprint' | 'patches' | 'platforms'
+  'appId' | 'bundleVersion' | 'files' | 'fingerprint' | 'platforms'
 >;
 
 /** The envelope's signed half, what the CLI sends with the bundle. */

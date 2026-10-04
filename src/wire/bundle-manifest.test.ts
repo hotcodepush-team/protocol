@@ -4,7 +4,6 @@ import { describe, expect, test } from 'vitest';
 
 import {
   BundleManifestSchema,
-  EmbeddedBundleManifestSchema,
   ManifestEnvelopeSchema,
 } from './bundle-manifest.js';
 
@@ -30,16 +29,20 @@ const MANIFEST = {
   files: [{ path: 'assets/index-B4x.js', sha256: HASH, sizeBytes: 812331 }],
   fingerprint: 'fp1:abc',
   keyId: null,
-  patches: [
-    {
-      format: 'bsdiff',
-      fromSha256: HASH,
-      path: 'assets/index-B4x.js',
-      toSha256: HASH,
-    },
-  ],
   platforms: ['android', 'ios'],
 };
+
+/** What a bundle carried before 2026-10-04, in its manifest and its envelope. */
+const STORED_PATCHES = [
+  {
+    format: 'bsdiff',
+    fromSha256: HASH,
+    path: 'assets/index-B4x.js',
+    sizeBytes: 512,
+    toSha256: HASH,
+    url: `https://files.hotcodepush.com/apps/a1/patches/${HASH}/${HASH}`,
+  },
+];
 
 const ENVELOPE = {
   bundleId: 'b1',
@@ -57,13 +60,6 @@ const ENVELOPE = {
     sizeBytes: 4096,
     url: 'https://files.hotcodepush.com/apps/a1/bundles/b1/pack',
   },
-  patches: [
-    {
-      ...MANIFEST.patches[0],
-      sizeBytes: 512,
-      url: `https://files.hotcodepush.com/apps/a1/patches/${HASH}/${HASH}`,
-    },
-  ],
   signature: null,
 };
 
@@ -114,15 +110,6 @@ describe('the wire rules', () => {
   });
 });
 
-describe('EmbeddedBundleManifestSchema', () => {
-  test('should parse a manifest without patches', () => {
-    const manifest = Object.fromEntries(
-      Object.entries(MANIFEST).filter(([key]) => key !== 'patches'),
-    );
-    expect(EmbeddedBundleManifestSchema.parse(manifest)).toEqual(manifest);
-  });
-});
-
 describe('ManifestEnvelopeSchema', () => {
   test('should parse an unsigned envelope', () => {
     expect(ManifestEnvelopeSchema.parse(ENVELOPE)).toEqual(ENVELOPE);
@@ -134,6 +121,19 @@ describe('ManifestEnvelopeSchema', () => {
       signature: { keyId: 'k1', value: 'rsa-v1_5-sha256:AQID' },
     };
     expect(ManifestEnvelopeSchema.parse(envelope)).toEqual(envelope);
+  });
+
+  test('should parse an envelope stored with patches, on itself and in its manifest', () => {
+    const manifest = { ...MANIFEST, patches: STORED_PATCHES };
+    const envelope = {
+      ...ENVELOPE,
+      manifest: JSON.stringify(manifest),
+      patches: STORED_PATCHES,
+    };
+    expect(ManifestEnvelopeSchema.parse(envelope)).toEqual(envelope);
+    expect(BundleManifestSchema.parse(JSON.parse(envelope.manifest))).toEqual(
+      manifest,
+    );
   });
 
   test('should reject a signature value without a scheme', () => {

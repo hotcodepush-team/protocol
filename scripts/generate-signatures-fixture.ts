@@ -60,7 +60,6 @@ const MANIFEST = {
   ],
   fingerprint:
     'fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125',
-  patches: [],
   platforms: ['android', 'ios'],
 };
 

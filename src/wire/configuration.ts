@@ -7,7 +7,7 @@ import {
   READY_SIGNALS,
 } from '../results.js';
 import { SigningPublicKeySchema } from '../signing/signing-keys.js';
-import { EmbeddedBundleManifestSchema } from './bundle-manifest.js';
+import { BundleManifestSchema } from './bundle-manifest.js';
 import {
   Base64Schema,
   ChannelNameSchema,
@@ -82,7 +82,7 @@ export const ConfigurationSchema = z.looseObject({
   channelId: NonEmptyStringSchema.nullable(),
   dir: z.string().optional(),
   embeddedBundleId: IdentifierSchema.nullable(),
-  embeddedBundleManifest: EmbeddedBundleManifestSchema,
+  embeddedBundleManifest: BundleManifestSchema,
   filesBaseUrl: z.url().optional(),
   fingerprint: NonEmptyStringSchema.nullable(),
   /** The project's public keys as the embed step re-encoded them for the platform the file is written for. */
