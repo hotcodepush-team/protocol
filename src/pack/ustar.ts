@@ -1,28 +1,56 @@
 /**
- * The pack: an uncompressed ustar archive whose entries are the requested
- * files' stored objects, named by their content hash, every header field but
- * name and size zero and the checksum computed, so the bytes are identical on
- * every assembly and `tar -tvf` lists a pack in a support case. The CLI writes
- * packs, the edge Worker writes them on demand, each core reads them.
+ * The pack: an uncompressed ustar archive of two entry kinds, every header
+ * field zero but those an entry needs and the checksum computed, so the bytes
+ * are identical on every assembly and `tar -tvf` lists a pack in a support
+ * case. A file entry is a file's stored object named by the file's content
+ * hash. A patch entry, `patches/{from}/{to}`, is a BSDIFF40 patch that turns
+ * the file `from` into the file `to`; its name is too long for the name field,
+ * so `patches/{from}` sits in the ustar prefix, which the ustar magic marks as
+ * one. A reader skips an entry of any other name, so a later kind does not
+ * break it. The CLI writes packs, the edge Worker writes them on demand, each
+ * core reads them.
  */
 
-export interface PackEntry {
+export type PackEntry = PackFileEntry | PackPatchEntry;
+
+/** A file's stored object, named by the file's content hash. */
+export interface PackFileEntry {
   body: ReadableStream<Uint8Array>;
   sha256: string;
   sizeBytes: number;
+  type: 'file';
+}
+
+/** A BSDIFF40 patch that turns the file `fromSha256` into the file `toSha256`. */
+export interface PackPatchEntry {
+  body: ReadableStream<Uint8Array>;
+  fromSha256: string;
+  sizeBytes: number;
+  toSha256: string;
+  type: 'patch';
 }
 
 export class PackFormatError extends Error {
   override readonly name = 'PackFormatError';
 }
 
+type PackEntryName =
+  | Pick<PackFileEntry, 'sha256' | 'type'>
+  | Pick<PackPatchEntry, 'fromSha256' | 'toSha256' | 'type'>;
+
 const BLOCK_SIZE = 512;
-const CHECKSUM_FIELD_OFFSET = 148;
 const CHECKSUM_FIELD_LENGTH = 8;
-const NAME_FIELD_LENGTH = 100;
-const SIZE_FIELD_OFFSET = 124;
-const SIZE_FIELD_LENGTH = 12;
+const CHECKSUM_FIELD_OFFSET = 148;
 const HASH_PATTERN = /^[0-9a-f]{64}$/;
+/** The magic `ustar\0` and the version `00` right after it. */
+const MAGIC_AND_VERSION = 'ustar\x0000';
+const MAGIC_FIELD_OFFSET = 257;
+const NAME_FIELD_LENGTH = 100;
+const PATCH_NAME_PATTERN = /^patches\/([0-9a-f]{64})\/([0-9a-f]{64})$/;
+const PREFIX_FIELD_LENGTH = 155;
+const PREFIX_FIELD_OFFSET = 345;
+const SIZE_FIELD_LENGTH = 12;
+const SIZE_FIELD_OFFSET = 124;
 
 /** The pack as a stream, from entries whose bodies are read one after the other. */
 export function buildPack(
@@ -31,19 +59,46 @@ export function buildPack(
   return readableStreamFromAsyncIterable(generatePackChunks(entries));
 }
 
-/** The entries of a pack, in order, refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one, and the stream is cancelled and released however the iteration ends. */
+/** The file and patch entries of a pack, in order, skipping an entry of any other name and refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one, and the stream is cancelled and released however the iteration ends. */
 export function readPack(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<PackEntry> {
   return generatePackEntries(new ByteReader(stream));
 }
 
-export function buildPackHeader(sha256: string, sizeBytes: number): Uint8Array {
+/** A file entry's header: the content hash in the name field, no magic. */
+export function buildPackFileHeader(
+  sha256: string,
+  sizeBytes: number,
+): Uint8Array {
   if (!HASH_PATTERN.test(sha256)) {
     throw new PackFormatError(
-      `a pack entry is named by its sha256, not ${JSON.stringify(sha256)}`,
+      `a file entry is named by its sha256, not ${JSON.stringify(sha256)}`,
     );
   }
+  return buildPackHeader('', sha256, sizeBytes);
+}
+
+/** A patch entry's header: `patches/{from}` in the prefix field, `{to}` in the name field, and the ustar magic. */
+export function buildPackPatchHeader(
+  fromSha256: string,
+  toSha256: string,
+  sizeBytes: number,
+): Uint8Array {
+  if (!HASH_PATTERN.test(fromSha256) || !HASH_PATTERN.test(toSha256)) {
+    throw new PackFormatError(
+      `a patch entry is named by two sha256, not ${JSON.stringify(fromSha256)} and ${JSON.stringify(toSha256)}`,
+    );
+  }
+  return buildPackHeader(`patches/${fromSha256}`, toSha256, sizeBytes);
+}
+
+/** The header with the magic only beside a prefix, so a file entry's bytes stay those of the first packs. */
+function buildPackHeader(
+  prefix: string,
+  name: string,
+  sizeBytes: number,
+): Uint8Array {
   if (
     !Number.isInteger(sizeBytes) ||
     sizeBytes < 0 ||
@@ -53,10 +108,15 @@ export function buildPackHeader(sha256: string, sizeBytes: number): Uint8Array {
       `a pack entry size must fit the ustar size field, not ${sizeBytes}`,
     );
   }
+  const encoder = new TextEncoder();
   const header = new Uint8Array(BLOCK_SIZE);
-  header.set(new TextEncoder().encode(sha256), 0);
+  header.set(encoder.encode(name), 0);
+  if (prefix !== '') {
+    header.set(encoder.encode(MAGIC_AND_VERSION), MAGIC_FIELD_OFFSET);
+    header.set(encoder.encode(prefix), PREFIX_FIELD_OFFSET);
+  }
   header.set(
-    new TextEncoder().encode(`${sizeBytes.toString(8).padStart(11, '0')}\0`),
+    encoder.encode(`${sizeBytes.toString(8).padStart(11, '0')}\0`),
     SIZE_FIELD_OFFSET,
   );
   header.fill(
@@ -66,10 +126,16 @@ export function buildPackHeader(sha256: string, sizeBytes: number): Uint8Array {
   );
   const checksum = header.reduce((sum, byte) => sum + byte, 0);
   header.set(
-    new TextEncoder().encode(`${checksum.toString(8).padStart(6, '0')}\0 `),
+    encoder.encode(`${checksum.toString(8).padStart(6, '0')}\0 `),
     CHECKSUM_FIELD_OFFSET,
   );
   return header;
+}
+
+function resolvePackEntryName(entry: PackEntry): string {
+  return entry.type === 'file'
+    ? entry.sha256
+    : `patches/${entry.fromSha256}/${entry.toSha256}`;
 }
 
 function resolvePadding(sizeBytes: number): number {
@@ -80,20 +146,22 @@ async function* generatePackChunks(
   entries: AsyncIterable<PackEntry> | Iterable<PackEntry>,
 ): AsyncGenerator<Uint8Array> {
   for await (const entry of entries) {
-    yield buildPackHeader(entry.sha256, entry.sizeBytes);
+    yield entry.type === 'file'
+      ? buildPackFileHeader(entry.sha256, entry.sizeBytes)
+      : buildPackPatchHeader(entry.fromSha256, entry.toSha256, entry.sizeBytes);
     let written = 0;
     for await (const chunk of entry.body) {
       written += chunk.length;
       if (written > entry.sizeBytes) {
         throw new PackFormatError(
-          `the entry ${entry.sha256} is longer than its ${entry.sizeBytes} bytes`,
+          `the entry ${resolvePackEntryName(entry)} is longer than its ${entry.sizeBytes} bytes`,
         );
       }
       yield chunk;
     }
     if (written !== entry.sizeBytes) {
       throw new PackFormatError(
-        `the entry ${entry.sha256} holds ${written} of its ${entry.sizeBytes} bytes`,
+        `the entry ${resolvePackEntryName(entry)} holds ${written} of its ${entry.sizeBytes} bytes`,
       );
     }
     const padding = resolvePadding(entry.sizeBytes);
@@ -118,9 +186,14 @@ async function* generatePackEntries(
         }
         return;
       }
-      const { sha256, sizeBytes } = parsePackHeader(header);
+      const { name, sizeBytes } = parsePackHeader(header);
+      const parsedName = parsePackEntryName(name);
+      if (parsedName === null) {
+        await reader.skip(sizeBytes + resolvePadding(sizeBytes));
+        continue;
+      }
       const entry = reader.readStream(sizeBytes);
-      yield { body: entry.stream, sha256, sizeBytes };
+      yield { ...parsedName, body: entry.stream, sizeBytes };
       await entry.drain();
       await reader.skip(resolvePadding(sizeBytes));
     }
@@ -133,8 +206,9 @@ function isZeroBlock(block: Uint8Array): boolean {
   return block.every(byte => byte === 0);
 }
 
+/** The entry's full name, `prefix/name` when the prefix field holds one, and its size. */
 function parsePackHeader(header: Uint8Array): {
-  sha256: string;
+  name: string;
   sizeBytes: number;
 } {
   const checksumField = header.slice(
@@ -152,12 +226,13 @@ function parsePackHeader(header: Uint8Array): {
   if (checksum !== expectedChecksum) {
     throw new PackFormatError('a pack header checksum does not match');
   }
-  const sha256 = readField(header.subarray(0, NAME_FIELD_LENGTH));
-  if (!HASH_PATTERN.test(sha256)) {
-    throw new PackFormatError(
-      `a pack entry is named by its sha256, not ${JSON.stringify(sha256)}`,
-    );
-  }
+  const name = readField(header.subarray(0, NAME_FIELD_LENGTH));
+  const prefix = readField(
+    header.subarray(
+      PREFIX_FIELD_OFFSET,
+      PREFIX_FIELD_OFFSET + PREFIX_FIELD_LENGTH,
+    ),
+  );
   const sizeBytes = Number.parseInt(
     readField(
       header.subarray(SIZE_FIELD_OFFSET, SIZE_FIELD_OFFSET + SIZE_FIELD_LENGTH),
@@ -167,7 +242,21 @@ function parsePackHeader(header: Uint8Array): {
   if (!Number.isInteger(sizeBytes) || sizeBytes < 0) {
     throw new PackFormatError('a pack header size is not octal');
   }
-  return { sha256, sizeBytes };
+  return { name: prefix === '' ? name : `${prefix}/${name}`, sizeBytes };
+}
+
+/** The kind a full name gives an entry, `null` for a name of neither kind. */
+function parsePackEntryName(name: string): PackEntryName | null {
+  if (HASH_PATTERN.test(name)) {
+    return { sha256: name, type: 'file' };
+  }
+  const match = PATCH_NAME_PATTERN.exec(name);
+  const fromSha256 = match?.[1];
+  const toSha256 = match?.[2];
+  if (fromSha256 === undefined || toSha256 === undefined) {
+    return null;
+  }
+  return { fromSha256, toSha256, type: 'patch' };
 }
 
 /** The field's text up to its first NUL or space, the ustar convention. */

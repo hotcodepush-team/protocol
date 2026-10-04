@@ -6,10 +6,11 @@ import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 
 import { computeSha256Hex } from '../hash/sha256.js';
-import type { PackEntry } from './ustar.js';
+import type { PackEntry, PackFileEntry } from './ustar.js';
 import {
   buildPack,
-  buildPackHeader,
+  buildPackFileHeader,
+  buildPackPatchHeader,
   PackFormatError,
   readPack,
 } from './ustar.js';
@@ -21,9 +22,82 @@ interface PackFixture {
   refusedPacks: { name: string; packBase64: string }[];
 }
 
-const FIXTURE = JSON.parse(
-  readFileSync(new URL('../../fixtures/packs.json', import.meta.url), 'utf8'),
-) as PackFixture;
+type FixtureEntry =
+  | { bodyBase64: string; sha256: string; type: 'file' }
+  | { bodyBase64: string; fromSha256: string; toSha256: string; type: 'patch' };
+
+interface PackEntriesFixture {
+  deltaPack: {
+    entries: FixtureEntry[];
+    packBase64: string;
+    packSha256: string;
+  };
+  skippedEntryPack: { entries: FixtureEntry[]; packBase64: string };
+}
+
+const FIXTURE = readFixture<PackFixture>('packs.json');
+const ENTRIES_FIXTURE = readFixture<PackEntriesFixture>('pack-entries.json');
+const IS_TAR_AVAILABLE = isCommandAvailable('tar', ['--version']);
+const FROM_SHA256 = 'a'.repeat(64);
+const TO_SHA256 = 'b'.repeat(64);
+
+function readFixture<T>(name: string): T {
+  return JSON.parse(
+    readFileSync(new URL(`../../fixtures/${name}`, import.meta.url), 'utf8'),
+  ) as T;
+}
+
+function isCommandAvailable(command: string, args: string[]): boolean {
+  try {
+    execFileSync(command, args, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function decodeBase64(base64: string): Uint8Array {
+  return new Uint8Array(Buffer.from(base64, 'base64'));
+}
+
+/** The name `tar` lists for an entry. */
+function resolveEntryName(entry: FixtureEntry | PackEntry): string {
+  return entry.type === 'file'
+    ? entry.sha256
+    : `patches/${entry.fromSha256}/${entry.toSha256}`;
+}
+
+function entryOfFixture(entry: FixtureEntry): PackEntry {
+  const body = decodeBase64(entry.bodyBase64);
+  return entry.type === 'file'
+    ? { ...entryOf(body), sha256: entry.sha256 }
+    : {
+        body: streamOf(body),
+        fromSha256: entry.fromSha256,
+        sizeBytes: body.length,
+        toSha256: entry.toSha256,
+        type: 'patch',
+      };
+}
+
+function patchEntryOf(bytes: Uint8Array): PackEntry {
+  return {
+    body: streamOf(bytes),
+    fromSha256: FROM_SHA256,
+    sizeBytes: bytes.length,
+    toSha256: TO_SHA256,
+    type: 'patch',
+  };
+}
+
+function writeTemporaryPack(pack: Uint8Array): string {
+  const path = join(
+    mkdtempSync(join(tmpdir(), 'hotcodepush-pack-')),
+    'bundle.pack',
+  );
+  writeFileSync(path, pack);
+  return path;
+}
 
 function bytesOf(content: string): Uint8Array {
   return new TextEncoder().encode(content);
@@ -68,11 +142,12 @@ function openStreamOf(bytes: Uint8Array): {
   return opened;
 }
 
-function entryOf(bytes: Uint8Array, chunkSize?: number): PackEntry {
+function entryOf(bytes: Uint8Array, chunkSize?: number): PackFileEntry {
   return {
     body: streamOf(bytes, chunkSize),
     sha256: computeSha256Hex(bytes),
     sizeBytes: bytes.length,
+    type: 'file',
   };
 }
 
@@ -101,6 +176,16 @@ async function readContents(
     contents.push(await collect(entry.body));
   }
   return contents;
+}
+
+async function readNames(
+  stream: ReadableStream<Uint8Array>,
+): Promise<string[]> {
+  const names: string[] = [];
+  for await (const entry of readPack(stream)) {
+    names.push(resolveEntryName(entry));
+  }
+  return names;
 }
 
 const CONTENTS = [
@@ -155,21 +240,13 @@ describe('buildPack', () => {
     await expect(collect(buildPack([entry]))).rejects.toThrow(PackFormatError);
   });
 
-  test('should list with tar when the machine has it', async () => {
+  test.runIf(IS_TAR_AVAILABLE)('should list with tar', async () => {
     const pack = await collect(
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),
     );
-    const path = join(
-      mkdtempSync(join(tmpdir(), 'hotcodepush-pack-')),
-      'bundle.pack',
-    );
-    writeFileSync(path, pack);
-    let listing: string;
-    try {
-      listing = execFileSync('tar', ['-tvf', path], { encoding: 'utf8' });
-    } catch {
-      return;
-    }
+    const listing = execFileSync('tar', ['-tvf', writeTemporaryPack(pack)], {
+      encoding: 'utf8',
+    });
     const lines = listing.trim().split('\n');
     expect(lines).toHaveLength(3);
     CONTENTS.forEach((bytes, index) => {
@@ -177,11 +254,67 @@ describe('buildPack', () => {
       expect(lines[index]).toMatch(new RegExp(`\\s${bytes.length}\\s`));
     });
   });
+
+  test('should write a file entry and a patch entry that read back alike', async () => {
+    const patch = bytesOf('BSDIFF40');
+    const pack = await collect(
+      buildPack([entryOf(bytesOf('hello')), patchEntryOf(patch)]),
+    );
+    const read: (Omit<PackEntry, 'body'> & { bytes: Uint8Array })[] = [];
+    for await (const { body, ...entry } of readPack(streamOf(pack, 100))) {
+      read.push({ ...entry, bytes: await collect(body) });
+    }
+    expect(read).toEqual([
+      {
+        bytes: bytesOf('hello'),
+        sha256: computeSha256Hex(bytesOf('hello')),
+        sizeBytes: 5,
+        type: 'file',
+      },
+      {
+        bytes: patch,
+        fromSha256: FROM_SHA256,
+        sizeBytes: patch.length,
+        toSha256: TO_SHA256,
+        type: 'patch',
+      },
+    ]);
+  });
+
+  test('should reproduce the pinned delta pack byte for byte', async () => {
+    const pack = await collect(
+      buildPack(ENTRIES_FIXTURE.deltaPack.entries.map(entryOfFixture)),
+    );
+    expect(Buffer.from(pack).toString('base64')).toBe(
+      ENTRIES_FIXTURE.deltaPack.packBase64,
+    );
+    expect(computeSha256Hex(pack)).toBe(ENTRIES_FIXTURE.deltaPack.packSha256);
+  });
+
+  test('should refuse a patch entry whose body is longer than its size', async () => {
+    const entry = { ...patchEntryOf(bytesOf('hello')), sizeBytes: 4 };
+    await expect(collect(buildPack([entry]))).rejects.toThrow(
+      `the entry patches/${FROM_SHA256}/${TO_SHA256} is longer than its 4 bytes`,
+    );
+  });
+
+  test.runIf(IS_TAR_AVAILABLE)(
+    'should list the pinned delta pack with tar, the patch entry under its full name',
+    () => {
+      const path = writeTemporaryPack(
+        decodeBase64(ENTRIES_FIXTURE.deltaPack.packBase64),
+      );
+      const listing = execFileSync('tar', ['-tf', path], { encoding: 'utf8' });
+      expect(listing.trim().split('\n')).toEqual(
+        ENTRIES_FIXTURE.deltaPack.entries.map(resolveEntryName),
+      );
+    },
+  );
 });
 
-describe('buildPackHeader', () => {
+describe('buildPackFileHeader', () => {
   test('should leave every field but name, size and checksum zero', () => {
-    const header = buildPackHeader('a'.repeat(64), 5);
+    const header = buildPackFileHeader('a'.repeat(64), 5);
     expect(header.subarray(64, 124).every(byte => byte === 0)).toBe(true);
     expect(header.subarray(136, 148).every(byte => byte === 0)).toBe(true);
     expect(header.subarray(156).every(byte => byte === 0)).toBe(true);
@@ -191,8 +324,37 @@ describe('buildPackHeader', () => {
   });
 
   test('should refuse a name that is not a sha256', () => {
-    expect(() => buildPackHeader('index.js', 5)).toThrow(PackFormatError);
+    expect(() => buildPackFileHeader('index.js', 5)).toThrow(PackFormatError);
   });
+});
+
+describe('buildPackPatchHeader', () => {
+  test('should write the from hash in the prefix, the to hash as the name and the ustar magic, every other field but size and checksum zero', () => {
+    const header = buildPackPatchHeader(FROM_SHA256, TO_SHA256, 5);
+    const decode = (start: number, end: number): string =>
+      new TextDecoder().decode(header.subarray(start, end));
+    expect(decode(0, 100)).toBe(TO_SHA256.padEnd(100, '\0'));
+    expect(decode(124, 136)).toBe('00000000005\0');
+    expect(decode(257, 265)).toBe('ustar\x0000');
+    expect(decode(345, 500)).toBe(`patches/${FROM_SHA256}`.padEnd(155, '\0'));
+    expect(header.subarray(100, 124).every(byte => byte === 0)).toBe(true);
+    expect(header.subarray(136, 148).every(byte => byte === 0)).toBe(true);
+    expect(header.subarray(156, 257).every(byte => byte === 0)).toBe(true);
+    expect(header.subarray(265, 345).every(byte => byte === 0)).toBe(true);
+    expect(header.subarray(500).every(byte => byte === 0)).toBe(true);
+  });
+
+  test.each([
+    ['from', 'index.js', TO_SHA256],
+    ['to', FROM_SHA256, 'index.js'],
+  ])(
+    'should refuse a %s that is not a sha256',
+    (_side, fromSha256, toSha256) => {
+      expect(() => buildPackPatchHeader(fromSha256, toSha256, 5)).toThrow(
+        PackFormatError,
+      );
+    },
+  );
 });
 
 describe('readPack', () => {
@@ -200,15 +362,15 @@ describe('readPack', () => {
     const pack = await collect(
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),
     );
-    const read: { bytes: Uint8Array; sha256: string; sizeBytes: number }[] = [];
+    const read: { bytes: Uint8Array; name: string; sizeBytes: number }[] = [];
     for await (const entry of readPack(streamOf(pack, 100))) {
       read.push({
         bytes: await collect(entry.body),
-        sha256: entry.sha256,
+        name: resolveEntryName(entry),
         sizeBytes: entry.sizeBytes,
       });
     }
-    expect(read.map(entry => entry.sha256)).toEqual(
+    expect(read.map(entry => entry.name)).toEqual(
       CONTENTS.map(bytes => computeSha256Hex(bytes)),
     );
     expect(read.map(entry => entry.sizeBytes)).toEqual(
@@ -232,22 +394,16 @@ describe('readPack', () => {
     const pack = await collect(
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),
     );
-    const names: string[] = [];
-    for await (const entry of readPack(streamOf(pack))) {
-      names.push(entry.sha256);
-    }
-    expect(names).toHaveLength(3);
+    expect(await readNames(streamOf(pack))).toHaveLength(3);
   });
 
   test('should drain an unread entry that arrives in several chunks', async () => {
     const pack = await collect(
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),
     );
-    const names: string[] = [];
-    for await (const entry of readPack(streamOf(pack, 512))) {
-      names.push(entry.sha256);
-    }
-    expect(names).toEqual(CONTENTS.map(bytes => computeSha256Hex(bytes)));
+    expect(await readNames(streamOf(pack, 512))).toEqual(
+      CONTENTS.map(bytes => computeSha256Hex(bytes)),
+    );
   });
 
   test(
@@ -257,15 +413,11 @@ describe('readPack', () => {
       const chunk = new Uint8Array(64 * 1024);
       const chunkCount = 1024;
       const chunks = [
-        buildPackHeader('a'.repeat(64), chunk.length * chunkCount),
+        buildPackFileHeader('a'.repeat(64), chunk.length * chunkCount),
         ...Array.from({ length: chunkCount }, () => chunk),
         new Uint8Array(1024),
       ];
-      const names: string[] = [];
-      for await (const entry of readPack(streamOfChunks(chunks))) {
-        names.push(entry.sha256);
-      }
-      expect(names).toEqual(['a'.repeat(64)]);
+      expect(await readNames(streamOfChunks(chunks))).toEqual(['a'.repeat(64)]);
     },
   );
 
@@ -274,7 +426,9 @@ describe('readPack', () => {
       buildPack(CONTENTS.map(bytes => entryOf(bytes))),
     );
     for await (const entry of readPack(streamOf(pack))) {
-      expect(computeSha256Hex(await collect(entry.body))).toBe(entry.sha256);
+      expect(computeSha256Hex(await collect(entry.body))).toBe(
+        resolveEntryName(entry),
+      );
     }
   });
 
@@ -304,7 +458,7 @@ describe('readPack', () => {
     const opened = openStreamOf(pack);
     const names: string[] = [];
     for await (const entry of readPack(opened.stream)) {
-      names.push(entry.sha256);
+      names.push(resolveEntryName(entry));
       break;
     }
     expect(names).toHaveLength(1);
@@ -330,12 +484,47 @@ describe('readPack', () => {
   });
 
   test('should read an empty pack', async () => {
-    const names: string[] = [];
-    for await (const entry of readPack(
-      streamOf(await collect(buildPack([]))),
-    )) {
-      names.push(entry.sha256);
+    expect(await readNames(streamOf(await collect(buildPack([]))))).toEqual([]);
+  });
+
+  test('should read the pinned delta pack', async () => {
+    const pack = decodeBase64(ENTRIES_FIXTURE.deltaPack.packBase64);
+    const read: { bodyBase64: string; name: string }[] = [];
+    for await (const entry of readPack(streamOf(pack, 33))) {
+      read.push({
+        bodyBase64: Buffer.from(await collect(entry.body)).toString('base64'),
+        name: resolveEntryName(entry),
+      });
     }
-    expect(names).toEqual([]);
+    expect(read).toEqual(
+      ENTRIES_FIXTURE.deltaPack.entries.map(entry => ({
+        bodyBase64: entry.bodyBase64,
+        name: resolveEntryName(entry),
+      })),
+    );
+  });
+
+  test('should skip an entry of an unknown name with its body and read the entries around it', async () => {
+    const pack = decodeBase64(ENTRIES_FIXTURE.skippedEntryPack.packBase64);
+    const read: { bodyBase64: string; name: string }[] = [];
+    for await (const entry of readPack(streamOf(pack, 100))) {
+      read.push({
+        bodyBase64: Buffer.from(await collect(entry.body)).toString('base64'),
+        name: resolveEntryName(entry),
+      });
+    }
+    expect(read).toEqual(
+      ENTRIES_FIXTURE.skippedEntryPack.entries.map(entry => ({
+        bodyBase64: entry.bodyBase64,
+        name: resolveEntryName(entry),
+      })),
+    );
+  });
+
+  test('should refuse a pack cut inside an entry it skips', async () => {
+    const pack = decodeBase64(ENTRIES_FIXTURE.skippedEntryPack.packBase64);
+    await expect(
+      readContents(streamOf(pack.subarray(0, 512 + 512 + 512 + 300))),
+    ).rejects.toThrow(PackFormatError);
   });
 });
