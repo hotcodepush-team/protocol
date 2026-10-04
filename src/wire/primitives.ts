@@ -2,6 +2,13 @@ import { z } from 'zod';
 
 import { PLATFORMS } from '../results.js';
 
+/** Bytes as base64 in its one canonical spelling: padded, no unused bits set. */
+export const Base64Schema = z
+  .string()
+  .regex(
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{4}|[A-Za-z0-9+/][AQgw]==|[A-Za-z0-9+/]{2}[AEIMQUYcgkosw048]=)$/,
+  );
+
 /** A channel's name: `A–Z a–z 0–9 - _`, one to 64 characters, unique per app case-insensitively. */
 export const ChannelNameSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 

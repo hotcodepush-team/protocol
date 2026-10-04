@@ -156,9 +156,8 @@ describe('ExpoManifestSchema', () => {
 });
 
 describe('signExpoManifest', () => {
-  test('should sign the canonical JSON of the manifest with the key Expo clients verify', async () => {
-    const { privateKey, publicKey } =
-      await generateSigningKeyPair('rsa-v1_5-sha256');
+  test('should sign the canonical JSON of the manifest with the one key of the app, which Expo clients verify', async () => {
+    const { privateKey, publicKey } = await generateSigningKeyPair();
 
     const envelope = await signExpoManifest(FIXTURE.manifests.ios, privateKey);
 

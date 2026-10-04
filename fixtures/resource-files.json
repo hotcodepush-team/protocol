@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest without patches, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest without patches, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -135,7 +135,12 @@
         "installOnResumeAfter": 300,
         "installStrategy": "next-resume",
         "mandatoryInstallStrategy": "manual",
-        "publicKeys": ["ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4="],
+        "publicKeys": [
+          {
+            "der": "MIICCgKCAgEAg+CkUpcpvOayIrXRnz+mSa3PkHWUFX689CTG44ZTlaaz6AgX0iESUZzC7iVZW4pmOIMmq/ZGh8whcDqJ8s6+B47725531tLzdbezek4ZVjsPjJykKBXmTs8bfYTl4GKv4MB6KnZHt+IalM9HjjyRE0EWLtrqFKyIt3seE9NE/z1DBk39gVY52ukHq9BY4jqEthaDVbu6tIKx2DRgqLPJQvkrlcuD7RhOucClaw2anANr7GEJEh3ISwE2vESfyiedVO0uVIEWbsVmGtM1CuM0n8+rquDqQ0MPAU3vLBVx8x9oOFqbswWTNuXQO3+R5KZHKFj4EQ16nPfbdRiLSN+5gI8qdaBdhxGv2Yr7s8WOYt1tksY0krOUY4o9biYA8JGVXkjRrTUZ4+/VpCoQwctVe7hdDbWweXgfAE0fOeJ1uzuAtSXIeJ4BJIaHGPZl3rdJIVE6RtVEhJUwQGI26dtW1xX7cM7ocCb8yzEIxY+GRTOIlQj+WluhzMBnRz4cf7YVMR6CbXWBtzBVHVkn2+eKO6/oonKhlcTpMQQO0u59OiswJ5QsPiHlozQ6f29hH1g495f3AKQn0BhxZR0VQzqxZeGSSooXBCE3fv7pqHPJJUyGWrbMyMDh0JBgGPACWIz1VfZ6KUF7g/s8sujO5OrYhY4U6/jZyJugkB9yLo7NjqUCAwEAAQ==",
+            "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8"
+          }
+        ],
         "readySignal": "manual",
         "readyTimeout": 10,
         "updatesBaseUrl": "https://updates.staging.hotcodepush.com"
@@ -207,6 +212,124 @@
         "fingerprint": null,
         "keyId": null,
         "platforms": ["ios"]
+      }
+    },
+    {
+      "name": "should read the public keys of an iOS build as PKCS #1 DER beside their key ids",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "dir": "dist",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null,
+        "publicKeys": [
+          {
+            "der": "MIICCgKCAgEAg+CkUpcpvOayIrXRnz+mSa3PkHWUFX689CTG44ZTlaaz6AgX0iESUZzC7iVZW4pmOIMmq/ZGh8whcDqJ8s6+B47725531tLzdbezek4ZVjsPjJykKBXmTs8bfYTl4GKv4MB6KnZHt+IalM9HjjyRE0EWLtrqFKyIt3seE9NE/z1DBk39gVY52ukHq9BY4jqEthaDVbu6tIKx2DRgqLPJQvkrlcuD7RhOucClaw2anANr7GEJEh3ISwE2vESfyiedVO0uVIEWbsVmGtM1CuM0n8+rquDqQ0MPAU3vLBVx8x9oOFqbswWTNuXQO3+R5KZHKFj4EQ16nPfbdRiLSN+5gI8qdaBdhxGv2Yr7s8WOYt1tksY0krOUY4o9biYA8JGVXkjRrTUZ4+/VpCoQwctVe7hdDbWweXgfAE0fOeJ1uzuAtSXIeJ4BJIaHGPZl3rdJIVE6RtVEhJUwQGI26dtW1xX7cM7ocCb8yzEIxY+GRTOIlQj+WluhzMBnRz4cf7YVMR6CbXWBtzBVHVkn2+eKO6/oonKhlcTpMQQO0u59OiswJ5QsPiHlozQ6f29hH1g495f3AKQn0BhxZR0VQzqxZeGSSooXBCE3fv7pqHPJJUyGWrbMyMDh0JBgGPACWIz1VfZ6KUF7g/s8sujO5OrYhY4U6/jZyJugkB9yLo7NjqUCAwEAAQ==",
+            "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8"
+          },
+          {
+            "der": "MIICCgKCAgEA9XifuxuAXnhXihhuO//v+U0TSpMBKYLHnDBQ18hsyR7Vachw+xXhh+RKivqoQy+BJQl2zbc36RVOxC99MtGNDxjubk9Q5LzPGP0dXgT+ZNRPqcsK2nRFYahBCv/MUA8F5B1rg50/Oz30slN3hPAV5bsbDvTxqYUrvv0Hl8EI4K0lQrT1yC46MWar8YP08rEALi4MAFhhqdwZ72KIFn5lTXTfJLE+DkSbnhnPP3C+JIvBAAJ7ib2ZdyrPfXhJoJbJVArMfyni/eJCojh6s73ZPSo2LAeK08b0JJv4BUxUXt9UJM6cFfcY1Gz63SIsf3o2q7Tm6hIRVljHrw2Srgt3Zo/LUZq/FddM9HaqwHQk8VEueTY3zZxZvCQ4gMMrLuH/nwlg5w0LVHi31QS6xYQHdZi4ndV4lv1oQORByvFM9LJYeKM2hNGRRrwoksKWV7aY4Ibu6zLGQGq7XzbXgcT/3/RWMVdKb2nnIxT5rOtQI6+mYaUjLL1UsaVMFsnr+i9r8kEMVNyDVSSladoyuBLlbsui+ps0WqhsqQzV4zYibYNi5ty0J30aFwyaaeTHmUGMpueOE/G38rKQFQThk0ceuWj2LTxqFQAlCC+C7IsOhsuF6idgN57plcO/fq/HkxkAQNc0EntPjTDD0Ny8ScWdgdCWacQYdA/H9eDeBmp4Q2ECAwEAAQ==",
+            "keyId": "sha256:5a1efe194720f4636245afd18a6336c2f313367c8c318e807c4fdca67c0905d6"
+          }
+        ]
+      },
+      "embeddedBundleManifest": {
+        "appId": "a1",
+        "bundleVersion": "1.4.1",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
+      }
+    },
+    {
+      "name": "should read the public keys of an Android build as SPKI DER beside their key ids",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "dir": "dist",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["android"]
+        },
+        "fingerprint": null,
+        "publicKeys": [
+          {
+            "der": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAg+CkUpcpvOayIrXRnz+mSa3PkHWUFX689CTG44ZTlaaz6AgX0iESUZzC7iVZW4pmOIMmq/ZGh8whcDqJ8s6+B47725531tLzdbezek4ZVjsPjJykKBXmTs8bfYTl4GKv4MB6KnZHt+IalM9HjjyRE0EWLtrqFKyIt3seE9NE/z1DBk39gVY52ukHq9BY4jqEthaDVbu6tIKx2DRgqLPJQvkrlcuD7RhOucClaw2anANr7GEJEh3ISwE2vESfyiedVO0uVIEWbsVmGtM1CuM0n8+rquDqQ0MPAU3vLBVx8x9oOFqbswWTNuXQO3+R5KZHKFj4EQ16nPfbdRiLSN+5gI8qdaBdhxGv2Yr7s8WOYt1tksY0krOUY4o9biYA8JGVXkjRrTUZ4+/VpCoQwctVe7hdDbWweXgfAE0fOeJ1uzuAtSXIeJ4BJIaHGPZl3rdJIVE6RtVEhJUwQGI26dtW1xX7cM7ocCb8yzEIxY+GRTOIlQj+WluhzMBnRz4cf7YVMR6CbXWBtzBVHVkn2+eKO6/oonKhlcTpMQQO0u59OiswJ5QsPiHlozQ6f29hH1g495f3AKQn0BhxZR0VQzqxZeGSSooXBCE3fv7pqHPJJUyGWrbMyMDh0JBgGPACWIz1VfZ6KUF7g/s8sujO5OrYhY4U6/jZyJugkB9yLo7NjqUCAwEAAQ==",
+            "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8"
+          },
+          {
+            "der": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA9XifuxuAXnhXihhuO//v+U0TSpMBKYLHnDBQ18hsyR7Vachw+xXhh+RKivqoQy+BJQl2zbc36RVOxC99MtGNDxjubk9Q5LzPGP0dXgT+ZNRPqcsK2nRFYahBCv/MUA8F5B1rg50/Oz30slN3hPAV5bsbDvTxqYUrvv0Hl8EI4K0lQrT1yC46MWar8YP08rEALi4MAFhhqdwZ72KIFn5lTXTfJLE+DkSbnhnPP3C+JIvBAAJ7ib2ZdyrPfXhJoJbJVArMfyni/eJCojh6s73ZPSo2LAeK08b0JJv4BUxUXt9UJM6cFfcY1Gz63SIsf3o2q7Tm6hIRVljHrw2Srgt3Zo/LUZq/FddM9HaqwHQk8VEueTY3zZxZvCQ4gMMrLuH/nwlg5w0LVHi31QS6xYQHdZi4ndV4lv1oQORByvFM9LJYeKM2hNGRRrwoksKWV7aY4Ibu6zLGQGq7XzbXgcT/3/RWMVdKb2nnIxT5rOtQI6+mYaUjLL1UsaVMFsnr+i9r8kEMVNyDVSSladoyuBLlbsui+ps0WqhsqQzV4zYibYNi5ty0J30aFwyaaeTHmUGMpueOE/G38rKQFQThk0ceuWj2LTxqFQAlCC+C7IsOhsuF6idgN57plcO/fq/HkxkAQNc0EntPjTDD0Ny8ScWdgdCWacQYdA/H9eDeBmp4Q2ECAwEAAQ==",
+            "keyId": "sha256:5a1efe194720f4636245afd18a6336c2f313367c8c318e807c4fdca67c0905d6"
+          }
+        ]
+      },
+      "embeddedBundleManifest": {
+        "appId": "a1",
+        "bundleVersion": "1.4.1",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["android"]
       }
     }
   ]

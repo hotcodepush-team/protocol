@@ -2174,7 +2174,7 @@
         ],
         "signature": {
           "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
-          "value": "ed25519:AAAA"
+          "value": "rsa-v1_5-sha256:AAAA"
         }
       }
     },

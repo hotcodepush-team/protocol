@@ -97,13 +97,25 @@ describe('ProjectConfigurationSchema', () => {
     ).toBe(false);
   });
 
-  test('should reject a public key outside the signing schemes', () => {
+  test.each(['ed25519:AAAA', 'ecdsa-p256-sha256:AAAA'])(
+    'should reject the public key %s, outside the one signing scheme',
+    publicKey => {
+      expect(
+        ProjectConfigurationSchema.safeParse({
+          ...PROJECT,
+          publicKeys: [publicKey],
+        }).success,
+      ).toBe(false);
+    },
+  );
+
+  test('should list a public key in its self-describing form', () => {
     expect(
-      ProjectConfigurationSchema.safeParse({
+      ProjectConfigurationSchema.parse({
         ...PROJECT,
-        publicKeys: ['ecdsa-p256-sha256:AAAA'],
-      }).success,
-    ).toBe(false);
+        publicKeys: ['rsa-v1_5-sha256:AQID'],
+      }).publicKeys,
+    ).toEqual(['rsa-v1_5-sha256:AQID']);
   });
 
   test('should reject a ready timeout below one second', () => {
@@ -142,6 +154,42 @@ describe('ConfigurationSchema', () => {
     const resourceFile = registered?.resourceFile as Record<string, unknown>;
     expect(
       ConfigurationSchema.safeParse({ ...resourceFile, channelId: '' }).success,
+    ).toBe(false);
+  });
+
+  test.each(['iOS', 'Android'])(
+    'should read the public keys of an %s build as the embed step encoded them, each beside its key id',
+    platform => {
+      const withKeys = RESOURCE_FILE_CASES.find(({ name }) =>
+        name.includes(`public keys of an ${platform} build`),
+      );
+      const resourceFile = withKeys?.resourceFile as { publicKeys: unknown[] };
+      expect(resourceFile.publicKeys).toHaveLength(2);
+      expect(ConfigurationSchema.parse(resourceFile).publicKeys).toEqual(
+        resourceFile.publicKeys,
+      );
+    },
+  );
+
+  test('should read no public key from a build of a project that lists none', () => {
+    const [registered] = RESOURCE_FILE_CASES;
+    expect(
+      ConfigurationSchema.parse(registered?.resourceFile).publicKeys,
+    ).toEqual([]);
+  });
+
+  test.each([
+    ['the self-describing form the project file lists', 'rsa-v1_5-sha256:AQID'],
+    ['a key without its key id', { der: 'AQID' }],
+    ['a key whose bytes are not canonical base64', { der: 'AQI', keyId: 'k1' }],
+  ])('should reject %s among the public keys', (_condition, publicKey) => {
+    const [registered] = RESOURCE_FILE_CASES;
+    const resourceFile = registered?.resourceFile as Record<string, unknown>;
+    expect(
+      ConfigurationSchema.safeParse({
+        ...resourceFile,
+        publicKeys: [publicKey],
+      }).success,
     ).toBe(false);
   });
 

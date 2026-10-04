@@ -4,12 +4,19 @@ import { describe, expect, test } from 'vitest';
 
 import {
   generateSigningKeyPair,
+  isAcceptedSigningPublicKey,
   resolveSigningKeyFingerprint,
+  SIGNING_KEY_BITS_MINIMUM,
   SigningPublicKeySchema,
 } from './signing-keys.js';
 
 interface SignaturesFixture {
-  keys: { fingerprint: string; name: string; publicKey: string }[];
+  keys: {
+    bits: number;
+    fingerprint: string;
+    name: string;
+    publicKey: string;
+  }[];
 }
 
 const FIXTURE = JSON.parse(
@@ -28,41 +35,76 @@ describe('resolveSigningKeyFingerprint', () => {
   );
 
   test('should refuse a key that does not parse', () => {
-    expect(() => resolveSigningKeyFingerprint('ed25519:')).toThrow(TypeError);
+    expect(() => resolveSigningKeyFingerprint('rsa-v1_5-sha256:')).toThrow(
+      TypeError,
+    );
   });
 });
 
 describe('SigningPublicKeySchema', () => {
-  test.each(FIXTURE.keys)('should accept $name', ({ publicKey }) => {
-    expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
-  });
+  test.each(FIXTURE.keys)(
+    'should accept the form of $name',
+    ({ publicKey }) => {
+      expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
+    },
+  );
 
   test.each([
+    [
+      'when the scheme is ed25519, which left the allow-list',
+      'ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4=',
+    ],
     [
       'when the scheme is outside the allow-list',
       `ecdsa-p256-sha256:${'A'.repeat(43)}=`,
     ],
     ['when the prefix is missing', `${'A'.repeat(43)}=`],
-    ['when the base64 is not canonical', `ed25519:${'A'.repeat(42)}B=`],
-    ['when the base64 lacks its padding', `ed25519:${'A'.repeat(43)}`],
-    ['when an ed25519 key is not 32 bytes', `ed25519:${'A'.repeat(44)}`],
+    ['when the base64 is not canonical', `rsa-v1_5-sha256:${'A'.repeat(42)}B=`],
+    ['when the base64 lacks its padding', `rsa-v1_5-sha256:${'A'.repeat(43)}`],
   ])('should refuse a key %s', (_condition, publicKey) => {
     expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(false);
   });
 });
 
-describe('generateSigningKeyPair', () => {
-  test('should generate an ed25519 pair in the self-describing form by default', async () => {
-    const { privateKey, publicKey } = await generateSigningKeyPair();
-    expect(privateKey).toMatch(/^ed25519:/);
-    expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
+describe('isAcceptedSigningPublicKey', () => {
+  test.each(FIXTURE.keys)(
+    'should accept $name only at the minimum size or above',
+    async ({ bits, publicKey }) => {
+      expect(await isAcceptedSigningPublicKey(publicKey)).toBe(
+        bits >= SIGNING_KEY_BITS_MINIMUM,
+      );
+    },
+  );
+
+  test('should refuse bytes Web Crypto does not import as an RSA key', async () => {
+    expect(await isAcceptedSigningPublicKey('rsa-v1_5-sha256:AQID')).toBe(
+      false,
+    );
   });
 
-  test('should generate an rsa-v1_5-sha256 pair when asked for the scheme', async () => {
-    const { privateKey, publicKey } =
-      await generateSigningKeyPair('rsa-v1_5-sha256');
-    expect(privateKey).toMatch(/^rsa-v1_5-sha256:/);
+  test('should refuse a key under another scheme', async () => {
+    expect(
+      await isAcceptedSigningPublicKey(
+        'ed25519:NYn5qxMGX39y0hB0UZzOG8KFtzCesZ+/dRZQBTFeCz4=',
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('generateSigningKeyPair', () => {
+  test('should generate an RSA pair of 4096 bits: the public key self-describing, the private key the base64 of its PKCS #8 DER', async () => {
+    const { privateKey, publicKey } = await generateSigningKeyPair();
+    const importedKey = await crypto.subtle.importKey(
+      'pkcs8',
+      Uint8Array.from(atob(privateKey), character => character.charCodeAt(0)),
+      { hash: 'SHA-256', name: 'RSASSA-PKCS1-v1_5' },
+      false,
+      ['sign'],
+    );
+    expect((importedKey.algorithm as RsaHashedKeyAlgorithm).modulusLength).toBe(
+      4096,
+    );
     expect(publicKey).toMatch(/^rsa-v1_5-sha256:/);
-    expect(SigningPublicKeySchema.safeParse(publicKey).success).toBe(true);
+    expect(await isAcceptedSigningPublicKey(publicKey)).toBe(true);
   });
 });

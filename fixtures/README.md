@@ -23,6 +23,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest without `patches`, the same shape whether the embed step registered the bundle or not, `embeddedBundleId` null when it did not.
 The file carries `channelId`, the id the embed step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
 `channelId` is `null` in a build whose embed step ran without a token or offline and could not resolve the name: a reader takes the file, and the device then answers `FAILED` with `UNKNOWN_CHANNEL`, requests nothing and reports nothing until a channel is set at runtime.
+`publicKeys` are the project's public keys as the embed step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
 
 ## `version-ranges.json`
 
@@ -46,8 +47,11 @@ The refused cases pin where the three readers once diverged — a default for an
 
 ## `signatures.json`
 
-`keys` are test key pairs, `{ name, scheme, publicKey, privateKey, fingerprint }`, self-describing as `<scheme>:<base64>` — raw bytes for `ed25519`, SPKI DER for `rsa-v1_5-sha256`, PKCS #8 DER for a private key — the fingerprint `sha256:` and the hex SHA-256 of the decoded public key.
-`manifests` are `{ name, envelope, publicKeys, isValid }`: an envelope whose `manifest` is the canonical JSON of the signed content, verified against the configured keys with the pinned scheme list; tampered bytes, a key the device does not hold, a foreign scheme and a null signature are refused.
+One scheme is allowed, `rsa-v1_5-sha256`: RSASSA-PKCS1-v1_5 with SHA-256, which Web Crypto, iOS's Security framework, Android's `Signature` and Expo's clients verify alike.
+`keys` are test key pairs, `{ name, bits, publicKey, privateKey, fingerprint }`: the public key self-describing, `rsa-v1_5-sha256:` and the base64 of its SPKI DER, the private key the base64 of its PKCS #8 DER, the fingerprint `sha256:` and the hex SHA-256 of the SPKI bytes.
+`manifests` are `{ name, envelope, publicKeys, devicePublicKeys, isValid }`: an envelope whose `manifest` is the canonical JSON of the signed content, verified against the listed keys; tampered bytes, a key the verifier does not hold, a null signature, a value under another prefix — `ed25519:` included, an unknown scheme — and a key under 2048 bits are refused.
+A case lists its keys twice over: `publicKeys` as `hotcodepush.json` lists them, and `devicePublicKeys.android` and `devicePublicKeys.ios` as a resource file carries them, `{ der, keyId }` — the base64 of the SPKI DER for Android's `X509EncodedKeySpec`, of the PKCS #1 DER for iOS's `SecKeyCreateWithData`, each beside the fingerprint a signature names, since a device cannot recompute it from PKCS #1 bytes.
+The size of a key is read from the key the platform imported, never from its bytes.
 They are test keys, generated once, and sign nothing real.
 
 ## `fingerprints.json`

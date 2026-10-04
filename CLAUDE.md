@@ -38,7 +38,7 @@ No releases yet: the version stays `0.0.0`, and release-please and npm provenanc
 The channel index and the bundle manifest are parsed by native code compiled into customer binaries that stay in the field for years.
 
 - Additive only: a field is never removed, renamed or retyped; a new field is optional, and readers ignore what they do not know.
-  The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision.
+  The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision, as did the signing of 2026-10-04: `rsa-v1_5-sha256` the one scheme, and the resource file's public keys in the encoding each platform's own API imports.
 - A change that cannot be additive is a new schema major with its own path, `v2`, and a handbook decision first — never an edit.
 - `CHANNEL_INDEX_SCHEMA` is the format major and equals the `v1` in the path; a reader refuses an index whose `schema` is not the one it asked for.
 - Conditions are frozen once shipped: a new meaning is a new type, and an unknown type fails closed; the index carries no directive, revocation being the plain revoked list every SDK understands.

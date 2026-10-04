@@ -9,10 +9,14 @@ import {
   signManifest,
   verifyManifestSignature,
 } from './signatures.js';
-import { generateSigningKeyPair } from './signing-keys.js';
+import {
+  generateSigningKeyPair,
+  SIGNING_KEY_BITS_MINIMUM,
+} from './signing-keys.js';
 
 interface SignaturesFixture {
   keys: {
+    bits: number;
     fingerprint: string;
     name: string;
     privateKey: string;
@@ -41,6 +45,14 @@ const MANIFEST = {
   patches: [],
   platforms: ['ios'],
 };
+
+function resolvePrivateKeyOfName(keyName: string): string {
+  const key = FIXTURE.keys.find(({ name }) => name === keyName);
+  if (key === undefined) {
+    throw new Error(`No fixture key is named ${keyName}.`);
+  }
+  return key.privateKey;
+}
 
 function resolvePrivateKeyOfKeyId(keyId: string): string {
   const key = FIXTURE.keys.find(({ fingerprint }) => fingerprint === keyId);
@@ -92,15 +104,23 @@ describe('signManifest', () => {
     expect(await verifyManifestSignature(signed, [publicKey])).toBe(true);
   });
 
-  test('should refuse a private key that is not self-describing', async () => {
+  test('should refuse a private key that is not the base64 of a PKCS #8 key', async () => {
     await expect(
-      signManifest(MANIFEST, 'MC4CAQAwBQYDK2VwBCIEIA=='),
+      signManifest(MANIFEST, 'rsa-v1_5-sha256:AQID'),
+    ).rejects.toThrow(TypeError);
+  });
+
+  test('should refuse to sign with a key under the minimum size', async () => {
+    await expect(
+      signManifest(MANIFEST, resolvePrivateKeyOfName('rsa-1024')),
     ).rejects.toThrow(TypeError);
   });
 });
 
 describe('resolvePublicKeyOfPrivateKey', () => {
-  test.each(FIXTURE.keys)(
+  test.each(
+    FIXTURE.keys.filter(({ bits }) => bits >= SIGNING_KEY_BITS_MINIMUM),
+  )(
     'should resolve the public half of $name',
     async ({ privateKey, publicKey }) => {
       expect(await resolvePublicKeyOfPrivateKey(privateKey)).toBe(publicKey);
@@ -108,8 +128,14 @@ describe('resolvePublicKeyOfPrivateKey', () => {
   );
 
   test('should refuse a private key that does not parse', async () => {
-    await expect(resolvePublicKeyOfPrivateKey('ed25519:')).rejects.toThrow(
+    await expect(resolvePublicKeyOfPrivateKey('not base64')).rejects.toThrow(
       TypeError,
     );
+  });
+
+  test('should refuse a private key under the minimum size', async () => {
+    await expect(
+      resolvePublicKeyOfPrivateKey(resolvePrivateKeyOfName('rsa-1024')),
+    ).rejects.toThrow(TypeError);
   });
 });

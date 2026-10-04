@@ -1,6 +1,8 @@
 export {
   generateSigningKeyPair,
+  isAcceptedSigningPublicKey,
   resolveSigningKeyFingerprint,
+  SIGNING_KEY_BITS_MINIMUM,
   SIGNING_SCHEMES,
   SigningPublicKeySchema,
 } from './signing-keys.js';
