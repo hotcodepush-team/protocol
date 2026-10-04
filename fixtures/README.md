@@ -20,7 +20,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 
 ## `resource-files.json`
 
-`{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest without `patches`, the same shape whether the embed step registered the bundle or not, `embeddedBundleId` null when it did not.
+`{ name, resourceFile, embeddedBundleManifest }`: a resource file as the embed step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest, the same shape whether the embed step registered the bundle or not, `embeddedBundleId` null when it did not.
 The file carries `channelId`, the id the embed step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
 `channelId` is `null` in a build whose embed step ran without a token or offline and could not resolve the name: a reader takes the file, and the device then answers `FAILED` with `UNKNOWN_CHANNEL`, requests nothing and reports nothing until a channel is set at runtime.
 `publicKeys` are the project's public keys as the embed step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
@@ -39,11 +39,29 @@ One pack as the writer produces it — `packBase64`, its `packSha256`, and `entr
 
 `refusedPacks` lists the cuts and malformed ends every reader must refuse with a format error — an empty body, a cut between entries, a cut on a block boundary inside an entry, a cut inside a block, no end blocks, one end block, a zero block between entries, a header whose checksum does not match — each as `name` and `packBase64`.
 
+## `pack-entries.json`
+
+The two entry kinds of a pack and what a device does with a patch entry.
+A file entry is named by the file's content hash, and its body is the file's stored object, the gzip the bucket serves.
+A patch entry is named `patches/{from}/{to}` — `patches/{from}` in the ustar prefix field, `{to}` in the name field, the ustar magic and version set — `from` and `to` being the content hashes of two files, the hashes a manifest lists; its body is a raw BSDIFF40 patch over the files' contents, never gzip, that turns the bytes of `from` into the bytes of `to`.
+A reader composes an entry's name as the prefix, a `/` and the name when the prefix is not empty, and skips an entry with any other name together with its body, so a later entry kind does not break a shipped reader.
+
+`files` are the contents the cases name by hash, `{ name, contentBase64, sha256 }`.
+`deltaPack` is a pack of a file entry and a patch entry as the writer produces it — `packBase64`, its `packSha256`, and `entries` in order, each with its `type` and `bodyBase64`, the file's `sha256` or the patch's `fromSha256` and `toSha256`.
+`skippedEntryPack` holds a file entry, an entry named `skippedName` — `future/{hash}/{hash}`, through the prefix field as a later kind could be — and a patch entry; a reader yields its two `entries` and no error.
+`patchCases` are `{ name, heldSha256s, manifestFiles, patchEntry, outcome }`: a patch entry, the hashes of the files the device holds in its file store and its embedded bundle, the files of the signed manifest it installs, and one of three outcomes, none of which fails the update.
+`applied`: the device applies the patch to the file `fromSha256` it holds, and the patched bytes hash to `toSha256`.
+`fallback`: the device fetches the file `toSha256` as it fetches any file the pack did not bring — when it does not hold the base, the patch is truncated, the patched bytes hash to another file, or the patch's control triples seek before the start of the base.
+`ignored`: `toSha256` is not a file of the manifest, and the device leaves the entry aside.
+
+The two valid patches are fixed inputs in `scripts/pack-entries/`, written once by Colin Percival's bsdiff 4.3; the hostile one, whose control triples seek before the base, is crafted by the generator, `scripts/generate-pack-entries-fixture.ts`, so rebuilding the fixture needs no bsdiff.
+
 ## `wire-rules.json`
 
 The rules every reader enforces before a byte is written, as whole documents in six arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | manifest | envelope }`.
 Ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is relative and `/`-separated with no empty, `.` or `..` segment, no backslash and no NUL, timestamps are UTC with a `Z`, and every field of a shape is present, a nullable one as `null`, never absent.
 The refused cases pin where the three readers once diverged — a default for an absent field, a lenient type, an offset timestamp, a `..` segment hidden behind a combining mark — so a refusal is the same refusal on every platform.
+A manifest or an envelope stored while bundles carried `patches` is accepted and the field ignored, as any field a reader does not know is; one accepted envelope carries it on itself and in its manifest.
 
 ## `signatures.json`
 
@@ -53,6 +71,7 @@ One scheme is allowed, `rsa-v1_5-sha256`: RSASSA-PKCS1-v1_5 with SHA-256, which 
 A case lists its keys twice over: `publicKeys` as `hotcodepush.json` lists them, and `devicePublicKeys.android` and `devicePublicKeys.ios` as a resource file carries them, `{ der, keyId }` — the base64 of the SPKI DER for Android's `X509EncodedKeySpec`, of the PKCS #1 DER for iOS's `SecKeyCreateWithData`, each beside the fingerprint a signature names, since a device cannot recompute it from PKCS #1 bytes.
 The size of a key is read from the key the platform imported, never from its bytes.
 They are test keys, generated once, and sign nothing real.
+`scripts/generate-signatures-fixture.ts` re-signs every case with those same keys through the built package, so it runs after `npm run build`; the scheme signs deterministically, so an unchanged manifest yields the same file.
 
 ## `fingerprints.json`
 

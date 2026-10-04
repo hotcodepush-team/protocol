@@ -14,6 +14,7 @@ When code and plan disagree, stop and surface it; never improvise.
 ```
 src/        the package source; index.ts is the root entry point, fingerprint/index.ts and expo-updates/index.ts the two subpath entries, so a Worker that never fingerprints or builds an Expo manifest carries neither
 fixtures/   the fixture suite, shipped in the package: one JSON case per rule of the device protocol
+scripts/    the fixture generators and the pack-entries one's two input patches; each runs with `node` on a developer's machine with nothing installed, the signatures one after `npm run build`, and CI reads the committed fixtures
 dist/       the build output, never committed
 ```
 
@@ -39,6 +40,8 @@ The channel index and the bundle manifest are parsed by native code compiled int
 
 - Additive only: a field is never removed, renamed or retyped; a new field is optional, and readers ignore what they do not know.
   The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision, as did the signing of 2026-10-04: `rsa-v1_5-sha256` the one scheme, and the resource file's public keys in the encoding each platform's own API imports.
+  So did the delivery change of the same day: `patches` left the manifest, the envelope and the signed content, and the pack gained the patch entry `patches/{from}/{to}`, a BSDIFF40 patch between two files named by their content hashes.
+  A manifest or an envelope stored with `patches` still parses, the field ignored, and a pack reader skips an entry of any other name with its body, so a later entry kind is additive.
 - A change that cannot be additive is a new schema major with its own path, `v2`, and a handbook decision first — never an edit.
 - `CHANNEL_INDEX_SCHEMA` is the format major and equals the `v1` in the path; a reader refuses an index whose `schema` is not the one it asked for.
 - Conditions are frozen once shipped: a new meaning is a new type, and an unknown type fails closed; the index carries no directive, revocation being the plain revoked list every SDK understands.
