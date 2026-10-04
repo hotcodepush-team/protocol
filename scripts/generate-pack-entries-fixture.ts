@@ -1,9 +1,12 @@
 /**
  * Writes `fixtures/pack-entries.json`: a delta pack of a file entry and a
  * patch entry, a pack with an entry a reader skips, and the device's outcome
- * per patch entry. The patches come from the reference bsdiff 4.x on the PATH
- * (`brew install bsdiff` on macOS), each checked with macOS's own
- * `/usr/bin/bspatch` before anything is written; CI reads the committed file.
+ * per patch entry. The patches come from Colin Percival's reference bsdiff 4.3
+ * on the PATH — macOS ships `/usr/bin/bspatch` but no bsdiff, Homebrew's
+ * `brew install bsdiff` is that release — each checked with macOS's own
+ * `/usr/bin/bspatch` before anything is written. The hostile patch is crafted
+ * without a diff tool, its blocks compressed by the system's `bzip2`. CI reads
+ * the committed file.
  *
  *     node scripts/generate-pack-entries-fixture.ts
  */
@@ -26,6 +29,11 @@ interface FixtureFile {
 const CHECKSUM_FIELD_LENGTH = 8;
 const CHECKSUM_FIELD_OFFSET = 148;
 const END_BLOCKS_LENGTH = 1024;
+/** Two control triples: the first reads 100 bytes of the base and seeks 100000000 bytes back, the second reads 100 bytes there, before the base's start. */
+const HOSTILE_CONTROL_TRIPLES = [
+  [100, 0, -100_000_000],
+  [100, 0, 0],
+];
 const PREFIX_FIELD_LENGTH = 155;
 const PREFIX_FIELD_OFFSET = 345;
 const WORK_DIRECTORY = mkdtempSync(join(tmpdir(), 'hotcodepush-pack-entries-'));
@@ -51,6 +59,7 @@ const PATCH = createVerifiedPatch(BASE, TARGET);
 const PATCH_TO_OTHER = createVerifiedPatch(BASE, OTHER);
 const TRUNCATED_PATCH = PATCH.subarray(0, Math.floor(PATCH.length / 2));
 assertRefusedByBspatch(BASE, TRUNCATED_PATCH);
+const HOSTILE_PATCH = buildHostilePatch();
 
 const FILE_ENTRY_BODY = gzipSync(ASSET.bytes);
 const SKIPPED_ENTRY_BODY = new Uint8Array(600).map((_, index) => index % 251);
@@ -136,6 +145,13 @@ const fixture = {
       outcome: 'fallback',
     },
     {
+      name: 'should fetch the file when the patch seeks before the start of the base',
+      heldSha256s: [BASE.sha256],
+      manifestFiles: targetInManifest,
+      patchEntry: { ...patchEntry, bodyBase64: encodeBase64(HOSTILE_PATCH) },
+      outcome: 'fallback',
+    },
+    {
       name: 'should ignore a patch to a file the manifest does not list',
       heldSha256s: [BASE.sha256],
       manifestFiles: [
@@ -215,13 +231,75 @@ function buildSkippedEntryHeader(sizeBytes: number): Uint8Array {
   return header;
 }
 
+/**
+ * A BSDIFF40 patch whose control triples seek before the base: the header
+ * `BSDIFF40` and three lengths — the compressed control and diff blocks and
+ * the new file's size — then the control, diff and extra blocks, each a bzip2
+ * stream. A bspatch that trusts the seek reads out of bounds.
+ */
+function buildHostilePatch(): Uint8Array {
+  const newSizeBytes = HOSTILE_CONTROL_TRIPLES.reduce(
+    (sum, [diffLength = 0, extraLength = 0]) => sum + diffLength + extraLength,
+    0,
+  );
+  const [control, diff, extra] = [
+    concatenate(HOSTILE_CONTROL_TRIPLES.flat().map(encodeSignMagnitude)),
+    new Uint8Array(newSizeBytes),
+    new Uint8Array(0),
+  ].map(compressWithBzip2);
+  if (control === undefined || diff === undefined || extra === undefined) {
+    throw new Error('bzip2 did not compress the three blocks');
+  }
+  return concatenate([
+    new TextEncoder().encode('BSDIFF40'),
+    encodeSignMagnitude(control.length),
+    encodeSignMagnitude(diff.length),
+    encodeSignMagnitude(newSizeBytes),
+    control,
+    diff,
+    extra,
+  ]);
+}
+
+function compressWithBzip2(bytes: Uint8Array): Uint8Array {
+  return new Uint8Array(
+    execFileSync('/usr/bin/bzip2', ['-c'], { input: bytes }),
+  );
+}
+
+/** bsdiff's integer: the magnitude little-endian in 8 bytes, the sign in the top bit. */
+function encodeSignMagnitude(value: number): Uint8Array {
+  const bytes = new Uint8Array(8);
+  const signBit = value < 0 ? 1n << 63n : 0n;
+  new DataView(bytes.buffer).setBigUint64(
+    0,
+    BigInt(Math.abs(value)) | signBit,
+    true,
+  );
+  return bytes;
+}
+
+function runBsdiff(args: string[]): void {
+  try {
+    execFileSync('bsdiff', args);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(
+        'No bsdiff on the PATH: this script needs the reference bsdiff 4.3, `brew install bsdiff` on macOS.',
+        { cause: error },
+      );
+    }
+    throw error;
+  }
+}
+
 /** The bsdiff patch from `from` to `to`, refused unless `/usr/bin/bspatch` turns `from` into `to` with it. */
 function createVerifiedPatch(from: FixtureFile, to: FixtureFile): Uint8Array {
   const fromPath = writeWorkFile(`${from.name}.bin`, from.bytes);
   const toPath = writeWorkFile(`${to.name}.bin`, to.bytes);
   const patchPath = join(WORK_DIRECTORY, `${from.name}-${to.name}.bsdiff`);
   const patchedPath = join(WORK_DIRECTORY, `${from.name}-${to.name}.patched`);
-  execFileSync('bsdiff', [fromPath, toPath, patchPath]);
+  runBsdiff([fromPath, toPath, patchPath]);
   execFileSync('/usr/bin/bspatch', [fromPath, patchedPath, patchPath]);
   if (computeSha256Hex(readFileSync(patchedPath)) !== to.sha256) {
     throw new Error(`bspatch does not turn ${from.name} into ${to.name}`);

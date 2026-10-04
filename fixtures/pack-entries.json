@@ -132,6 +132,25 @@
       "outcome": "fallback"
     },
     {
+      "name": "should fetch the file when the patch seeks before the start of the base",
+      "heldSha256s": [
+        "b2269c73c415451f1c62901c6c492373c84b29c275f1f22742840daa9d2b222c"
+      ],
+      "manifestFiles": [
+        {
+          "path": "index.bundle",
+          "sha256": "c719e5bc8eb925fbcf7730b5dfebe622c11a3803455e62a078fd7be9b3e58321",
+          "sizeBytes": 233
+        }
+      ],
+      "patchEntry": {
+        "bodyBase64": "QlNESUZGNDA4AAAAAAAAACcAAAAAAAAAyAAAAAAAAABCWmg5MUFZJlNZIHP9+AAAB2FBwgQIAAQAQAAgAAIAIAAhKZBoQwIwQ0VEbz6eLuSKcKEgQOf78EJaaDkxQVkmU1luFY6TAAAAQARAAAQAIAAhAIKDF3JFOFCQbhWOk0JaaDkXckU4UJAAAAAA",
+        "fromSha256": "b2269c73c415451f1c62901c6c492373c84b29c275f1f22742840daa9d2b222c",
+        "toSha256": "c719e5bc8eb925fbcf7730b5dfebe622c11a3803455e62a078fd7be9b3e58321"
+      },
+      "outcome": "fallback"
+    },
+    {
       "name": "should ignore a patch to a file the manifest does not list",
       "heldSha256s": [
         "b2269c73c415451f1c62901c6c492373c84b29c275f1f22742840daa9d2b222c"
