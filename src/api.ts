@@ -106,7 +106,7 @@ export interface HotCodePushApi {
   rollback(options?: RollbackOptions): Promise<void>;
   /** Clears every downloaded update and the list of failed bundles, keeps the channel and the attributes, reloads. */
   clearUpdates(): Promise<void>;
-  /** Restart gating: `allowed: false` holds the one restart the SDK would perform until `allowed: true`. */
+  /** Restart gating: `allowed: false` holds the one restart the SDK would perform on its own — after an `immediate` install, a `next-resume` install or a mandatory release alike — until `allowed: true` runs it. A restart the app asks for itself, `applyUpdate()`, `rollback()` or `clearUpdates()`, is never held. Not persisted: every start begins allowed. */
   setRestartAllowed(options: SetRestartAllowedOptions): Promise<void>;
   /** The SDK's state, a snapshot. */
   getState(): Promise<GetStateResult>;
