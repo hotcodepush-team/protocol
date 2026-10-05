@@ -207,7 +207,7 @@ export interface GetDeviceResult {
 
 export type SetAttributesOptions = Record<string, string | null>;
 
-export interface RollbackOptions {
+export interface RollbackUpdateOptions {
   /** The app-side cause, carried as the `failed` event's `detail`: printable, at most 256 characters. */
   reason?: string;
 }

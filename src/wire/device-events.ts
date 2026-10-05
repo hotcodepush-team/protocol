@@ -59,7 +59,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
     type: z.literal('confirmed'),
   }),
   z.looseObject({
-    /** The app's `rollback({ reason })` on `REPORTED_BY_APP`: printable, at most 256 characters. */
+    /** The app's `rollbackUpdate({ reason })` on `REPORTED_BY_APP`: printable, at most 256 characters. */
     detail: AttributeValueSchema.optional(),
     reason: z.enum([
       ...ROLLBACK_REASONS,

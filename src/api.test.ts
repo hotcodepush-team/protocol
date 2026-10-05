@@ -30,7 +30,7 @@ describe('HotCodePushApi', () => {
       | 'getState'
       | 'notifyReady'
       | 'removeAllListeners'
-      | 'rollback'
+      | 'rollbackUpdate'
       | 'setAttributes'
       | 'setChannel'
       | 'setRestartAllowed'
