@@ -1,8 +1,8 @@
 # CLAUDE.md
 
 `@hotcodepush/protocol`, the one update-protocol client in TypeScript: the wire types, the evaluator and the fixture suite.
-The Swift package `HotCodePushProtocol` (`protocol-ios`) and the Android library `com.hotcodepush:protocol-android` (`protocol-android`) implement the same functions and types, proven equal by this repo's fixtures.
-The monorepo, the SDKs and the CLI consume it from pkg.pr.new until its publish decision — `npm install https://pkg.pr.new/hotcodepush-team/protocol-js/@hotcodepush/protocol@<sha>`, a consumer pinning one commit and bumping it deliberately, never `@main`; it is not the supported API, apps use the SDK for their framework.
+The Swift package `HotCodePushCore` (`core-ios`) and the Android library `com.hotcodepush:core-android` (`core-android`) implement the same functions and types, proven equal by this repo's fixtures.
+The monorepo, the SDKs and the CLI consume it from pkg.pr.new until its publish decision — `npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>`, a consumer pinning one commit and bumping it deliberately, never `@main`; it is not the supported API, apps use the SDK for their framework.
 Stack: TypeScript compiled by `tsc` into ESM in `dist/`, ESLint, Prettier, Vitest, Node 24.
 
 The plan is the private `handbook` repo, checked out beside this one: `../handbook/docs/`.

@@ -7,7 +7,7 @@ The HotCodePush update-protocol client for JavaScript: the wire types, the evalu
 The package is not on npm yet; every commit is published to pkg.pr.new by CI, and a consumer pins one commit and bumps it deliberately, never a branch:
 
 ```sh
-npm install https://pkg.pr.new/hotcodepush-team/protocol-js/@hotcodepush/protocol@<sha>
+npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>
 ```
 
 ## Usage
