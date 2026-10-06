@@ -82,7 +82,12 @@ export const ConfigurationSchema = z.looseObject({
   channelId: NonEmptyStringSchema.nullable(),
   dir: z.string().optional(),
   embeddedBundleId: IdentifierSchema.nullable(),
-  embeddedBundleManifest: BundleManifestSchema,
+  /**
+   * Null in a build that bundled no JavaScript, a React Native or Expo debug
+   * build: its build step registers no binary and asks the API nothing, and
+   * the SDK answers `SKIPPED` with `DEBUG_BUILD`.
+   */
+  embeddedBundleManifest: BundleManifestSchema.nullable(),
   filesBaseUrl: z.url().optional(),
   fingerprint: NonEmptyStringSchema.nullable(),
   /** The project's public keys as the embed step re-encoded them for the platform the file is written for. */

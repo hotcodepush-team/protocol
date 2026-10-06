@@ -131,14 +131,19 @@ describe('ConfigurationSchema', () => {
     expect(ConfigurationSchema.safeParse(PROJECT).success).toBe(false);
   });
 
-  test('should require the channel id key, resolved or null', () => {
-    const [registered] = RESOURCE_FILE_CASES;
-    const resourceFile = registered?.resourceFile as Record<string, unknown>;
-    const withoutChannelId = Object.fromEntries(
-      Object.entries(resourceFile).filter(([key]) => key !== 'channelId'),
-    );
-    expect(ConfigurationSchema.safeParse(withoutChannelId).success).toBe(false);
-  });
+  test.each(['channelId', 'embeddedBundleManifest'])(
+    'should require the %s key, its value or null',
+    requiredKey => {
+      const [registered] = RESOURCE_FILE_CASES;
+      const resourceFile = registered?.resourceFile as Record<string, unknown>;
+      const withoutRequiredKey = Object.fromEntries(
+        Object.entries(resourceFile).filter(([key]) => key !== requiredKey),
+      );
+      expect(ConfigurationSchema.safeParse(withoutRequiredKey).success).toBe(
+        false,
+      );
+    },
+  );
 
   test('should read a null channel id from a build that could not resolve its channel', () => {
     const withoutChannel = RESOURCE_FILE_CASES.find(({ name }) =>

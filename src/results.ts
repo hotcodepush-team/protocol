@@ -184,7 +184,8 @@ export interface GetStateResult {
 export type ChannelSource = 'config' | 'runtime';
 
 export interface GetChannelResult {
-  id: string;
+  /** `null` while no id is known: a build without a channel, or a runtime name no sync has resolved yet. */
+  id: string | null;
   name: string | null;
   source: ChannelSource;
 }

@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. embeddedBundleManifest is null in a build that bundled no JavaScript, a React Native or Expo debug build: its build step registers no binary and asks the API nothing, so embeddedBundleId is null with it, and the SDK answers SKIPPED with DEBUG_BUILD. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -331,6 +331,18 @@
         "keyId": null,
         "platforms": ["android"]
       }
+    },
+    {
+      "name": "should read a build without an embedded bundle, whose build step found no JavaScript bundled",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": null,
+        "embeddedBundleId": null,
+        "embeddedBundleManifest": null,
+        "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+      },
+      "embeddedBundleManifest": null
     }
   ]
 }

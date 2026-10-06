@@ -4,6 +4,7 @@ import type {
   ApplyResult,
   DownloadResult,
   DownloadStrategy,
+  GetChannelResult,
   GetDeviceResult,
   InstallMoment,
   InstallStrategy,
@@ -15,6 +16,12 @@ import type {
   SyncResult,
   SyncTrigger,
 } from './results.js';
+
+describe('GetChannelResult', () => {
+  test('should allow a null id while no id is known', () => {
+    expectTypeOf<GetChannelResult['id']>().toEqualTypeOf<string | null>();
+  });
+});
 
 describe('GetDeviceResult', () => {
   test('should allow a null fingerprint', () => {
