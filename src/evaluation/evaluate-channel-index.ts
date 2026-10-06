@@ -253,7 +253,6 @@ function resolveConditionReason(type: string): {
     case 'binary':
     case 'fingerprint':
     case 'os':
-    case 'runtime':
       return { condition: type, reason: 'INCOMPATIBLE' };
   }
 }

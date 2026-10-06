@@ -57,8 +57,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "reason": "CHANNEL_PAUSED",
@@ -108,8 +107,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "releaseId": "release-1",
@@ -155,8 +153,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "reason": "CHANNEL_PAUSED",
@@ -220,8 +217,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "reason": "RELEASE_REVOKED",
@@ -299,8 +295,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "reason": "RELEASE_REVOKED",
@@ -364,8 +359,7 @@
         "failedBundleIds": [],
         "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
         "osVersion": "17.4",
-        "reportedAt": null,
-        "runtimeVersion": null
+        "reportedAt": null
       },
       "expected": {
         "releaseId": "release-1",

@@ -45,11 +45,6 @@ export const OsConditionSchema = z.looseObject({
   type: z.literal('os'),
 });
 
-export const RuntimeConditionSchema = z.looseObject({
-  type: z.literal('runtime'),
-  version: NonEmptyStringSchema,
-});
-
 /** A condition type this implementation does not know: it parses, and it fails closed. */
 export const UnknownConditionSchema = z.looseObject({
   type: z
@@ -63,7 +58,6 @@ export const KnownConditionSchema = z.union([
   DeviceConditionSchema,
   FingerprintConditionSchema,
   OsConditionSchema,
-  RuntimeConditionSchema,
 ]);
 export type KnownCondition = z.infer<typeof KnownConditionSchema>;
 export type UnknownCondition = z.infer<typeof UnknownConditionSchema>;

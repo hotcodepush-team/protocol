@@ -27,8 +27,6 @@ export const DeviceReportSchema = z.looseObject({
   fingerprint: NonEmptyStringSchema.nullable(),
   osVersion: NonEmptyStringSchema,
   releaseId: IdentifierSchema.nullable(),
-  /** The runtime version the binary declares, for the `runtime` strategy; an SDK that does not send it reports none. */
-  runtimeVersion: NonEmptyStringSchema.nullable().default(null),
 });
 export type DeviceReport = z.infer<typeof DeviceReportSchema>;
 

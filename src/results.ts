@@ -10,7 +10,6 @@ export const CONDITION_TYPES = [
   'device',
   'fingerprint',
   'os',
-  'runtime',
 ] as const;
 export type ConditionType = (typeof CONDITION_TYPES)[number];
 

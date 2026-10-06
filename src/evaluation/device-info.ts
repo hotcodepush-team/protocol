@@ -15,5 +15,4 @@ export interface DeviceInfo {
   osVersion: string;
   /** The server time of the last acknowledged report, for the spending cap. */
   reportedAt: string | null;
-  runtimeVersion: string | null;
 }

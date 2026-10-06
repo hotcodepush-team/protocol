@@ -69,11 +69,6 @@ function isConditionSatisfied(
         isVersionInRange(osVersion, condition.range) === true
       );
     }
-    case 'runtime':
-      return (
-        device.runtimeVersion !== null &&
-        device.runtimeVersion === condition.version
-      );
   }
 }
 
