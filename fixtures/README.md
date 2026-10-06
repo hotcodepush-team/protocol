@@ -79,12 +79,6 @@ They are test keys, generated once, and sign nothing real.
 npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
 `refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a missing `node_modules`, a declared native source that does not exist.
 
-## `expo-updates.json`
-
-One uploaded Expo export as `input` — `bundleId`, `bundleManifest`, `createdAt`, `expoClientConfig`, `exportMetadata`, `filesBaseUrl`, `runtimeVersion` — and the documents built from it: `manifests` per platform, the launch asset keyed by its SHA-256 hex and every asset by the MD5 hex of its export path, each naming its own update id in the metadata under `hotcodepush-update`, and the two `directives`, `noUpdateAvailable` and `rollBackToEmbedded`, Expo's own.
-A manifest's bytes are what the CLI signs at upload and the bridge serves verbatim.
-The bridge serves no directive, since it holds no key to sign one with: it answers the protocol's empty `204` for no update and says which stored update a client runs through `expo-manifest-filters` on that metadata key.
-
 ## `bounds.json`
 
 The writer-side bounds, `deviceConditionMaxHashedIds` and `releaseMaxConditions`, tied to the package's exported constants by a test; a writer refuses a release above them, a reader parses any count, so raising a number later stays additive.

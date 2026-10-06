@@ -54,18 +54,6 @@ export async function signManifest(
 }
 
 /**
- * Signs a document's bytes as they are, under the key's fingerprint as
- * `keyId`: for a document that names no key in itself, the Expo-format
- * manifest the bridge serves verbatim.
- */
-export async function signDocument(
-  document: string,
-  privateKey: string,
-): Promise<Signature> {
-  return signMessage(document, await resolveSigningKey(privateKey));
-}
-
-/**
  * Whether the envelope's signature covers its `manifest` bytes under the key
  * its `keyId` names among `publicKeys`; an unsigned envelope verifies against
  * no key, and so does a signature under an unknown scheme or by a key below

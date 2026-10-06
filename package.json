@@ -1,6 +1,6 @@
 {
   "name": "@hotcodepush/protocol",
-  "description": "The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator, the signatures, the fingerprint recipe, the Expo Updates documents and the fixture suite",
+  "description": "The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator, the signatures, the fingerprint recipe and the fixture suite",
   "version": "0.0.0",
   "private": false,
   "license": "MIT",
@@ -19,10 +19,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./expo-updates": {
-      "types": "./dist/expo-updates/index.d.ts",
-      "default": "./dist/expo-updates/index.js"
     },
     "./fingerprint": {
       "types": "./dist/fingerprint/index.d.ts",
@@ -55,7 +51,6 @@
   "dependencies": {
     "@noble/hashes": "2.4.0",
     "@yarnpkg/parsers": "3.1.0",
-    "mime": "4.1.0",
     "yaml": "2.9.1",
     "zod": "4.6.5"
   }

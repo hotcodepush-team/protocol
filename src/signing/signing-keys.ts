@@ -5,9 +5,9 @@ import { computeSha256Hex } from '../hash/sha256.js';
 
 /**
  * The pinned allow-list, one scheme: RSASSA-PKCS1-v1_5 with SHA-256, which
- * both platforms' own APIs and Expo's clients verify. A value's prefix selects
- * within the list and never extends it, so the algorithm is never the signer's
- * choice; a value under any other prefix names an unknown scheme.
+ * both platforms' own APIs verify. A value's prefix selects within the list
+ * and never extends it, so the algorithm is never the signer's choice; a value
+ * under any other prefix names an unknown scheme.
  */
 export const SIGNING_SCHEMES = ['rsa-v1_5-sha256'] as const;
 export type SigningScheme = (typeof SIGNING_SCHEMES)[number];
