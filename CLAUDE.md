@@ -12,7 +12,7 @@ When code and plan disagree, stop and surface it; never improvise.
 ## Layout
 
 ```
-src/        the package source; index.ts is the root entry point, fingerprint/index.ts and expo-updates/index.ts the two subpath entries, so a Worker that never fingerprints or builds an Expo manifest carries neither
+src/        the package source; index.ts is the root entry point and fingerprint/index.ts the one subpath entry, so a Worker that never fingerprints carries none of it
 fixtures/   the fixture suite, shipped in the package: one JSON case per rule of the device protocol
 scripts/    the fixture generators and the pack-entries one's two input patches; each runs with `node` on a developer's machine with nothing installed, the signatures one after `npm run build`, and CI reads the committed fixtures
 dist/       the build output, never committed
