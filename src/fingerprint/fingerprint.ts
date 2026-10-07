@@ -18,7 +18,11 @@ import type {
   LockedTree,
   LockfileName,
 } from './lockfiles.js';
-import { LOCKFILE_NAMES, resolveLockedTree } from './lockfiles.js';
+import {
+  LOCKFILE_NAMES,
+  resolveDeclaredDependencies,
+  resolveLockedTree,
+} from './lockfiles.js';
 import { hasNativeMarkers } from './native-markers.js';
 import type { ProjectReader } from './project-reader.js';
 import {
@@ -45,6 +49,12 @@ export interface FingerprintContributors {
 export interface NativeSourceFile {
   path: string;
   sha256: string;
+}
+
+/** A locked package as the walk found it installed, in the directory its markers are read from. */
+interface InstalledPackage {
+  directory: string;
+  locked: LockedPackage;
 }
 
 /**
@@ -92,25 +102,29 @@ export async function readFingerprintContributors(
 ): Promise<FingerprintContributors> {
   const { projectPath, reader } = project;
   const lockfile = await readLockfile(reader);
-  if ((await reader.readDirectory('node_modules')) === null) {
-    throw new FingerprintError(
-      `${lockfile.name} is there but node_modules is not; install the dependencies first`,
-    );
-  }
-  const lockedPackages = resolveUniquePackages(
-    resolveReachedPackages(
-      resolveLockedTree(lockfile.name, lockfile.text, {
-        dependencies: await readProjectDependencies(reader, projectPath),
-        path: projectPath,
-      }),
-    ),
+  const installedPackages = await readInstalledPackages(
+    reader,
+    projectPath,
+    resolveLockedTree(lockfile.name, lockfile.text, {
+      dependencies: await readProjectDependencies(reader, projectPath),
+      path: projectPath,
+    }),
+  );
+  const directoriesByName = new Map(
+    installedPackages.map(installed => [
+      installed.locked.name,
+      installed.directory,
+    ]),
   );
   const nativeNames = new Set<string>();
-  for (const name of new Set(lockedPackages.map(locked => locked.name))) {
-    if (await isNativePackage(reader, projectPath, name)) {
+  for (const [name, directory] of directoriesByName) {
+    if (await isNativePackage(reader, name, directory)) {
       nativeNames.add(name);
     }
   }
+  const lockedPackages = resolveUniquePackages(
+    installedPackages.map(installed => installed.locked),
+  );
   return {
     nativeSources: await resolveNativeSources(
       reader,
@@ -160,26 +174,70 @@ async function readProjectDependencies(
     throw new FingerprintError(`${path} does not parse`);
   }
   const { dependencies, devDependencies, optionalDependencies } = manifest.data;
-  return [dependencies, devDependencies, optionalDependencies].flatMap(ranges =>
-    Object.entries(ranges ?? {}).map(([name, range]) => ({ name, range })),
-  );
+  return [
+    ...resolveDeclaredDependencies(dependencies, false),
+    ...resolveDeclaredDependencies(devDependencies, false),
+    ...resolveDeclaredDependencies(optionalDependencies, true),
+  ];
 }
 
-/** Each installed copy the walk reaches from the project once, whatever the path it was reached by. */
-function resolveReachedPackages(tree: LockedTree): LockedPackage[] {
-  const reachedPackages = new Map<string, LockedPackage>();
+/**
+ * Each installed copy the walk reaches from the project, once, whatever the
+ * path it was reached by. A locked package that is not installed is
+ * refused: its markers cannot be read, and hashing it as native-free would
+ * match binaries it does not describe. An optional one is skipped with its
+ * own dependencies, since a platform it does not support never installs it.
+ */
+async function readInstalledPackages(
+  reader: ProjectReader,
+  projectPath: string,
+  tree: LockedTree,
+): Promise<InstalledPackage[]> {
+  const installedPackages = new Map<string, InstalledPackage>();
   const pendingDependencies = [...tree.projectDependencies];
   for (
     let dependency = pendingDependencies.shift();
     dependency !== undefined;
     dependency = pendingDependencies.shift()
   ) {
-    if (!reachedPackages.has(dependency.key)) {
-      reachedPackages.set(dependency.key, dependency.package);
-      pendingDependencies.push(...tree.resolveDependencies(dependency));
+    if (installedPackages.has(dependency.key)) {
+      continue;
+    }
+    const { name, version } = dependency.package;
+    const directory = await readInstallDirectory(reader, projectPath, name);
+    if (directory === null) {
+      if (dependency.isOptional) {
+        continue;
+      }
+      throw new FingerprintError(
+        `the lockfile installs ${name} ${version} and node_modules does not hold it; install the dependencies first`,
+      );
+    }
+    installedPackages.set(dependency.key, {
+      directory,
+      locked: dependency.package,
+    });
+    pendingDependencies.push(...tree.resolveDependencies(dependency));
+  }
+  return [...installedPackages.values()];
+}
+
+/** The directory a package is installed in: the project's `node_modules`, the root's, or pnpm's hidden hoisting; null when none holds it. */
+async function readInstallDirectory(
+  reader: ProjectReader,
+  projectPath: string,
+  name: string,
+): Promise<string | null> {
+  for (const directory of new Set([
+    resolveProjectFilePath(projectPath, `node_modules/${name}`),
+    `node_modules/${name}`,
+    `node_modules/.pnpm/node_modules/${name}`,
+  ])) {
+    if ((await reader.readDirectory(directory)) !== null) {
+      return directory;
     }
   }
-  return [...reachedPackages.values()];
+  return null;
 }
 
 function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
@@ -199,22 +257,13 @@ function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
 
 async function isNativePackage(
   reader: ProjectReader,
-  projectPath: string,
   name: string,
+  directory: string,
 ): Promise<boolean> {
-  if ((FINGERPRINT_RUNTIME_PACKAGES as readonly string[]).includes(name)) {
-    return true;
-  }
-  for (const directory of new Set([
-    resolveProjectFilePath(projectPath, `node_modules/${name}`),
-    `node_modules/${name}`,
-    `node_modules/.pnpm/node_modules/${name}`,
-  ])) {
-    if ((await reader.readDirectory(directory)) !== null) {
-      return hasNativeMarkers(reader, directory);
-    }
-  }
-  return false;
+  return (
+    (FINGERPRINT_RUNTIME_PACKAGES as readonly string[]).includes(name) ||
+    hasNativeMarkers(reader, directory)
+  );
 }
 
 async function resolveNativeSources(

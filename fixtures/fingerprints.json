@@ -1,5 +1,5 @@
 {
-  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. refusedProjects are the projects whose fingerprint cannot be computed.",
+  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. refusedProjects are the projects whose fingerprint cannot be computed.",
   "cases": [
     {
       "name": "should keep the native packages and the Capacitor runtime of an npm project",
@@ -713,9 +713,9 @@
       "fingerprint": "fp1:44c3ae709f0cfcfec931c3cb0daf150a00f7ae810f7f5c5a57a4a56cf6c53b67"
     },
     {
-      "name": "should skip a locked package that is not installed on this machine",
+      "name": "should skip an optional dependency this machine's platform does not install",
       "files": {
-        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"workspaces\": [\n    \"packages/*\"\n  ],\n  \"dependencies\": {\n    \"@capacitor/android\": \"^7.4.3\",\n    \"@capacitor/camera\": \"^7.0.2\",\n    \"@capacitor/core\": \"^7.4.3\",\n    \"@capacitor/ios\": \"^7.4.3\",\n    \"@example/capacitor-ios-only\": \"^1.2.0\",\n    \"@example/capacitor-web-only\": \"^0.4.1\",\n    \"@example/pure-js\": \"^3.1.4\",\n    \"cordova-plugin-example\": \"^6.0.0\",\n    \"react-native-example-gradle\": \"^0.9.2\",\n    \"react-native-example-podspec\": \"^1.0.0\",\n    \"@example/local-plugin\": \"*\"\n  },\n  \"devDependencies\": {\n    \"@capacitor/cli\": \"^7.4.3\"\n  }\n}\n",
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"workspaces\": [\n    \"packages/*\"\n  ],\n  \"dependencies\": {\n    \"@capacitor/android\": \"^7.4.3\",\n    \"@capacitor/camera\": \"^7.0.2\",\n    \"@capacitor/core\": \"^7.4.3\",\n    \"@capacitor/ios\": \"^7.4.3\",\n    \"@example/capacitor-ios-only\": \"^1.2.0\",\n    \"@example/capacitor-web-only\": \"^0.4.1\",\n    \"@example/pure-js\": \"^3.1.4\",\n    \"cordova-plugin-example\": \"^6.0.0\",\n    \"react-native-example-gradle\": \"^0.9.2\",\n    \"react-native-example-podspec\": \"^1.0.0\",\n    \"@example/local-plugin\": \"*\"\n  },\n  \"devDependencies\": {\n    \"@capacitor/cli\": \"^7.4.3\"\n  },\n  \"optionalDependencies\": {\n    \"@example/native-other-platform\": \"^1.0.0\"\n  }\n}\n",
         "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"workspaces\": [\n        \"packages/*\"\n      ]\n    },\n    \"node_modules/@example/local-plugin\": {\n      \"resolved\": \"packages/local-plugin\",\n      \"link\": true\n    },\n    \"node_modules/@capacitor/android\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/android/-/android-7.4.3.tgz\",\n      \"integrity\": \"sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \"^7.4.0\"\n      }\n    },\n    \"node_modules/@capacitor/camera\": {\n      \"version\": \"7.0.2\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/camera/-/camera-7.0.2.tgz\",\n      \"integrity\": \"sha512-8HI8dJfV+WknsLLcsLSqeBKtgSwqCYUks2qAepLvYuDVwnHo+UVZfYZcM9hq4985dc/Dy23Ov4d5JUaZ6I+0Vg==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \">=7.0.0\"\n      }\n    },\n    \"node_modules/@capacitor/cli\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/cli/-/cli-7.4.3.tgz\",\n      \"integrity\": \"sha512-ny1AWNff/A4TL8ez/7lpJzjfrw6yWUhyYcBjUclAseEeLK2DGmnwrHGuQIQo/pi/STsXkvUihaqjvHtGu8ZAGA==\",\n      \"dev\": true\n    },\n    \"node_modules/@capacitor/core\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/core/-/core-7.4.3.tgz\",\n      \"integrity\": \"sha512-rrqE9yrn6MHTedoubCO7vkTvKy0P0cJi9iZ+TSassqrwzlz2FX4TwH/Jeeakc9Vel3lysxcn47Orh05XU4S3Lw==\",\n      \"dependencies\": {\n        \"tslib\": \"^2.1.0\"\n      }\n    },\n    \"node_modules/@capacitor/ios\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/ios/-/ios-7.4.3.tgz\",\n      \"integrity\": \"sha512-8gY7Uo/35yDTO/hHQLWMhjqhdzD3Zl1C1fW5cMPrMNolF1gX8iL/+RhHOh5Hxug5ceCGj0DTLI/b4jz5GV91Sg==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \"^7.4.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-ios-only\": {\n      \"version\": \"1.2.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-ios-only/-/capacitor-ios-only-1.2.0.tgz\",\n      \"integrity\": \"sha512-8qEQP3OOUZLIZq8DA39mY6GiHRRDQUUyOsJkTyM7h/ogldq2qvJmeCGPQJ4B8Mz8ws8ke9RzTEAPmSC/VZGcfA==\",\n      \"dependencies\": {\n        \"@example/native-core\": \"^2.0.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-web-only\": {\n      \"version\": \"0.4.1\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-web-only/-/capacitor-web-only-0.4.1.tgz\",\n      \"integrity\": \"sha512-l4XcwbwiGjKpWwruXfBvOXSz+h2ZqsUyOZSqYERTIjMDzreks2W6Q4dqdnVon1swxI/lCTm65RGykg4VEp0Tvg==\"\n    },\n    \"node_modules/@example/native-core\": {\n      \"version\": \"2.0.1\",\n      \"resolved\": \"https://registry.npmjs.org/@example/native-core/-/native-core-2.0.1.tgz\",\n      \"integrity\": \"sha512-sYN+/ZGfpeGSZsjT4HmZqBpidE74wK8wrtJFlSEqr0doZb3UmoJsnSvVCHIvrUDxTYU87c0thsw5Qs4jwad08Q==\"\n    },\n    \"node_modules/@example/pure-js\": {\n      \"version\": \"3.1.4\",\n      \"resolved\": \"https://registry.npmjs.org/@example/pure-js/-/pure-js-3.1.4.tgz\",\n      \"integrity\": \"sha512-ccfI6D+pDZJF9X8tmItUD8IsPcBgihwbfpSn/al2kDLQ+Srl8GGR8tJpqsdxHtdKy6o6HUTMyaCTXEUtRBwjew==\"\n    },\n    \"node_modules/cordova-plugin-example\": {\n      \"version\": \"6.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/cordova-plugin-example/-/cordova-plugin-example-6.0.0.tgz\",\n      \"integrity\": \"sha512-dNQsNfTc2Y3F6Cd1DKHMyt/9S3roNJ+uPVcIhCJABmVDrvx7tEnmTlq//irwch6jjIaRjg6NC0uursTWazFRkQ==\"\n    },\n    \"node_modules/react-native-example-gradle\": {\n      \"version\": \"0.9.2\",\n      \"resolved\": \"https://registry.npmjs.org/react-native-example-gradle/-/react-native-example-gradle-0.9.2.tgz\",\n      \"integrity\": \"sha512-+9OmzbAFRzKbEkGpCM0Dq9LTba2OAb98N6ZeNGFoUYvdBhlzmqSrqQc+1Y6G7OcpLvYIcgkahmPHHd/a1Pneyg==\"\n    },\n    \"node_modules/react-native-example-podspec\": {\n      \"version\": \"1.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/react-native-example-podspec/-/react-native-example-podspec-1.0.0.tgz\",\n      \"integrity\": \"sha512-/+EM5CXRqqg8gVpgA2QMAjMZxwaZ8/TUwOwxehYdsc4yb19lLL0XywX74LsmKjDvDZm8YtQUpq32mNkHPlCIsw==\"\n    },\n    \"node_modules/tslib\": {\n      \"version\": \"2.8.1\",\n      \"resolved\": \"https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz\",\n      \"integrity\": \"sha512-HZowpFp+0L3J16xUhV37Cvy427WjmWl9Rr1tivWFT/O6GE5Rvz/4v4cCoqP2SwldFcwR3n7v4LSsdjoo4W0VLg==\"\n    },\n    \"packages/local-plugin\": {\n      \"name\": \"@example/local-plugin\",\n      \"version\": \"0.1.0\"\n    },\n    \"node_modules/@example/native-other-platform\": {\n      \"version\": \"1.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/native-other-platform/-/native-other-platform-1.0.0.tgz\",\n      \"integrity\": \"sha512-OiItd7NZYoV8xfBDk/FBKcD8jQ5mxJpvxmLM+781CU16ij8qXAtR63vKn7oZXEjfYvvu+z+8fp4ZslzYjBYvPQ==\",\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    }\n  }\n}\n",
         "node_modules/@capacitor/android/package.json": "{\n  \"name\": \"@capacitor/android\",\n  \"version\": \"7.4.3\"\n}\n",
         "node_modules/@capacitor/camera/package.json": "{\n  \"name\": \"@capacitor/camera\",\n  \"version\": \"7.0.2\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
@@ -803,6 +803,96 @@
         ]
       },
       "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+    },
+    {
+      "name": "should skip a package's optional dependency this machine's platform does not install, in an npm project",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/capacitor-scanner\": \"^1.3.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-scanner\": {\n      \"version\": \"1.3.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-scanner/-/capacitor-scanner-1.3.0.tgz\",\n      \"integrity\": \"sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==\",\n      \"optionalDependencies\": {\n        \"@example/scanner-win32\": \"1.3.0\"\n      }\n    },\n    \"node_modules/@example/scanner-win32\": {\n      \"version\": \"1.3.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/scanner-win32/-/scanner-win32-1.3.0.tgz\",\n      \"integrity\": \"sha512-dapqyDGMdpNsWSL2S2icVGM7yfT8oQi5r7Yf5CMpvIrKj0UUKWxH2g0jGvKwG+N73Vq4xNg6PpCGXvPNGpHd+Q==\",\n      \"cpu\": [\n        \"x64\"\n      ],\n      \"optional\": true,\n      \"os\": [\n        \"win32\"\n      ]\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n"
+      },
+      "nativeSourcePaths": [],
+      "projectPath": "",
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
+            "name": "@example/capacitor-scanner",
+            "version": "1.3.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+    },
+    {
+      "name": "should skip a package's optional dependency this machine's platform does not install, in a pnpm project",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        "pnpm-lock.yaml": "lockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      '@example/capacitor-scanner':\n        specifier: ^1.3.0\n        version: 1.3.0\n\npackages:\n\n  '@example/capacitor-scanner@1.3.0':\n    resolution: {integrity: sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==}\n\n  '@example/scanner-win32@1.3.0':\n    resolution: {integrity: sha512-dapqyDGMdpNsWSL2S2icVGM7yfT8oQi5r7Yf5CMpvIrKj0UUKWxH2g0jGvKwG+N73Vq4xNg6PpCGXvPNGpHd+Q==}\n    cpu: [x64]\n    os: [win32]\n\nsnapshots:\n\n  '@example/capacitor-scanner@1.3.0':\n    optionalDependencies:\n      '@example/scanner-win32': 1.3.0\n\n  '@example/scanner-win32@1.3.0':\n    optional: true\n",
+        "node_modules/.modules.yaml": "layoutVersion: 5\nnodeLinker: isolated\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n"
+      },
+      "nativeSourcePaths": [],
+      "projectPath": "",
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
+            "name": "@example/capacitor-scanner",
+            "version": "1.3.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+    },
+    {
+      "name": "should skip a package's optional dependency this machine's platform does not install, in a yarn classic project",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        "yarn.lock": "# THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.\n# yarn lockfile v1\n\n\n\"@example/capacitor-scanner@^1.3.0\":\n  version \"1.3.0\"\n  resolved \"https://registry.yarnpkg.com/@example/capacitor-scanner/-/capacitor-scanner-1.3.0.tgz\"\n  integrity sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==\n  optionalDependencies:\n    \"@example/scanner-win32\" \"1.3.0\"\n\n\"@example/scanner-win32@1.3.0\":\n  version \"1.3.0\"\n  resolved \"https://registry.yarnpkg.com/@example/scanner-win32/-/scanner-win32-1.3.0.tgz\"\n  integrity sha512-dapqyDGMdpNsWSL2S2icVGM7yfT8oQi5r7Yf5CMpvIrKj0UUKWxH2g0jGvKwG+N73Vq4xNg6PpCGXvPNGpHd+Q==\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n"
+      },
+      "nativeSourcePaths": [],
+      "projectPath": "",
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
+            "name": "@example/capacitor-scanner",
+            "version": "1.3.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+    },
+    {
+      "name": "should skip a package's optional dependency this machine's platform does not install, in a yarn berry project",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        ".yarnrc.yml": "nodeLinker: node-modules\n",
+        "yarn.lock": "# This file is generated by running \"yarn install\" inside your project.\n# Manual changes might be lost - proceed with caution!\n\n__metadata:\n  version: 8\n  cacheKey: 10c0\n\n\"@example/capacitor-scanner@npm:^1.3.0\":\n  version: 1.3.0\n  resolution: \"@example/capacitor-scanner@npm:1.3.0\"\n  dependencies:\n    \"@example/scanner-win32\": \"npm:1.3.0\"\n  dependenciesMeta:\n    \"@example/scanner-win32\":\n      optional: true\n  checksum: 10c0/76e1d72c2b496faf925f3ec61a4bd7b9d34f5c6a1e8f339b6fb497036c6a0539\n  languageName: node\n  linkType: hard\n\n\"@example/scanner-win32@npm:1.3.0\":\n  version: 1.3.0\n  resolution: \"@example/scanner-win32@npm:1.3.0\"\n  conditions: os=win32 & cpu=x64\n  checksum: 10c0/c997f9b18fe39ee73842c31e9028a1f9210b060307a27ee0d32b22b603ee6307\n  languageName: node\n  linkType: hard\n\n\"example-app@workspace:.\":\n  version: 0.0.0-use.local\n  resolution: \"example-app@workspace:.\"\n  dependencies:\n    \"@example/capacitor-scanner\": \"npm:^1.3.0\"\n  languageName: unknown\n  linkType: soft\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n"
+      },
+      "nativeSourcePaths": [],
+      "projectPath": "",
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "10c0/76e1d72c2b496faf925f3ec61a4bd7b9d34f5c6a1e8f339b6fb497036c6a0539",
+            "name": "@example/capacitor-scanner",
+            "version": "1.3.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:c0562665ab3e3278aabc06780169857c129e68b97e5dc06dafade04cffae7a51"
     },
     {
       "name": "should yield the fingerprint of an empty contract when nothing ships native code",
@@ -1058,7 +1148,47 @@
     {
       "name": "should refuse a project whose dependencies are not installed",
       "files": {
-        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"workspaces\": [\n        \"packages/*\"\n      ]\n    },\n    \"node_modules/@example/local-plugin\": {\n      \"resolved\": \"packages/local-plugin\",\n      \"link\": true\n    },\n    \"node_modules/tslib\": {\n      \"version\": \"2.8.1\",\n      \"resolved\": \"https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz\",\n      \"integrity\": \"sha512-HZowpFp+0L3J16xUhV37Cvy427WjmWl9Rr1tivWFT/O6GE5Rvz/4v4cCoqP2SwldFcwR3n7v4LSsdjoo4W0VLg==\"\n    },\n    \"packages/local-plugin\": {\n      \"name\": \"@example/local-plugin\",\n      \"version\": \"0.1.0\"\n    }\n  }\n}\n"
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@capacitor/core\": \"^7.4.3\"\n  }\n}\n",
+        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@capacitor/core\": \"^7.4.3\"\n      }\n    },\n    \"node_modules/@capacitor/core\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/core/-/core-7.4.3.tgz\",\n      \"integrity\": \"sha512-rrqE9yrn6MHTedoubCO7vkTvKy0P0cJi9iZ+TSassqrwzlz2FX4TwH/Jeeakc9Vel3lysxcn47Orh05XU4S3Lw==\"\n    }\n  }\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "projectPath": ""
+    },
+    {
+      "name": "should refuse a project whose transitive dependency is not installed, pure JavaScript included",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"workspaces\": [\n    \"packages/*\"\n  ],\n  \"dependencies\": {\n    \"@capacitor/android\": \"^7.4.3\",\n    \"@capacitor/camera\": \"^7.0.2\",\n    \"@capacitor/core\": \"^7.4.3\",\n    \"@capacitor/ios\": \"^7.4.3\",\n    \"@example/capacitor-ios-only\": \"^1.2.0\",\n    \"@example/capacitor-web-only\": \"^0.4.1\",\n    \"@example/pure-js\": \"^3.1.4\",\n    \"cordova-plugin-example\": \"^6.0.0\",\n    \"react-native-example-gradle\": \"^0.9.2\",\n    \"react-native-example-podspec\": \"^1.0.0\",\n    \"@example/local-plugin\": \"*\"\n  },\n  \"devDependencies\": {\n    \"@capacitor/cli\": \"^7.4.3\"\n  }\n}\n",
+        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"workspaces\": [\n        \"packages/*\"\n      ]\n    },\n    \"node_modules/@example/local-plugin\": {\n      \"resolved\": \"packages/local-plugin\",\n      \"link\": true\n    },\n    \"node_modules/@capacitor/android\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/android/-/android-7.4.3.tgz\",\n      \"integrity\": \"sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \"^7.4.0\"\n      }\n    },\n    \"node_modules/@capacitor/camera\": {\n      \"version\": \"7.0.2\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/camera/-/camera-7.0.2.tgz\",\n      \"integrity\": \"sha512-8HI8dJfV+WknsLLcsLSqeBKtgSwqCYUks2qAepLvYuDVwnHo+UVZfYZcM9hq4985dc/Dy23Ov4d5JUaZ6I+0Vg==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \">=7.0.0\"\n      }\n    },\n    \"node_modules/@capacitor/cli\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/cli/-/cli-7.4.3.tgz\",\n      \"integrity\": \"sha512-ny1AWNff/A4TL8ez/7lpJzjfrw6yWUhyYcBjUclAseEeLK2DGmnwrHGuQIQo/pi/STsXkvUihaqjvHtGu8ZAGA==\",\n      \"dev\": true\n    },\n    \"node_modules/@capacitor/core\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/core/-/core-7.4.3.tgz\",\n      \"integrity\": \"sha512-rrqE9yrn6MHTedoubCO7vkTvKy0P0cJi9iZ+TSassqrwzlz2FX4TwH/Jeeakc9Vel3lysxcn47Orh05XU4S3Lw==\",\n      \"dependencies\": {\n        \"tslib\": \"^2.1.0\"\n      }\n    },\n    \"node_modules/@capacitor/ios\": {\n      \"version\": \"7.4.3\",\n      \"resolved\": \"https://registry.npmjs.org/@capacitor/ios/-/ios-7.4.3.tgz\",\n      \"integrity\": \"sha512-8gY7Uo/35yDTO/hHQLWMhjqhdzD3Zl1C1fW5cMPrMNolF1gX8iL/+RhHOh5Hxug5ceCGj0DTLI/b4jz5GV91Sg==\",\n      \"peerDependencies\": {\n        \"@capacitor/core\": \"^7.4.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-ios-only\": {\n      \"version\": \"1.2.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-ios-only/-/capacitor-ios-only-1.2.0.tgz\",\n      \"integrity\": \"sha512-8qEQP3OOUZLIZq8DA39mY6GiHRRDQUUyOsJkTyM7h/ogldq2qvJmeCGPQJ4B8Mz8ws8ke9RzTEAPmSC/VZGcfA==\",\n      \"dependencies\": {\n        \"@example/native-core\": \"^2.0.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-web-only\": {\n      \"version\": \"0.4.1\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-web-only/-/capacitor-web-only-0.4.1.tgz\",\n      \"integrity\": \"sha512-l4XcwbwiGjKpWwruXfBvOXSz+h2ZqsUyOZSqYERTIjMDzreks2W6Q4dqdnVon1swxI/lCTm65RGykg4VEp0Tvg==\"\n    },\n    \"node_modules/@example/native-core\": {\n      \"version\": \"2.0.1\",\n      \"resolved\": \"https://registry.npmjs.org/@example/native-core/-/native-core-2.0.1.tgz\",\n      \"integrity\": \"sha512-sYN+/ZGfpeGSZsjT4HmZqBpidE74wK8wrtJFlSEqr0doZb3UmoJsnSvVCHIvrUDxTYU87c0thsw5Qs4jwad08Q==\"\n    },\n    \"node_modules/@example/pure-js\": {\n      \"version\": \"3.1.4\",\n      \"resolved\": \"https://registry.npmjs.org/@example/pure-js/-/pure-js-3.1.4.tgz\",\n      \"integrity\": \"sha512-ccfI6D+pDZJF9X8tmItUD8IsPcBgihwbfpSn/al2kDLQ+Srl8GGR8tJpqsdxHtdKy6o6HUTMyaCTXEUtRBwjew==\"\n    },\n    \"node_modules/cordova-plugin-example\": {\n      \"version\": \"6.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/cordova-plugin-example/-/cordova-plugin-example-6.0.0.tgz\",\n      \"integrity\": \"sha512-dNQsNfTc2Y3F6Cd1DKHMyt/9S3roNJ+uPVcIhCJABmVDrvx7tEnmTlq//irwch6jjIaRjg6NC0uursTWazFRkQ==\"\n    },\n    \"node_modules/react-native-example-gradle\": {\n      \"version\": \"0.9.2\",\n      \"resolved\": \"https://registry.npmjs.org/react-native-example-gradle/-/react-native-example-gradle-0.9.2.tgz\",\n      \"integrity\": \"sha512-+9OmzbAFRzKbEkGpCM0Dq9LTba2OAb98N6ZeNGFoUYvdBhlzmqSrqQc+1Y6G7OcpLvYIcgkahmPHHd/a1Pneyg==\"\n    },\n    \"node_modules/react-native-example-podspec\": {\n      \"version\": \"1.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/react-native-example-podspec/-/react-native-example-podspec-1.0.0.tgz\",\n      \"integrity\": \"sha512-/+EM5CXRqqg8gVpgA2QMAjMZxwaZ8/TUwOwxehYdsc4yb19lLL0XywX74LsmKjDvDZm8YtQUpq32mNkHPlCIsw==\"\n    },\n    \"node_modules/tslib\": {\n      \"version\": \"2.8.1\",\n      \"resolved\": \"https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz\",\n      \"integrity\": \"sha512-HZowpFp+0L3J16xUhV37Cvy427WjmWl9Rr1tivWFT/O6GE5Rvz/4v4cCoqP2SwldFcwR3n7v4LSsdjoo4W0VLg==\"\n    },\n    \"packages/local-plugin\": {\n      \"name\": \"@example/local-plugin\",\n      \"version\": \"0.1.0\"\n    }\n  }\n}\n",
+        "node_modules/@capacitor/android/package.json": "{\n  \"name\": \"@capacitor/android\",\n  \"version\": \"7.4.3\"\n}\n",
+        "node_modules/@capacitor/camera/package.json": "{\n  \"name\": \"@capacitor/camera\",\n  \"version\": \"7.0.2\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@capacitor/cli/package.json": "{\n  \"name\": \"@capacitor/cli\",\n  \"version\": \"7.4.3\"\n}\n",
+        "node_modules/@capacitor/core/package.json": "{\n  \"name\": \"@capacitor/core\",\n  \"version\": \"7.4.3\"\n}\n",
+        "node_modules/@capacitor/ios/package.json": "{\n  \"name\": \"@capacitor/ios\",\n  \"version\": \"7.4.3\"\n}\n",
+        "node_modules/@example/capacitor-ios-only/package.json": "{\n  \"name\": \"@example/capacitor-ios-only\",\n  \"version\": \"1.2.0\",\n  \"capacitor\": {\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-web-only/package.json": "{\n  \"name\": \"@example/capacitor-web-only\",\n  \"version\": \"0.4.1\",\n  \"capacitor\": {}\n}\n",
+        "node_modules/@example/native-core/package.json": "{\n  \"name\": \"@example/native-core\",\n  \"version\": \"2.0.1\"\n}\n",
+        "node_modules/@example/pure-js/package.json": "{\n  \"name\": \"@example/pure-js\",\n  \"version\": \"3.1.4\"\n}\n",
+        "node_modules/cordova-plugin-example/package.json": "{\n  \"name\": \"cordova-plugin-example\",\n  \"version\": \"6.0.0\"\n}\n",
+        "node_modules/react-native-example-gradle/package.json": "{\n  \"name\": \"react-native-example-gradle\",\n  \"version\": \"0.9.2\"\n}\n",
+        "node_modules/react-native-example-podspec/package.json": "{\n  \"name\": \"react-native-example-podspec\",\n  \"version\": \"1.0.0\"\n}\n",
+        "node_modules/@capacitor/android/capacitor/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@capacitor/camera/CapacitorCamera.podspec": "Pod::Spec.new do |s|\n  s.name = 'CapacitorCamera'\nend\n",
+        "node_modules/@capacitor/camera/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@capacitor/camera/ios/Sources/CameraPlugin/CameraPlugin.swift": "import Capacitor\n",
+        "node_modules/@capacitor/core/dist/index.js": "export {};\n",
+        "node_modules/@capacitor/ios/Capacitor/Capacitor/CAPBridge.swift": "import Foundation\n",
+        "node_modules/@example/capacitor-ios-only/ios/Plugin/Plugin.swift": "import Capacitor\n",
+        "node_modules/@example/capacitor-web-only/dist/plugin.js": "export {};\n",
+        "node_modules/@example/native-core/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@example/pure-js/index.js": "module.exports = {};\n",
+        "node_modules/cordova-plugin-example/plugin.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<plugin xmlns=\"http://apache.org/cordova/ns/plugins/1.0\" id=\"cordova-plugin-example\" version=\"6.0.0\"/>\n",
+        "node_modules/react-native-example-gradle/android/build.gradle.kts": "plugins { id(\"com.android.library\") }\n",
+        "node_modules/react-native-example-gradle/ios/README.md": "No iOS module.\n",
+        "node_modules/react-native-example-podspec/ios/ExampleModule.podspec": "Pod::Spec.new do |s|\n  s.name = 'ExampleModule'\nend\n",
+        "node_modules/react-native-example-podspec/ios/ExampleModule.mm": "#import <React/RCTBridgeModule.h>\n",
+        "packages/local-plugin/package.json": "{\n  \"name\": \"@example/local-plugin\",\n  \"version\": \"0.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/local-plugin/package.json": "{\n  \"name\": \"@example/local-plugin\",\n  \"version\": \"0.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/local-plugin/android/build.gradle": "apply plugin: \"com.android.library\"\n"
       },
       "nativeSourcePaths": [],
       "projectPath": ""

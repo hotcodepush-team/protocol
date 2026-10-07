@@ -24,8 +24,13 @@ export interface LockedPackage {
   version: string;
 }
 
-/** A dependency as the lockfile resolved it: the lockfile's own key of the installed copy, and its package. */
+/**
+ * A dependency as the lockfile resolved it: the lockfile's own key of the
+ * installed copy, its package, and whether it is optional, which a platform
+ * the package does not support never installs.
+ */
 export interface LockedDependency {
+  isOptional: boolean;
   key: string;
   package: LockedPackage;
 }
@@ -48,8 +53,9 @@ export interface LockedProject {
   path: string;
 }
 
-/** A dependency as a package.json or a lockfile entry declares it: the name and the range, or the version a lockfile pinned. */
+/** A dependency as a package.json or a lockfile entry declares it: the name, the range or the version a lockfile pinned, and whether it is optional. */
 export interface DeclaredDependency {
+  isOptional: boolean;
   name: string;
   range: string;
 }
@@ -119,6 +125,10 @@ const PnpmLockfileSchema = z.looseObject({
 const YarnLockfileEntrySchema = z.looseObject({
   checksum: z.string().optional(),
   dependencies: DependencyRangesSchema,
+  /** Berry's: an optional dependency sits among the dependencies, marked here; parseSyml reads every scalar as a string. */
+  dependenciesMeta: z
+    .record(z.string(), z.looseObject({ optional: z.string().optional() }))
+    .optional(),
   integrity: z.string().optional(),
   linkType: z.string().optional(),
   optionalDependencies: DependencyRangesSchema,
@@ -183,6 +193,7 @@ function resolveNpmLockedTree(
           ? []
           : [
               {
+                isOptional: declared.isOptional,
                 key,
                 package: {
                   integrity: entry.integrity ?? entry.resolved ?? null,
@@ -202,9 +213,9 @@ function resolveNpmLockedTree(
     resolveDependencies: dependency => {
       const entry = packages[dependency.key];
       return [
-        ...resolveDeclaredDependencies(entry?.dependencies),
-        ...resolveDeclaredDependencies(entry?.optionalDependencies),
-        ...resolveDeclaredDependencies(entry?.peerDependencies),
+        ...resolveDeclaredDependencies(entry?.dependencies, false),
+        ...resolveDeclaredDependencies(entry?.optionalDependencies, true),
+        ...resolveDeclaredDependencies(entry?.peerDependencies, false),
       ].flatMap(declared => resolveDependency(dependency.key, declared));
     },
   };
@@ -255,6 +266,7 @@ function resolvePnpmLockedTree(
     const resolution = packages[packageKey]?.resolution;
     return [
       {
+        isOptional: declared.isOptional,
         key,
         package: {
           integrity: resolution?.integrity ?? resolution?.tarball ?? null,
@@ -265,17 +277,17 @@ function resolvePnpmLockedTree(
     ];
   };
   return {
-    projectDependencies: project.dependencies.flatMap(({ name }) => {
-      const version = importedVersions.get(name);
+    projectDependencies: project.dependencies.flatMap(declared => {
+      const version = importedVersions.get(declared.name);
       return version === undefined
         ? []
-        : resolveDependency({ name, range: version });
+        : resolveDependency({ ...declared, range: version });
     }),
     resolveDependencies: dependency => {
       const snapshot = snapshots[dependency.key];
       return [
-        ...resolveDeclaredDependencies(snapshot?.dependencies),
-        ...resolveDeclaredDependencies(snapshot?.optionalDependencies),
+        ...resolveDeclaredDependencies(snapshot?.dependencies, false),
+        ...resolveDeclaredDependencies(snapshot?.optionalDependencies, true),
       ].flatMap(resolveDependency);
     },
   };
@@ -312,6 +324,7 @@ function resolveYarnLockedTree(
     const { checksum, integrity, resolution, resolved, version } = entry;
     return [
       {
+        isOptional: declared.isOptional,
         key,
         package: {
           integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
@@ -337,8 +350,12 @@ function resolveYarnLockedTree(
         lockfile[dependency.key],
       );
       return [
-        ...resolveDeclaredDependencies(entry.dependencies),
-        ...resolveDeclaredDependencies(entry.optionalDependencies),
+        ...Object.entries(entry.dependencies ?? {}).map(([name, range]) => ({
+          isOptional: entry.dependenciesMeta?.[name]?.optional === 'true',
+          name,
+          range,
+        })),
+        ...resolveDeclaredDependencies(entry.optionalDependencies, true),
       ].flatMap(resolveDependency);
     },
   };
@@ -363,9 +380,9 @@ function resolveBerryWorkspaceDependencies(
   const workspaceRanges =
     parseYarnLockfileEntry(workspaceKey, lockfile[workspaceKey]).dependencies ??
     {};
-  return project.dependencies.flatMap(({ name }) => {
-    const range = workspaceRanges[name];
-    return range === undefined ? [] : [{ name, range }];
+  return project.dependencies.flatMap(declared => {
+    const range = workspaceRanges[declared.name];
+    return range === undefined ? [] : [{ ...declared, range }];
   });
 }
 
@@ -376,16 +393,19 @@ function parseYarnLockfileEntry(
   const entry = YarnLockfileEntrySchema.safeParse(value);
   if (!entry.success) {
     throw new FingerprintError(
-      `yarn.lock holds an entry without a version, ${key}`,
+      `yarn.lock holds an entry it cannot read, ${key}`,
     );
   }
   return entry.data;
 }
 
-function resolveDeclaredDependencies(
+/** The dependencies of a `{ name: range }` record, every one optional or none. */
+export function resolveDeclaredDependencies(
   ranges: Record<string, string> | undefined,
+  isOptional: boolean,
 ): DeclaredDependency[] {
   return Object.entries(ranges ?? {}).map(([name, range]) => ({
+    isOptional,
     name,
     range,
   }));

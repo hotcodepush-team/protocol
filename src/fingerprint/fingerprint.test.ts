@@ -87,6 +87,25 @@ describe('readFingerprintContributors', () => {
       ).rejects.toThrow(FingerprintError);
     },
   );
+
+  test('should name the locked package that is not installed', async () => {
+    const reader = createMemoryReader({
+      'package-lock.json': JSON.stringify({
+        lockfileVersion: 3,
+        packages: { 'node_modules/@capacitor/core': { version: '7.4.3' } },
+      }),
+      'package.json': JSON.stringify({
+        dependencies: { '@capacitor/core': '^7.4.3' },
+      }),
+    });
+    await expect(
+      readFingerprintContributors({
+        nativeSourcePaths: [],
+        projectPath: '',
+        reader,
+      }),
+    ).rejects.toThrow('@capacitor/core 7.4.3');
+  });
 });
 
 describe('computeFingerprint', () => {
