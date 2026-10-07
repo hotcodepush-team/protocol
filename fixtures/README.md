@@ -70,7 +70,7 @@ The batches the events endpoint, `POST /v1/apps/{appId}/events`, accepts and ref
 The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused with `E_VALIDATION`, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
-The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends.
+The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `MAX_EVENTS_PER_BATCH` whole.
 
 ## `signatures.json`
 
