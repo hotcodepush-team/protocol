@@ -21,8 +21,8 @@ import type {
 } from './lockfiles.js';
 import {
   LOCKFILE_NAMES,
+  readLockedTree,
   resolveDeclaredDependencies,
-  resolveLockedTree,
 } from './lockfiles.js';
 import { hasNativeMarkers } from './native-markers.js';
 import type { ProjectReader } from './project-reader.js';
@@ -113,10 +113,15 @@ export async function readFingerprintContributors(
   const installedPackages = await readInstalledPackages(
     reader,
     projectPath,
-    resolveLockedTree(lockfile.name, lockfile.text, {
-      dependencies: await readProjectDependencies(reader, projectPath),
-      path: projectPath,
-    }),
+    await readLockedTree(
+      lockfile.name,
+      lockfile.text,
+      {
+        dependencies: await readProjectDependencies(reader, projectPath),
+        path: projectPath,
+      },
+      reader,
+    ),
   );
   const nativePackages: LockedPackage[] = [];
   for (const { directory, locked } of installedPackages) {

@@ -1,5 +1,5 @@
 {
-  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. Each installed copy's markers are read where the lockfile installs it — npm's key, pnpm's virtual store directory, else the nearest node_modules from the package depending on it, as Node resolves it — so a nested copy is never read from a hoisted namesake of another version. refusedProjects are the projects whose fingerprint cannot be computed.",
+  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. Each installed copy's markers are read where the lockfile installs it — npm's key, pnpm's virtual store directory, else the nearest node_modules from the package depending on it, as Node resolves it — so a nested copy is never read from a hoisted namesake of another version; a virtual store name pnpm shortened to a prefix and a hash is the one store directory the unshortened name begins with. An aliased dependency, npm: and another package, contributes that package's version and integrity under the name the project declares, in every lockfile. refusedProjects are the projects whose fingerprint cannot be computed.",
   "cases": [
     {
       "name": "should keep the native packages and the Capacitor runtime of an npm project",
@@ -686,6 +686,104 @@
         ]
       },
       "fingerprint": "fp1:1c4c8d985463571b8915153fa2584032006865c9a3387c1355d4366e946d9dd2"
+    },
+    {
+      "name": "should take an aliased package's version and integrity under the name the project declares, in a pnpm project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"react-native\": \"npm:@example/react-native-tv@0.80.0-0\"\n  }\n}\n",
+        "pnpm-lock.yaml": "lockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      react-native:\n        specifier: npm:@example/react-native-tv@0.80.0-0\n        version: '@example/react-native-tv@0.80.0-0'\n\npackages:\n\n  '@example/react-native-tv@0.80.0-0':\n    resolution: {integrity: sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==}\n\nsnapshots:\n\n  '@example/react-native-tv@0.80.0-0': {}\n",
+        "node_modules/.modules.yaml": "layoutVersion: 5\nnodeLinker: isolated\n",
+        "node_modules/react-native/package.json": "{\n  \"name\": \"@example/react-native-tv\",\n  \"version\": \"0.80.0-0\"\n}\n",
+        "node_modules/.pnpm/@example+react-native-tv@0.80.0-0/node_modules/@example/react-native-tv/package.json": "{\n  \"name\": \"@example/react-native-tv\",\n  \"version\": \"0.80.0-0\"\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==",
+            "name": "react-native",
+            "version": "0.80.0-0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:ba81be4093f6efb715ad18ebaab955ac6bb4ac4903022fdd015a857ba4f34585"
+    },
+    {
+      "name": "should take an aliased package's version and integrity under the name the project declares, in an npm project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"react-native\": \"npm:@example/react-native-tv@0.80.0-0\"\n  }\n}\n",
+        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"react-native\": \"npm:@example/react-native-tv@0.80.0-0\"\n      }\n    },\n    \"node_modules/react-native\": {\n      \"name\": \"@example/react-native-tv\",\n      \"version\": \"0.80.0-0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/react-native-tv/-/react-native-tv-0.80.0-0.tgz\",\n      \"integrity\": \"sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==\"\n    }\n  }\n}\n",
+        "node_modules/react-native/package.json": "{\n  \"name\": \"@example/react-native-tv\",\n  \"version\": \"0.80.0-0\"\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==",
+            "name": "react-native",
+            "version": "0.80.0-0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:ba81be4093f6efb715ad18ebaab955ac6bb4ac4903022fdd015a857ba4f34585"
+    },
+    {
+      "name": "should read each package pnpm stores under a shortened, hashed name in its own virtual-store directory, a dependent's and its dependency's alike",
+      "projectPath": "",
+      "files": {
+        "node_modules/.modules.yaml": "layoutVersion: 5\nnodeLinker: isolated\n",
+        "node_modules/.pnpm/@example+navigation-core@7.1.0_react-native@0.80.0_react@19.1.0__react@19.1.0/node_modules/@example/navigation-core/package.json": "{\n  \"name\": \"@example/navigation-core\",\n  \"version\": \"7.1.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-core@7.1.0_react-native@0.80.0_react@19.1.0__react@19.1.0/node_modules/react-native/package.json": "{\n  \"name\": \"react-native\",\n  \"version\": \"0.80.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-core@7.1.0_react-native@0.80.0_react@19.1.0__react@19.1.0/node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-elements@2.4.0_@example+navigation-core@7.1.0_react-native@0.80.0_r_3fc95fe93171756d9ee24173038be9cc/node_modules/@example/navigation-core/package.json": "{\n  \"name\": \"@example/navigation-core\",\n  \"version\": \"7.1.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-elements@2.4.0_@example+navigation-core@7.1.0_react-native@0.80.0_r_3fc95fe93171756d9ee24173038be9cc/node_modules/@example/navigation-elements/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/.pnpm/@example+navigation-elements@2.4.0_@example+navigation-core@7.1.0_react-native@0.80.0_r_3fc95fe93171756d9ee24173038be9cc/node_modules/@example/navigation-elements/package.json": "{\n  \"name\": \"@example/navigation-elements\",\n  \"version\": \"2.4.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-elements@2.4.0_@example+navigation-core@7.1.0_react-native@0.80.0_r_3fc95fe93171756d9ee24173038be9cc/node_modules/react-native/package.json": "{\n  \"name\": \"react-native\",\n  \"version\": \"0.80.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-elements@2.4.0_@example+navigation-core@7.1.0_react-native@0.80.0_r_3fc95fe93171756d9ee24173038be9cc/node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/@example/navigation-core/package.json": "{\n  \"name\": \"@example/navigation-core\",\n  \"version\": \"7.1.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/@example/navigation-elements/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/@example/navigation-elements/package.json": "{\n  \"name\": \"@example/navigation-elements\",\n  \"version\": \"2.4.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/@example/navigation-stack/ios/ExampleNavigationStack.podspec": "Pod::Spec.new do |s|\n  s.name = 'ExampleNavigationStack'\nend\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/@example/navigation-stack/package.json": "{\n  \"name\": \"@example/navigation-stack\",\n  \"version\": \"7.3.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/react-native/package.json": "{\n  \"name\": \"react-native\",\n  \"version\": \"0.80.0\"\n}\n",
+        "node_modules/.pnpm/@example+navigation-stack@7.3.0_@example+navigation-core@7.1.0_react-native@0.80.0_reac_1d0a2c3adfbaa9a3439d276dcbd57c2b/node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "node_modules/.pnpm/react-native@0.80.0_react@19.1.0/node_modules/react-native/package.json": "{\n  \"name\": \"react-native\",\n  \"version\": \"0.80.0\"\n}\n",
+        "node_modules/.pnpm/react-native@0.80.0_react@19.1.0/node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "node_modules/.pnpm/react@19.1.0/node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "node_modules/@example/navigation-core/package.json": "{\n  \"name\": \"@example/navigation-core\",\n  \"version\": \"7.1.0\"\n}\n",
+        "node_modules/@example/navigation-stack/ios/ExampleNavigationStack.podspec": "Pod::Spec.new do |s|\n  s.name = 'ExampleNavigationStack'\nend\n",
+        "node_modules/@example/navigation-stack/package.json": "{\n  \"name\": \"@example/navigation-stack\",\n  \"version\": \"7.3.0\"\n}\n",
+        "node_modules/react-native/package.json": "{\n  \"name\": \"react-native\",\n  \"version\": \"0.80.0\"\n}\n",
+        "node_modules/react/package.json": "{\n  \"name\": \"react\",\n  \"version\": \"19.1.0\"\n}\n",
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/navigation-core\": \"^7.1.0\",\n    \"@example/navigation-stack\": \"^7.3.0\",\n    \"react\": \"19.1.0\",\n    \"react-native\": \"0.80.0\"\n  }\n}\n",
+        "pnpm-lock.yaml": "lockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      '@example/navigation-core':\n        specifier: ^7.1.0\n        version: 7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0)\n      '@example/navigation-stack':\n        specifier: ^7.3.0\n        version: 7.3.0(@example/navigation-core@7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0))(react-native@0.80.0(react@19.1.0))(react@19.1.0)\n      react:\n        specifier: 19.1.0\n        version: 19.1.0\n      react-native:\n        specifier: 0.80.0\n        version: 0.80.0(react@19.1.0)\n\npackages:\n\n  '@example/navigation-core@7.1.0':\n    resolution: {integrity: sha512-n1SJ3cRg01K51HQaW1bD3nqnT8ixlaU5P4F/e3FWnRd2yyWwEJDeJVAWweGDpvj5+WvyKvdoiPhZnQoB1uaWag==}\n    peerDependencies:\n      react: '*'\n      react-native: '*'\n\n  '@example/navigation-elements@2.4.0':\n    resolution: {integrity: sha512-yTzKN0YfYzPWN8WGSRthzKEO2G94tJoDHOrZ6qTH49f4oUmTkSmHONc53TljjzLvFkVzgiSn9cl8Kbmr9OPKyw==}\n    peerDependencies:\n      '@example/navigation-core': ^7.0.0\n      react: '*'\n      react-native: '*'\n\n  '@example/navigation-stack@7.3.0':\n    resolution: {integrity: sha512-jno8cS5PqGz3NqCoO0NHFlAtlEtOreGGqIjLyxZT4mDDDP6MeSvU2aDE+ut3h7JBysKIOOsmOwvTtzRzo8OQhg==}\n    peerDependencies:\n      '@example/navigation-core': ^7.0.0\n      react: '*'\n      react-native: '*'\n\n  react-native@0.80.0:\n    resolution: {integrity: sha512-ZtEQgDLYaQodqAhw9/4eieWC3ngk6UzSfPDBgGet1yHGj7GGChZnsdjl5YD1k1ZUgXVhcFIdNmrsXtF2RW+7iA==}\n    peerDependencies:\n      react: ^19.1.0\n\n  react@19.1.0:\n    resolution: {integrity: sha512-p0XX/D10rgGtIaTShR7Vn5KVrWuW6aUZBgBe81cAUaX6KdjFONbRTRxVvK1i558V96e9q0YN83h0OaeKnviJPw==}\n\nsnapshots:\n\n  '@example/navigation-core@7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0)':\n    dependencies:\n      react: 19.1.0\n      react-native: 0.80.0(react@19.1.0)\n\n  '@example/navigation-elements@2.4.0(@example/navigation-core@7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0))(react-native@0.80.0(react@19.1.0))(react@19.1.0)':\n    dependencies:\n      '@example/navigation-core': 7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0)\n      react: 19.1.0\n      react-native: 0.80.0(react@19.1.0)\n\n  '@example/navigation-stack@7.3.0(@example/navigation-core@7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0))(react-native@0.80.0(react@19.1.0))(react@19.1.0)':\n    dependencies:\n      '@example/navigation-core': 7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0)\n      '@example/navigation-elements': 2.4.0(@example/navigation-core@7.1.0(react-native@0.80.0(react@19.1.0))(react@19.1.0))(react-native@0.80.0(react@19.1.0))(react@19.1.0)\n      react: 19.1.0\n      react-native: 0.80.0(react@19.1.0)\n\n  'react-native@0.80.0(react@19.1.0)':\n    dependencies:\n      react: 19.1.0\n\n  react@19.1.0: {}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-yTzKN0YfYzPWN8WGSRthzKEO2G94tJoDHOrZ6qTH49f4oUmTkSmHONc53TljjzLvFkVzgiSn9cl8Kbmr9OPKyw==",
+            "name": "@example/navigation-elements",
+            "version": "2.4.0"
+          },
+          {
+            "integrity": "sha512-jno8cS5PqGz3NqCoO0NHFlAtlEtOreGGqIjLyxZT4mDDDP6MeSvU2aDE+ut3h7JBysKIOOsmOwvTtzRzo8OQhg==",
+            "name": "@example/navigation-stack",
+            "version": "7.3.0"
+          },
+          {
+            "integrity": "sha512-ZtEQgDLYaQodqAhw9/4eieWC3ngk6UzSfPDBgGet1yHGj7GGChZnsdjl5YD1k1ZUgXVhcFIdNmrsXtF2RW+7iA==",
+            "name": "react-native",
+            "version": "0.80.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:a28151576234c9980a07b48281fb1a6ea25de6d4004bc1c7b2a3c64d9152d073"
     },
     {
       "name": "should keep two builds of one 0.0.0 package apart by their integrity",

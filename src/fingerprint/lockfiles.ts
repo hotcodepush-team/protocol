@@ -2,6 +2,7 @@ import { parseSyml } from '@yarnpkg/parsers';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 
+import type { ProjectReader } from './project-reader.js';
 import { FingerprintError } from './project-reader.js';
 
 export const LOCKFILE_NAMES = [
@@ -150,9 +151,13 @@ const YarnLockfileEntrySchema = z.looseObject({
 type YarnLockfileEntry = z.infer<typeof YarnLockfileEntrySchema>;
 
 const NODE_MODULES_SEGMENT = 'node_modules/';
+/** An aliased dependency's version is the aliased package's own key, `real-name@1.2.3`, scoped or not; no other version starts with a name and an `@`. */
+const PNPM_ALIAS_VERSION_PATTERN = /^(?:@[^@/]+\/)?[^@:(/]+@/;
 const PNPM_LINK_PREFIX = 'link:';
 const PNPM_ROOT_IMPORTER = '.';
 const PNPM_VIRTUAL_STORE_DIRECTORY = 'node_modules/.pnpm';
+/** The hash ending a virtual-store name pnpm shortened: 26 base32 characters up to pnpm 9, 32 hex characters from pnpm 10. */
+const PNPM_VIRTUAL_STORE_HASH_PATTERN = /^(?:[a-z2-7]{26}|[0-9a-f]{32})$/;
 const YARN_METADATA_KEY = '__metadata';
 const YARN_ROOT_WORKSPACE = '.';
 
@@ -160,18 +165,24 @@ const YARN_ROOT_WORKSPACE = '.';
  * The project's dependency tree as the lockfile resolved it, so a monorepo's
  * root lockfile yields the packages this workspace installs and never a
  * sibling's. A lockfile format this recipe was not written against is
- * refused rather than misread.
+ * refused rather than misread. pnpm's virtual store is read for the names it
+ * shortened, which the lockfile alone cannot tell.
  */
-export function resolveLockedTree(
+export async function readLockedTree(
   lockfileName: LockfileName,
   text: string,
   project: LockedProject,
-): LockedTree {
+  reader: ProjectReader,
+): Promise<LockedTree> {
   switch (lockfileName) {
     case 'package-lock.json':
       return resolveNpmLockedTree(text, project);
     case 'pnpm-lock.yaml':
-      return resolvePnpmLockedTree(text, project);
+      return resolvePnpmLockedTree(
+        text,
+        project,
+        await readPnpmVirtualStoreNames(reader),
+      );
     case 'yarn.lock':
       return resolveYarnLockedTree(text, project);
   }
@@ -237,10 +248,15 @@ function resolveNpmLockedTree(
  * pnpm resolves the project's dependencies in its importer and every
  * package's in its snapshot, whose version carries the peers it resolved,
  * and installs each snapshot in a virtual store directory named after it.
+ * An aliased dependency's version names the aliased package's snapshot; it
+ * contributes that package's version and integrity under the name the
+ * project declared, as an alias does from every lockfile, and is linked
+ * under that name beside its dependent.
  */
 function resolvePnpmLockedTree(
   text: string,
   project: LockedProject,
+  virtualStoreNames: ReadonlySet<string>,
 ): LockedTree {
   const lockfile = PnpmLockfileSchema.safeParse(
     parseLockfileText('pnpm-lock.yaml', text, parseYaml),
@@ -273,7 +289,7 @@ function resolvePnpmLockedTree(
   const resolveDependency = (
     declared: DeclaredDependency,
   ): LockedDependency[] => {
-    const key = `${declared.name}@${declared.range}`;
+    const key = resolvePnpmSnapshotKey(declared);
     if (declared.range.startsWith(PNPM_LINK_PREFIX) || !(key in snapshots)) {
       return [];
     }
@@ -287,7 +303,9 @@ function resolvePnpmLockedTree(
         package: {
           integrity: resolution?.integrity ?? resolution?.tarball ?? null,
           name: declared.name,
-          version: packageKey.slice(declared.name.length + 1),
+          version: packageKey.slice(
+            resolvePnpmPackageName(packageKey).length + 1,
+          ),
         },
       },
     ];
@@ -306,25 +324,78 @@ function resolvePnpmLockedTree(
         ...resolveDeclaredDependencies(snapshot?.optionalDependencies, true),
       ].flatMap(resolveDependency);
     },
-    resolveInstallDirectories: (dependency, dependentDirectory) => [
-      `${PNPM_VIRTUAL_STORE_DIRECTORY}/${resolvePnpmVirtualStoreName(dependency.key)}/${NODE_MODULES_SEGMENT}${dependency.package.name}`,
-      ...resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
-    ],
+    resolveInstallDirectories: (dependency, dependentDirectory) => {
+      const virtualStoreName = resolvePnpmVirtualStoreName(
+        dependency.key,
+        virtualStoreNames,
+      );
+      return [
+        ...(virtualStoreName === null
+          ? []
+          : [
+              `${PNPM_VIRTUAL_STORE_DIRECTORY}/${virtualStoreName}/${NODE_MODULES_SEGMENT}${resolvePnpmPackageName(dependency.key)}`,
+            ]),
+        ...resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
+      ];
+    },
   };
 }
 
+/** The directories of pnpm's virtual store, one per snapshot; none when the project was installed another way. */
+async function readPnpmVirtualStoreNames(
+  reader: ProjectReader,
+): Promise<ReadonlySet<string>> {
+  const entries = await reader.readDirectory(PNPM_VIRTUAL_STORE_DIRECTORY);
+  return new Set(
+    (entries ?? []).filter(entry => entry.isDirectory).map(entry => entry.name),
+  );
+}
+
+/** The snapshot a dependency's version names: an alias's version is the aliased package's own key, any other the dependency's version. */
+function resolvePnpmSnapshotKey(declared: DeclaredDependency): string {
+  return PNPM_ALIAS_VERSION_PATTERN.test(declared.range)
+    ? declared.range
+    : `${declared.name}@${declared.range}`;
+}
+
+/** The package a snapshot key names, everything before the `@` its version starts with. */
+function resolvePnpmPackageName(snapshotKey: string): string {
+  return snapshotKey.slice(0, snapshotKey.indexOf('@', 1));
+}
+
 /**
- * The name pnpm gives a snapshot's directory in its virtual store: the key,
- * the characters a file name cannot hold replaced by `+` and the peers'
- * parentheses by `_`. pnpm hashes a name too long or with capitals, by a
- * hash its major and the platform choose, so such a package is found as
- * Node finds it instead.
+ * The directory of a snapshot in pnpm's virtual store, null when the store
+ * holds none, so the package is found as Node finds it instead. pnpm names
+ * it after the key, the characters a file name cannot hold replaced by `+`
+ * and the peers' parentheses by `_`; a name too long or with capitals it
+ * shortens to a prefix, an `_` and a hash, whose length and algorithm its
+ * major and the platform choose, so such a snapshot's directory is the one
+ * store entry whose prefix the unshortened name begins with.
  */
-function resolvePnpmVirtualStoreName(snapshotKey: string): string {
-  const name = snapshotKey.replace(/[\\/:*?"<>|#]/g, '+');
-  return name.includes('(')
-    ? name.replace(/\)$/, '').replace(/\)\(|\(|\)/g, '_')
-    : name;
+function resolvePnpmVirtualStoreName(
+  snapshotKey: string,
+  virtualStoreNames: ReadonlySet<string>,
+): string | null {
+  const escapedKey = snapshotKey.replace(/[\\/:*?"<>|#]/g, '+');
+  const name = escapedKey.includes('(')
+    ? escapedKey.replace(/\)$/, '').replace(/\)\(|\(|\)/g, '_')
+    : escapedKey;
+  if (virtualStoreNames.has(name)) {
+    return name;
+  }
+  const shortenedNames = [...virtualStoreNames].filter(storeName =>
+    isShortenedVirtualStoreName(storeName, name),
+  );
+  return shortenedNames.length === 1 ? (shortenedNames[0] ?? null) : null;
+}
+
+function isShortenedVirtualStoreName(storeName: string, name: string): boolean {
+  const separatorIndex = storeName.lastIndexOf('_');
+  return (
+    separatorIndex > 0 &&
+    PNPM_VIRTUAL_STORE_HASH_PATTERN.test(storeName.slice(separatorIndex + 1)) &&
+    name.startsWith(storeName.slice(0, separatorIndex))
+  );
 }
 
 /**
