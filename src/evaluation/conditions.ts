@@ -5,6 +5,9 @@ import type { Condition, KnownCondition } from '../wire/channel-index.js';
 import type { DeviceInfo } from './device-info.js';
 import { isVersionInRange, parseVersion } from './version-range.js';
 
+/** The components a binary version fills before the build: major, minor and patch. */
+const BINARY_VERSION_MIN_COMPONENTS = 3;
+
 export interface ConditionVerdict {
   isSatisfied: boolean;
   type: string;
@@ -72,14 +75,23 @@ function isConditionSatisfied(
   }
 }
 
-/** The binary version with the build number as its fourth component, when both are numbers. */
+/**
+ * The binary version with the build number after it, when both are numbers:
+ * a version of fewer than three components reads with zeros, so the build is
+ * always at least the fourth component and `1.0` build `57` is `1.0.0.57`.
+ */
 function resolveBinaryVersion(device: DeviceInfo): readonly number[] | null {
   const version = parseVersion(device.binaryVersion);
   if (version === null) {
     return null;
   }
   const build = parseVersion(device.binaryBuild);
-  return build !== null && build.length === 1
-    ? [...version, ...build]
-    : version;
+  if (build === null || build.length !== 1) {
+    return version;
+  }
+  const paddedVersion = Array.from(
+    { length: Math.max(version.length, BINARY_VERSION_MIN_COMPONENTS) },
+    (_component, index) => version[index] ?? 0,
+  );
+  return [...paddedVersion, ...build];
 }
