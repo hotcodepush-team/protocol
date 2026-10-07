@@ -39,7 +39,7 @@ No releases yet: the version stays `0.0.0`, and release-please and npm provenanc
 The channel index and the bundle manifest are parsed by native code compiled into customer binaries that stay in the field for years.
 
 - Additive only: a field is never removed, renamed or retyped; a new field is optional, and readers ignore what they do not know.
-  The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision, as did the signing of 2026-10-04: `rsa-v1_5-sha256` the one scheme, and the resource file's public keys in the encoding each platform's own API imports.
+  The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision, as did the signing of 2026-10-04: `rsa-v1_5-sha256` the one scheme, and the resource file's public keys in the encoding each platform's own API imports, and the renaming of 2026-10-07, every reason naming the thing at fault first and the verification bag split in two.
   So did the delivery change of the same day: `patches` left the manifest, the envelope and the signed content, and the pack gained the patch entry `patches/{from}/{to}`, a BSDIFF40 patch between two files named by their content hashes.
   A manifest or an envelope stored with `patches` still parses, the field ignored, and a pack reader skips an entry of any other name with its body, so a later entry kind is additive.
 - A change that cannot be additive is a new schema major with its own path, `v2`, and a handbook decision first — never an edit.
@@ -57,7 +57,7 @@ The channel index and the bundle manifest are parsed by native code compiled int
 - Alphabetical ordering within a scope.
 - One thing per function, its name saying which; never a function that both decides something and phrases the message about it.
 - Booleans carry `is` or `has`; a state with a moment is a timestamp such as `pausedAt`, never a boolean.
-- Error codes are `E_` plus SCREAMING_SNAKE; SDK reasons are SCREAMING_SNAKE.
+- Error codes are `E_` plus SCREAMING_SNAKE; a reason on the wire is `SUBJECT_STATE` in SCREAMING_SNAKE, the thing at fault first, `SIGNATURE_INVALID`, `CHANNEL_PAUSED`.
 - Never the non-null assertion; nullish coalescing or a real check.
 - Test titles read `should <verb> …`, lowercase, conditions starting with `when`.
 - Fixtures and examples carry invented data only.

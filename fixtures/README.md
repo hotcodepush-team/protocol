@@ -84,9 +84,9 @@ They are test keys, generated once, and sign nothing real.
 
 ## `fingerprints.json`
 
-`cases` are sample projects, `{ name, files, nativeSourcePaths, contributors, fingerprint }`: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
+`cases` are sample projects, `{ name, projectPath, files, nativeSourcePaths, contributors, fingerprint }`, `projectPath` the workspace's directory relative to the lockfile's, `''` for the root: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
 npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
-`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a missing `node_modules`, a declared native source that does not exist.
+`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, a declared native source that does not exist.
 
 ## `bounds.json`
 
