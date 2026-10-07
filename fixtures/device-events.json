@@ -1041,6 +1041,141 @@
       }
     },
     {
+      "name": "should refuse a report whose binaryBuild carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta"
+          },
+          "binaryBuild": "57\u0000",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose binaryVersion carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1\u0000",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose channelId carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1\u0000",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose fingerprint carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d\u0000",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose osVersion carries a control character",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "\u001b[31m17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
       "name": "should refuse a report whose attributes are a list",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
@@ -1110,6 +1245,21 @@
       }
     },
     {
+      "name": "should refuse a deviceId that carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f\u0000",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
       "name": "should refuse a batch without sdkVersion",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
@@ -1121,6 +1271,21 @@
         ],
         "platform": "ios",
         "report": null
+      }
+    },
+    {
+      "name": "should refuse an sdkVersion that carries a NUL",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0\u0000"
       }
     },
     {

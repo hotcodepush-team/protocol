@@ -10,8 +10,8 @@ import {
   BUNDLE_MAX_SIZE_BYTES,
   IdentifierSchema,
   IsoTimestampSchema,
-  NonEmptyStringSchema,
   PlatformSchema,
+  PrintableStringSchema,
   SizeBytesSchema,
 } from './primitives.js';
 
@@ -20,13 +20,13 @@ export const ChannelSourceSchema = z.enum(['config', 'runtime']);
 /** The facts a device has, sent when they differ from the acknowledged ones or the month began. */
 export const DeviceReportSchema = z.looseObject({
   attributes: AttributesSchema,
-  binaryBuild: NonEmptyStringSchema,
-  binaryVersion: NonEmptyStringSchema,
-  channelId: NonEmptyStringSchema,
+  binaryBuild: PrintableStringSchema,
+  binaryVersion: PrintableStringSchema,
+  channelId: PrintableStringSchema,
   channelSource: ChannelSourceSchema,
   embeddedBundleId: IdentifierSchema.nullable(),
-  fingerprint: NonEmptyStringSchema.nullable(),
-  osVersion: NonEmptyStringSchema,
+  fingerprint: PrintableStringSchema.nullable(),
+  osVersion: PrintableStringSchema,
   releaseId: IdentifierSchema.nullable(),
 });
 export type DeviceReport = z.infer<typeof DeviceReportSchema>;
@@ -83,11 +83,11 @@ export const MAX_EVENTS_PER_BATCH = 200;
 
 /** One batch to `POST /v1/apps/{appId}/events`. */
 export const DeviceEventsRequestSchema = z.looseObject({
-  deviceId: NonEmptyStringSchema,
+  deviceId: PrintableStringSchema,
   events: z.array(DeviceEventSchema).max(MAX_EVENTS_PER_BATCH),
   platform: PlatformSchema,
   report: DeviceReportSchema.nullable(),
-  sdkVersion: NonEmptyStringSchema,
+  sdkVersion: PrintableStringSchema,
 });
 export type DeviceEventsRequest = z.infer<typeof DeviceEventsRequestSchema>;
 

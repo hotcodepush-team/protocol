@@ -25,6 +25,10 @@ export const NonEmptyStringSchema = z.string().min(1);
 
 export const PlatformSchema = z.enum(PLATFORMS);
 
+/** A non-empty string without control characters, NUL among them: the text a device reports, which the server stores as sent. */
+export const PrintableStringSchema =
+  NonEmptyStringSchema.regex(/^[^\p{Cc}]*$/u);
+
 /** A path inside a bundle: `/`-separated, with no empty, `.` or `..` segment, no backslash and no NUL, so a file never lands outside its bundle. */
 export const RelativePathSchema = z.string().refine(isRelativePath);
 
