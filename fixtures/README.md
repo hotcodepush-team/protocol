@@ -8,13 +8,13 @@ The files ship in the npm package, so a native core's test suite reads them from
 
 One file per rule of the evaluation, each `{ "description", "cases": [...] }`; a case is:
 
-| Field      | Holds                                                                                                                                                                                                                                                                 |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`     | the test title, `should …`                                                                                                                                                                                                                                            |
-| `index`    | a channel index, valid against `ChannelIndexSchema`                                                                                                                                                                                                                   |
-| `device`   | the `DeviceInfo` the evaluator takes: `appliedIndexSequence`, `attributes`, `binaryBuild`, `binaryVersion`, `builtAt`, `currentRelease` (`{ id, number }` or `null` for the embedded bundle), `deviceId`, `failedBundleIds`, `fingerprint`, `osVersion`, `reportedAt` |
-| `expected` | the outcome: `status` (`UP_TO_DATE`, `AVAILABLE`, `SKIPPED`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `AVAILABLE`, `reason` and the failing `condition` type on `SKIPPED`                                                              |
-| `verdicts` | optional: every release of the index newest first as `{ releaseId, isEligible, reason?, condition? }`; an empty array means the index held nothing for the device                                                                                                     |
+| Field      | Holds                                                                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`     | the test title, `should …`                                                                                                                                                                                                                    |
+| `index`    | a channel index, valid against `ChannelIndexSchema`                                                                                                                                                                                           |
+| `device`   | the `DeviceInfo` the evaluator takes: `attributes`, `binaryBuild`, `binaryVersion`, `builtAt`, `currentRelease` (`{ id, number }` or `null` for the embedded bundle), `deviceId`, `failedBundleIds`, `fingerprint`, `osVersion`, `reportedAt` |
+| `expected` | the outcome: `status` (`UP_TO_DATE`, `AVAILABLE`, `SKIPPED`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `AVAILABLE`, `reason` and the failing `condition` type on `SKIPPED`                                      |
+| `verdicts` | optional: every release of the index newest first as `{ releaseId, isEligible, reason?, condition? }`; an empty array means the index held nothing for the device                                                                             |
 
 On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resolves to, `null` for the embedded bundle; on every other `SKIPPED` it is the newest release the device will not take.
 
@@ -60,7 +60,7 @@ The two valid patches are fixed inputs in `scripts/pack-entries/`, written once 
 ## `wire-rules.json`
 
 The rules every reader enforces before a byte is written, as whole documents in six arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | manifest | envelope }`.
-Ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is relative and `/`-separated with no empty, `.` or `..` segment, no backslash and no NUL, timestamps are UTC with a `Z`, and every field of a shape is present, a nullable one as `null`, never absent.
+A wire URL is `http` or `https` with a host, nothing else, so `javascript:`, `file:`, `data:` and `ftp:` are refused where they stand; ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is relative and `/`-separated with no empty, `.` or `..` segment, no backslash and no NUL, timestamps are UTC with a `Z`, and every field of a shape is present, a nullable one as `null`, never absent.
 The refused cases pin where the three readers once diverged — a default for an absent field, a lenient type, an offset timestamp, a `..` segment hidden behind a combining mark — so a refusal is the same refusal on every platform.
 A manifest or an envelope stored while bundles carried `patches` is accepted and the field ignored, as any field a reader does not know is; one accepted envelope carries it on itself and in its manifest.
 
@@ -71,6 +71,19 @@ The endpoint reads the batch whole and its events one by one: a batch whose `dev
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
 The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `MAX_EVENTS_PER_BATCH` whole.
+
+## `attribute-values.json`
+
+`cases` are `{ name, value, isValid }`: the one rule `setAttributes`, the report's attributes, an attribute condition's value and a failed event's `detail` share — at most 256 Unicode code points, counted neither in UTF-16 units nor in graphemes, and no control character, C0, DEL or C1.
+The cases pin the three counts apart: 256 emoji are accepted, 257 code points of a combining pair are refused though they read as 129 characters, and U+0085 and U+009F are refused.
+
+## `configured-hosts.json`
+
+`cases` are `{ name, filesBaseUrl, updatesBaseUrl, url, isOnConfiguredHost }`, a base of `null` meaning the production host: a manifest, pack or delta URL is on a configured host when it starts with that base followed by a `/`; off it, the download is `MANIFEST_INVALID` before a byte is written.
+
+## `manifest-identity.json`
+
+`cases` are `{ name, appId, platform, manifest, isForDevice }`: a manifest is for the device when its `appId` is the app's id from the resource file and its `platforms` list the device's platform, signed or not; another app's manifest or a platform not listed is `MANIFEST_INVALID`, so an index pointing at another app's bundle serves nothing.
 
 ## `signatures.json`
 
@@ -86,6 +99,7 @@ They are test keys, generated once, and sign nothing real.
 
 `cases` are sample projects, `{ name, projectPath, files, nativeSourcePaths, contributors, fingerprint }`, `projectPath` the workspace's directory relative to the lockfile's, `''` for the root: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
 npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
+An aliased package (`npm:` in its specifier) contributes the aliased package's version and integrity under the declared name, so the four formats agree; a pnpm store directory whose name pnpm shortened to a hash is found as the one `.pnpm` entry whose prefix the full name starts with, the walk up from the dependent standing in when none or several match.
 `refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, a declared native source that does not exist.
 
 ## `bounds.json`
