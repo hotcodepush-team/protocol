@@ -101,7 +101,7 @@
       },
       "expected": {
         "condition": "fingerprint",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -154,7 +154,7 @@
       },
       "expected": {
         "condition": "fingerprint",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }

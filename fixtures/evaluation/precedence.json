@@ -96,14 +96,14 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "OLDER_THAN_BINARY",
+        "reason": "RELEASE_OLDER_THAN_BINARY",
         "releaseId": "release-1",
         "status": "SKIPPED"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "OLDER_THAN_BINARY",
+          "reason": "RELEASE_OLDER_THAN_BINARY",
           "releaseId": "release-1"
         }
       ]
@@ -155,7 +155,7 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "FAILED_BEFORE",
+        "reason": "BUNDLE_FAILED_BEFORE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -208,7 +208,7 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -275,7 +275,7 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-2",
         "status": "SKIPPED"
       },
@@ -283,12 +283,12 @@
         {
           "condition": "binary",
           "isEligible": false,
-          "reason": "INCOMPATIBLE",
+          "reason": "DEVICE_INCOMPATIBLE",
           "releaseId": "release-2"
         },
         {
           "isEligible": false,
-          "reason": "NOT_IN_ROLLOUT",
+          "reason": "DEVICE_NOT_IN_ROLLOUT",
           "releaseId": "release-1"
         }
       ]

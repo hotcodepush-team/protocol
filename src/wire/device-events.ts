@@ -57,13 +57,14 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
     type: z.literal('confirmed'),
   }),
   z.looseObject({
-    /** The app's `rollbackUpdate({ reason })` on `REPORTED_BY_APP`: printable, at most 256 characters. */
+    /** The app's `rollbackUpdate({ reason })` on `APP_REQUESTED`: printable, at most 256 characters. */
     detail: AttributeValueSchema.optional(),
     reason: z.enum([
       ...ROLLBACK_REASONS,
+      'CONTENT_MISMATCHED',
       'DOWNLOAD_FAILED',
-      'INVALID_SIGNATURE',
-      'VERIFICATION_FAILED',
+      'MANIFEST_INVALID',
+      'SIGNATURE_INVALID',
     ]),
     releaseId: IdentifierSchema,
     type: z.literal('failed'),

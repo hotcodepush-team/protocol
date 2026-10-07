@@ -43,7 +43,7 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "FAILED_BEFORE",
+        "reason": "BUNDLE_FAILED_BEFORE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -104,19 +104,19 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "FAILED_BEFORE",
+        "reason": "BUNDLE_FAILED_BEFORE",
         "releaseId": "release-2",
         "status": "SKIPPED"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "FAILED_BEFORE",
+          "reason": "BUNDLE_FAILED_BEFORE",
           "releaseId": "release-2"
         },
         {
           "isEligible": false,
-          "reason": "FAILED_BEFORE",
+          "reason": "BUNDLE_FAILED_BEFORE",
           "releaseId": "release-1"
         }
       ]

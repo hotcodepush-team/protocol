@@ -1,5 +1,5 @@
 {
-  "description": "The wire rules every reader enforces before a byte is written: bundle and release ids are [A-Za-z0-9_-]{1,64}, a hash is 64 lowercase hex, a manifest path is relative and /-separated with no empty, . or .. segment, no backslash and no NUL, timestamps are UTC with a Z, and every field of the shape is present, a nullable one as null. A refused index is INVALID_INDEX, a refused manifest or envelope VERIFICATION_FAILED, the whole document refused for one breach; an unknown field is ignored, and an unknown condition type and an unknown platform parse.",
+  "description": "The wire rules every reader enforces before a byte is written: bundle and release ids are [A-Za-z0-9_-]{1,64}, a hash is 64 lowercase hex, a manifest path is relative and /-separated with no empty, . or .. segment, no backslash and no NUL, timestamps are UTC with a Z, and every field of the shape is present, a nullable one as null. A refused index is INDEX_INVALID, a refused manifest or envelope MANIFEST_INVALID, the whole document refused for one breach; an unknown field is ignored, and an unknown condition type and an unknown platform parse.",
   "acceptedIndexes": [
     {
       "name": "should accept the index as the materializer writes it",

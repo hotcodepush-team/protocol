@@ -77,7 +77,7 @@ export const ConfigurationSchema = z.looseObject({
   /**
    * Null in a build whose embed step ran without a token or offline and could
    * not resolve the channel's name: such a build answers `FAILED` with
-   * `UNKNOWN_CHANNEL`, requests nothing and reports nothing.
+   * `CHANNEL_UNKNOWN`, requests nothing and reports nothing.
    */
   channelId: NonEmptyStringSchema.nullable(),
   dir: z.string().optional(),
@@ -85,7 +85,7 @@ export const ConfigurationSchema = z.looseObject({
   /**
    * Null in a build that bundled no JavaScript, a React Native or Expo debug
    * build: its build step registers no binary and asks the API nothing, and
-   * the SDK answers `SKIPPED` with `DEBUG_BUILD`.
+   * the SDK answers `SKIPPED` with `BUILD_DEBUG`.
    */
   embeddedBundleManifest: BundleManifestSchema.nullable(),
   filesBaseUrl: z.url().optional(),

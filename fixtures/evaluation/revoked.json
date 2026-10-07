@@ -592,7 +592,7 @@
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "NOT_IN_ROLLOUT",
+          "reason": "DEVICE_NOT_IN_ROLLOUT",
           "releaseId": "release-3"
         },
         {

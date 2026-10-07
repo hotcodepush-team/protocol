@@ -107,7 +107,7 @@
       },
       "expected": {
         "condition": "attribute",
-        "reason": "NOT_TARGETED",
+        "reason": "DEVICE_NOT_TARGETED",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -161,7 +161,7 @@
       },
       "expected": {
         "condition": "attribute",
-        "reason": "NOT_TARGETED",
+        "reason": "DEVICE_NOT_TARGETED",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -217,7 +217,7 @@
       },
       "expected": {
         "condition": "attribute",
-        "reason": "NOT_TARGETED",
+        "reason": "DEVICE_NOT_TARGETED",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -271,7 +271,7 @@
       },
       "expected": {
         "condition": "attribute",
-        "reason": "NOT_TARGETED",
+        "reason": "DEVICE_NOT_TARGETED",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }

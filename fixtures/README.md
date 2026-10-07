@@ -21,9 +21,9 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 ## `resource-files.json`
 
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the build step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest, the same shape whether the build step registered the bundle or not, `embeddedBundleId` null when it did not.
-`embeddedBundleManifest` is `null` in a build that bundled no JavaScript, a React Native or Expo debug build the development server serves: a reader takes the file, and every check answers `SKIPPED` with `DEBUG_BUILD`.
+`embeddedBundleManifest` is `null` in a build that bundled no JavaScript, a React Native or Expo debug build the development server serves: a reader takes the file, and every check answers `SKIPPED` with `BUILD_DEBUG`.
 The file carries `channelId`, the id the build step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
-`channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `FAILED` with `UNKNOWN_CHANNEL`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
+`channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `FAILED` with `CHANNEL_UNKNOWN`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
 `publicKeys` are the project's public keys as the build step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
 
 ## `version-ranges.json`

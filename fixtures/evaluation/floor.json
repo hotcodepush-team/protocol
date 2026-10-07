@@ -43,7 +43,7 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "OLDER_THAN_BINARY",
+        "reason": "RELEASE_OLDER_THAN_BINARY",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -162,7 +162,7 @@
         },
         {
           "isEligible": false,
-          "reason": "OLDER_THAN_BINARY",
+          "reason": "RELEASE_OLDER_THAN_BINARY",
           "releaseId": "release-1"
         }
       ]

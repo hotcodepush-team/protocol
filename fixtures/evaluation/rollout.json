@@ -90,7 +90,7 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "NOT_IN_ROLLOUT",
+        "reason": "DEVICE_NOT_IN_ROLLOUT",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -137,7 +137,7 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "NOT_IN_ROLLOUT",
+        "reason": "DEVICE_NOT_IN_ROLLOUT",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }

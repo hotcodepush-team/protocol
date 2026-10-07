@@ -10,7 +10,7 @@ const REQUEST = {
   events: [
     {
       condition: 'binary',
-      reason: 'INCOMPATIBLE',
+      reason: 'DEVICE_INCOMPATIBLE',
       releaseId: 'r2',
       status: 'SKIPPED',
       type: 'checked',
@@ -24,14 +24,14 @@ const REQUEST = {
     },
     { releaseId: 'r1', type: 'applied' },
     { releaseId: 'r1', type: 'confirmed' },
-    { reason: 'READY_TIMEOUT', releaseId: 'r1', type: 'failed' },
+    { reason: 'READINESS_TIMED_OUT', releaseId: 'r1', type: 'failed' },
     {
       detail: 'checkout crashed on launch',
-      reason: 'REPORTED_BY_APP',
+      reason: 'APP_REQUESTED',
       releaseId: 'r1',
       type: 'failed',
     },
-    { reason: 'INVALID_SIGNATURE', releaseId: 'r2', type: 'failed' },
+    { reason: 'SIGNATURE_INVALID', releaseId: 'r2', type: 'failed' },
     { fromReleaseId: 'r1', toReleaseId: null, type: 'rolledBack' },
   ],
   platform: 'android',
@@ -78,7 +78,7 @@ describe('DeviceEventsRequestSchema', () => {
     const long = [
       {
         detail: 'a'.repeat(257),
-        reason: 'REPORTED_BY_APP',
+        reason: 'APP_REQUESTED',
         releaseId: 'r1',
         type: 'failed',
       },
@@ -86,7 +86,7 @@ describe('DeviceEventsRequestSchema', () => {
     const control = [
       {
         detail: 'a\nb',
-        reason: 'REPORTED_BY_APP',
+        reason: 'APP_REQUESTED',
         releaseId: 'r1',
         type: 'failed',
       },

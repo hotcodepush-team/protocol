@@ -7,7 +7,7 @@ import { resolveRolloutBucket } from './rollout.js';
 
 /** The per-release verdict, the explanation behind the outcome and the probe's output. */
 export interface ReleaseVerdict {
-  /** The type of the condition that failed, for `INCOMPATIBLE` and `NOT_TARGETED`. */
+  /** The type of the condition that failed, for `DEVICE_INCOMPATIBLE` and `DEVICE_NOT_TARGETED`. */
   condition?: ConditionType;
   conditions: ConditionVerdict[];
   isEligible: boolean;
@@ -224,17 +224,17 @@ function resolveSkippedReason(
     return { reason: 'RELEASE_REVOKED' };
   }
   if (Date.parse(release.createdAt) < Date.parse(device.builtAt)) {
-    return { reason: 'OLDER_THAN_BINARY' };
+    return { reason: 'RELEASE_OLDER_THAN_BINARY' };
   }
   if (device.failedBundleIds.includes(release.bundleId)) {
-    return { reason: 'FAILED_BEFORE' };
+    return { reason: 'BUNDLE_FAILED_BEFORE' };
   }
   const failed = conditions.find(condition => !condition.isSatisfied);
   if (failed !== undefined) {
     return resolveConditionReason(failed.type);
   }
   if (resolveRolloutBucket(device.deviceId, release.id) >= release.rollout) {
-    return { reason: 'NOT_IN_ROLLOUT' };
+    return { reason: 'DEVICE_NOT_IN_ROLLOUT' };
   }
   return null;
 }
@@ -244,15 +244,15 @@ function resolveConditionReason(type: string): {
   reason: SkippedReason;
 } {
   if (!isKnownConditionType(type)) {
-    return { reason: 'UNSUPPORTED_CONDITION' };
+    return { reason: 'CONDITION_UNSUPPORTED' };
   }
   switch (type) {
     case 'attribute':
     case 'device':
-      return { condition: type, reason: 'NOT_TARGETED' };
+      return { condition: type, reason: 'DEVICE_NOT_TARGETED' };
     case 'binary':
     case 'fingerprint':
     case 'os':
-      return { condition: type, reason: 'INCOMPATIBLE' };
+      return { condition: type, reason: 'DEVICE_INCOMPATIBLE' };
   }
 }

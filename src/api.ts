@@ -102,7 +102,7 @@ export interface HotCodePushApi {
   applyUpdate(): Promise<ApplyResult>;
   /** Ends the readiness gate when `readySignal` is `manual`; safe to call at any time on any setting. */
   notifyReady(): Promise<NotifyReadyResult>;
-  /** Rolls the running release back now, marks its bundle as failed on this device, reports `REPORTED_BY_APP`, reloads. */
+  /** Rolls the running release back now, marks its bundle as failed on this device, reports `APP_REQUESTED`, reloads. */
   rollbackUpdate(options?: RollbackUpdateOptions): Promise<void>;
   /** Clears every downloaded update and the list of failed bundles, keeps the channel and the attributes, reloads. */
   clearUpdates(): Promise<void>;

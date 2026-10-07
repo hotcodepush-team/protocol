@@ -101,7 +101,7 @@
       },
       "expected": {
         "condition": "os",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }
@@ -206,7 +206,7 @@
       },
       "expected": {
         "condition": "os",
-        "reason": "INCOMPATIBLE",
+        "reason": "DEVICE_INCOMPATIBLE",
         "releaseId": "release-1",
         "status": "SKIPPED"
       }

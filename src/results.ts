@@ -18,12 +18,13 @@ export const DOWNLOAD_STRATEGIES = ['auto', 'manual', 'unmetered'] as const;
 export type DownloadStrategy = (typeof DOWNLOAD_STRATEGIES)[number];
 
 export const FAILED_REASONS = [
+  'CHANNEL_UNKNOWN',
+  'CONTENT_MISMATCHED',
+  'DEVICE_OFFLINE',
   'DOWNLOAD_FAILED',
-  'INVALID_INDEX',
-  'INVALID_SIGNATURE',
-  'OFFLINE',
-  'UNKNOWN_CHANNEL',
-  'VERIFICATION_FAILED',
+  'INDEX_INVALID',
+  'MANIFEST_INVALID',
+  'SIGNATURE_INVALID',
 ] as const;
 export type FailedReason = (typeof FAILED_REASONS)[number];
 
@@ -49,24 +50,24 @@ export const READY_SIGNALS = ['manual', 'render'] as const;
 export type ReadySignal = (typeof READY_SIGNALS)[number];
 
 export const ROLLBACK_REASONS = [
-  'CRASHED',
-  'READY_TIMEOUT',
-  'REPORTED_BY_APP',
+  'APP_CRASHED',
+  'APP_REQUESTED',
+  'READINESS_TIMED_OUT',
 ] as const;
 export type RollbackReason = (typeof ROLLBACK_REASONS)[number];
 
 export const SKIPPED_REASONS = [
+  'BUILD_DEBUG',
+  'BUNDLE_FAILED_BEFORE',
   'CHANNEL_PAUSED',
-  'DEBUG_BUILD',
-  'FAILED_BEFORE',
-  'INCOMPATIBLE',
-  'METERED_CONNECTION',
-  'NOT_IN_ROLLOUT',
-  'NOT_TARGETED',
-  'OLDER_THAN_BINARY',
+  'CONDITION_UNSUPPORTED',
+  'CONNECTION_METERED',
+  'DEVICE_INCOMPATIBLE',
+  'DEVICE_NOT_IN_ROLLOUT',
+  'DEVICE_NOT_TARGETED',
+  'RELEASE_OLDER_THAN_BINARY',
   'RELEASE_REVOKED',
   'SPENDING_CAP_REACHED',
-  'UNSUPPORTED_CONDITION',
 ] as const;
 export type SkippedReason = (typeof SKIPPED_REASONS)[number];
 

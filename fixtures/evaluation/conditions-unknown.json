@@ -48,14 +48,14 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "UNSUPPORTED_CONDITION",
+        "reason": "CONDITION_UNSUPPORTED",
         "releaseId": "release-1",
         "status": "SKIPPED"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "UNSUPPORTED_CONDITION",
+          "reason": "CONDITION_UNSUPPORTED",
           "releaseId": "release-1"
         }
       ]
