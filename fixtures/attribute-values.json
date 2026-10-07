@@ -1,0 +1,70 @@
+{
+  "description": "The attribute-value rule, which setAttributes, the device report's attributes, an attribute condition's value and a failed event's detail share: at most 256 Unicode code points, counted neither in UTF-16 code units nor in the characters a reader sees, and no control character — C0, DEL or C1, Unicode's Cc. A device refuses a value the rule refuses, so the events endpoint never refuses a report for it.",
+  "cases": [
+    {
+      "name": "should accept the empty value",
+      "value": "",
+      "isValid": true
+    },
+    {
+      "name": "should accept an ASCII value",
+      "value": "beta cohort",
+      "isValid": true
+    },
+    {
+      "name": "should accept letters and symbols outside ASCII",
+      "value": "Zürich ✓ 東京",
+      "isValid": true
+    },
+    {
+      "name": "should accept 256 ASCII characters",
+      "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "isValid": true
+    },
+    {
+      "name": "should accept 256 code points outside the Basic Multilingual Plane, which are 512 UTF-16 code units",
+      "value": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "isValid": true
+    },
+    {
+      "name": "should refuse 257 ASCII characters",
+      "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "isValid": false
+    },
+    {
+      "name": "should refuse 257 code points that read as 129 characters, each a letter with a combining accent but the last",
+      "value": "e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e",
+      "isValid": false
+    },
+    {
+      "name": "should refuse a NUL, a C0 control character",
+      "value": "beta\u0000",
+      "isValid": false
+    },
+    {
+      "name": "should refuse a newline, a C0 control character",
+      "value": "beta\n",
+      "isValid": false
+    },
+    {
+      "name": "should refuse a tab, a C0 control character",
+      "value": "beta\tcohort",
+      "isValid": false
+    },
+    {
+      "name": "should refuse DEL",
+      "value": "beta\u007f",
+      "isValid": false
+    },
+    {
+      "name": "should refuse NEXT LINE, a C1 control character",
+      "value": "beta\u0085",
+      "isValid": false
+    },
+    {
+      "name": "should refuse APPLICATION PROGRAM COMMAND, the last C1 control character",
+      "value": "beta\u009f",
+      "isValid": false
+    }
+  ]
+}

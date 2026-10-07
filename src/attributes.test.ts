@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, test } from 'vitest';
 
 import {
@@ -8,6 +10,21 @@ import {
   isValidAttributeValue,
 } from './attributes.js';
 import { computeSha256Hex } from './hash/sha256.js';
+
+interface AttributeValueCase {
+  isValid: boolean;
+  name: string;
+  value: string;
+}
+
+const ATTRIBUTE_VALUE_CASES = (
+  JSON.parse(
+    readFileSync(
+      new URL('../fixtures/attribute-values.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { cases: AttributeValueCase[] }
+).cases;
 
 describe('isValidAttributeKey', () => {
   test.each(['userId', 'plan', 'a.b-c_d', 'x'.repeat(64)])(
@@ -26,19 +43,11 @@ describe('isValidAttributeKey', () => {
 });
 
 describe('isValidAttributeValue', () => {
-  test.each(['', '42', 'beta cohort', 'Ünïcode ✓', 'x'.repeat(256)])(
-    'should accept %j',
-    value => {
-      expect(isValidAttributeValue(value)).toBe(true);
-    },
-  );
-
-  test.each(['a\nb', 'a\tb', '\u0000', 'x'.repeat(257)])(
-    'should reject %j',
-    value => {
-      expect(isValidAttributeValue(value)).toBe(false);
-    },
-  );
+  test.each(
+    ATTRIBUTE_VALUE_CASES.map(valueCase => [valueCase.name, valueCase]),
+  )('%s', (_name, { isValid, value }) => {
+    expect(isValidAttributeValue(value)).toBe(isValid);
+  });
 });
 
 describe('AttributesSchema', () => {

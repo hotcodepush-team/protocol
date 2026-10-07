@@ -12,7 +12,11 @@ export const AttributeKeySchema = z
   .max(ATTRIBUTE_KEY_MAX_LENGTH)
   .regex(/^[A-Za-z0-9_.-]+$/);
 
-/** A value is a printable string without control characters, at most 256 characters. */
+/**
+ * A value is at most 256 Unicode code points, counted neither in UTF-16 code
+ * units nor in the characters a reader sees, with no control character: C0,
+ * DEL or C1, Unicode's `Cc`. zod counts a string's length in code points.
+ */
 export const AttributeValueSchema = z
   .string()
   .max(ATTRIBUTE_VALUE_MAX_LENGTH)
