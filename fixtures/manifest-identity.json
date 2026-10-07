@@ -1,0 +1,105 @@
+{
+  "description": "The manifest's identity against the device: its appId is the app's id from the resource file and its platforms list the device's platform, signed or not. A manifest for another app or another platform is MANIFEST_INVALID before a byte is written, so neither an index pointing at another app's bundle nor a cache serving one installs it.",
+  "cases": [
+    {
+      "name": "should accept a manifest of the device's app that lists both platforms",
+      "appId": "app-1",
+      "platform": "ios",
+      "manifest": {
+        "appId": "app-1",
+        "bundleVersion": "1.4.2",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "keyId": null,
+        "platforms": ["android", "ios"]
+      },
+      "isForDevice": true
+    },
+    {
+      "name": "should accept a manifest of the device's app that lists its platform alone",
+      "appId": "app-1",
+      "platform": "android",
+      "manifest": {
+        "appId": "app-1",
+        "bundleVersion": "1.4.2",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "keyId": null,
+        "platforms": ["android"]
+      },
+      "isForDevice": true
+    },
+    {
+      "name": "should refuse a manifest of another app",
+      "appId": "app-1",
+      "platform": "ios",
+      "manifest": {
+        "appId": "app-2",
+        "bundleVersion": "1.4.2",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "keyId": null,
+        "platforms": ["android", "ios"]
+      },
+      "isForDevice": false
+    },
+    {
+      "name": "should refuse a manifest whose platforms leave out the device's",
+      "appId": "app-1",
+      "platform": "ios",
+      "manifest": {
+        "appId": "app-1",
+        "bundleVersion": "1.4.2",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "keyId": null,
+        "platforms": ["android"]
+      },
+      "isForDevice": false
+    }
+  ]
+}

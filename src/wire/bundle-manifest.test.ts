@@ -2,10 +2,21 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, test } from 'vitest';
 
+import type { Platform } from '../results.js';
+import type { BundleManifest } from './bundle-manifest.js';
 import {
   BundleManifestSchema,
+  isManifestForDevice,
   ManifestEnvelopeSchema,
 } from './bundle-manifest.js';
+
+interface ManifestIdentityCase {
+  appId: string;
+  isForDevice: boolean;
+  manifest: BundleManifest;
+  name: string;
+  platform: Platform;
+}
 
 interface WireRulesFixture {
   acceptedEnvelopes: { envelope: unknown; name: string }[];
@@ -20,6 +31,15 @@ const WIRE_RULES = JSON.parse(
     'utf8',
   ),
 ) as WireRulesFixture;
+
+const MANIFEST_IDENTITY_CASES = (
+  JSON.parse(
+    readFileSync(
+      new URL('../../fixtures/manifest-identity.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { cases: ManifestIdentityCase[] }
+).cases;
 
 const HASH = 'b'.repeat(64);
 
@@ -139,5 +159,18 @@ describe('ManifestEnvelopeSchema', () => {
   test('should reject a signature value without a scheme', () => {
     const envelope = { ...ENVELOPE, signature: { keyId: 'k1', value: 'AQID' } };
     expect(ManifestEnvelopeSchema.safeParse(envelope).success).toBe(false);
+  });
+});
+
+describe('isManifestForDevice', () => {
+  test.each(
+    MANIFEST_IDENTITY_CASES.map(identityCase => [
+      identityCase.name,
+      identityCase,
+    ]),
+  )('%s', (_name, { appId, isForDevice, manifest, platform }) => {
+    expect(isManifestForDevice(manifest, { appId, platform })).toBe(
+      isForDevice,
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import type { Platform } from '../results.js';
 import {
   HttpUrlSchema,
   IdentifierSchema,
@@ -37,6 +38,22 @@ export const BundleManifestSchema = z.looseObject({
   platforms: z.array(NonEmptyStringSchema),
 });
 export type BundleManifest = z.infer<typeof BundleManifestSchema>;
+
+/**
+ * Whether the manifest names the device's app and lists its platform, signed
+ * or not: a manifest for another app or another platform is
+ * `MANIFEST_INVALID` before a byte is written, so neither a tampered index
+ * nor a cache serving another app's bundle installs it.
+ */
+export function isManifestForDevice(
+  manifest: BundleManifest,
+  device: { appId: string; platform: Platform },
+): boolean {
+  return (
+    manifest.appId === device.appId &&
+    manifest.platforms.includes(device.platform)
+  );
+}
 
 export const EnvelopeDeltaSchema = z.looseObject({
   baseBundleId: IdentifierSchema,
