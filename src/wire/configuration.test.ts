@@ -4,14 +4,32 @@ import { describe, expect, test } from 'vitest';
 
 import {
   ConfigurationSchema,
+  isUrlOnConfiguredHost,
   ProjectConfigurationSchema,
 } from './configuration.js';
+
+interface ConfiguredHostCase {
+  filesBaseUrl: string | null;
+  isOnConfiguredHost: boolean;
+  name: string;
+  updatesBaseUrl: string | null;
+  url: string;
+}
 
 interface ResourceFileCase {
   embeddedBundleManifest: unknown;
   name: string;
   resourceFile: unknown;
 }
+
+const CONFIGURED_HOST_CASES = (
+  JSON.parse(
+    readFileSync(
+      new URL('../../fixtures/configured-hosts.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { cases: ConfiguredHostCase[] }
+).cases;
 
 const PROJECT = { appId: 'a1', channel: 'staging', dir: 'dist' };
 
@@ -246,6 +264,20 @@ describe('ConfigurationSchema', () => {
       expect(
         ConfigurationSchema.parse(resourceFile).embeddedBundleManifest,
       ).toEqual(embeddedBundleManifest);
+    },
+  );
+});
+
+describe('isUrlOnConfiguredHost', () => {
+  test.each(CONFIGURED_HOST_CASES.map(hostCase => [hostCase.name, hostCase]))(
+    '%s',
+    (_name, { filesBaseUrl, isOnConfiguredHost, updatesBaseUrl, url }) => {
+      expect(
+        isUrlOnConfiguredHost(url, {
+          filesBaseUrl: filesBaseUrl ?? undefined,
+          updatesBaseUrl: updatesBaseUrl ?? undefined,
+        }),
+      ).toBe(isOnConfiguredHost);
     },
   );
 });

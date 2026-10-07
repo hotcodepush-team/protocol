@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  HttpUrlSchema,
   IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
@@ -40,7 +41,7 @@ export type BundleManifest = z.infer<typeof BundleManifestSchema>;
 export const EnvelopeDeltaSchema = z.looseObject({
   baseBundleId: IdentifierSchema,
   sizeBytes: SizeBytesSchema,
-  url: z.url(),
+  url: HttpUrlSchema,
 });
 export type EnvelopeDelta = z.infer<typeof EnvelopeDeltaSchema>;
 
@@ -57,7 +58,7 @@ export const ManifestEnvelopeSchema = z.looseObject({
   deltas: z.array(EnvelopeDeltaSchema),
   encryption: z.null(),
   manifest: NonEmptyStringSchema,
-  pack: z.looseObject({ sizeBytes: SizeBytesSchema, url: z.url() }),
+  pack: z.looseObject({ sizeBytes: SizeBytesSchema, url: HttpUrlSchema }),
   signature: SignatureSchema.nullable(),
 });
 export type ManifestEnvelope = z.infer<typeof ManifestEnvelopeSchema>;

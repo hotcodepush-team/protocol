@@ -11,6 +11,7 @@ import { BundleManifestSchema } from './bundle-manifest.js';
 import {
   Base64Schema,
   ChannelNameSchema,
+  HttpUrlSchema,
   IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
@@ -88,10 +89,31 @@ export const ConfigurationSchema = z.looseObject({
    * the SDK answers `SKIPPED` with `BUILD_DEBUG`.
    */
   embeddedBundleManifest: BundleManifestSchema.nullable(),
-  filesBaseUrl: z.url().optional(),
+  filesBaseUrl: HttpUrlSchema.optional(),
   fingerprint: NonEmptyStringSchema.nullable(),
   /** The project's public keys as the embed step re-encoded them for the platform the file is written for. */
   publicKeys: z.array(DevicePublicKeySchema).default([]),
-  updatesBaseUrl: z.url().optional(),
+  updatesBaseUrl: HttpUrlSchema.optional(),
 });
 export type Configuration = z.infer<typeof ConfigurationSchema>;
+
+/** The hosts a production build fetches from, which carries neither in its resource file. */
+const FILES_BASE_URL_DEFAULT = 'https://files.hotcodepush.com';
+const UPDATES_BASE_URL_DEFAULT = 'https://updates.hotcodepush.com';
+
+/**
+ * Whether a manifest, pack or delta URL lies under the configured files or
+ * updates host, the production hosts when the build names none: it starts
+ * with the base URL and a `/`, so another scheme, userinfo, a look-alike
+ * host, another port or another path is off the host, `MANIFEST_INVALID`
+ * before a byte is written.
+ */
+export function isUrlOnConfiguredHost(
+  url: string,
+  hosts: Pick<Configuration, 'filesBaseUrl' | 'updatesBaseUrl'>,
+): boolean {
+  return [
+    hosts.filesBaseUrl ?? FILES_BASE_URL_DEFAULT,
+    hosts.updatesBaseUrl ?? UPDATES_BASE_URL_DEFAULT,
+  ].some(baseUrl => url.startsWith(`${baseUrl}/`));
+}

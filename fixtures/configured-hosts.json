@@ -1,0 +1,103 @@
+{
+  "description": "The configured-host rule: a manifest, pack or delta URL starts with the files or the updates base URL the resource file names, the production hosts https://files.hotcodepush.com and https://updates.hotcodepush.com when it names none (null here), followed by a /. A URL off the configured hosts is MANIFEST_INVALID before a byte is written, so the device fetches from our hosts and nowhere else, and http only from a local stack the build names.",
+  "cases": [
+    {
+      "name": "should accept a URL on the files host of a production build, which names no host",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    },
+    {
+      "name": "should accept a URL on the updates host of a production build",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://updates.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    },
+    {
+      "name": "should refuse http on the files host of a production build, a downgrade",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "http://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should refuse userinfo that names the files host before another host",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://files.hotcodepush.com@evil.example/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should refuse a host that begins with the files host",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://files.hotcodepush.com.evil.example/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should refuse the files host on another port",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://files.hotcodepush.com:8443/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should refuse another host",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "url": "https://evil.example/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should accept a URL on the files host a staging build names",
+      "filesBaseUrl": "https://files.staging.hotcodepush.com",
+      "updatesBaseUrl": "https://updates.staging.hotcodepush.com",
+      "url": "https://files.staging.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    },
+    {
+      "name": "should refuse the production files host in a staging build",
+      "filesBaseUrl": "https://files.staging.hotcodepush.com",
+      "updatesBaseUrl": "https://updates.staging.hotcodepush.com",
+      "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should accept http under the files path of the local stack",
+      "filesBaseUrl": "http://localhost:8787/files",
+      "updatesBaseUrl": "http://localhost:8787/updates",
+      "url": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    },
+    {
+      "name": "should accept http under the updates path of the local stack",
+      "filesBaseUrl": "http://localhost:8787/files",
+      "updatesBaseUrl": "http://localhost:8787/updates",
+      "url": "http://localhost:8787/updates/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    },
+    {
+      "name": "should refuse a path of the local stack that only begins with the files path",
+      "filesBaseUrl": "http://localhost:8787/files",
+      "updatesBaseUrl": "http://localhost:8787/updates",
+      "url": "http://localhost:8787/filesystem/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should refuse the local stack outside its files and updates paths",
+      "filesBaseUrl": "http://localhost:8787/files",
+      "updatesBaseUrl": "http://localhost:8787/updates",
+      "url": "http://localhost:8787/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": false
+    },
+    {
+      "name": "should accept http on the host an emulator reaches the local stack by",
+      "filesBaseUrl": "http://10.0.2.2:8787/files",
+      "updatesBaseUrl": "http://10.0.2.2:8787/updates",
+      "url": "http://10.0.2.2:8787/files/apps/app-1/bundles/bundle-2/manifest.json",
+      "isOnConfiguredHost": true
+    }
+  ]
+}

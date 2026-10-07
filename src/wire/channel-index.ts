@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CONDITION_TYPES } from '../results.js';
 import {
+  HttpUrlSchema,
   IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
@@ -76,7 +77,7 @@ export const IndexReleaseSchema = z.looseObject({
   id: IdentifierSchema,
   isMandatory: z.boolean(),
   manifestSha256: Sha256HexSchema,
-  manifestUrl: z.url(),
+  manifestUrl: HttpUrlSchema,
   notes: z.string().nullable(),
   number: z.int().positive(),
   rollout: z.int().min(0).max(100),

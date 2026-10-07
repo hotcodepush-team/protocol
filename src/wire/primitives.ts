@@ -15,6 +15,13 @@ export const Base64Schema = z
 /** A channel's name: `A–Z a–z 0–9 - _`, one to 64 characters, unique per app case-insensitively. */
 export const ChannelNameSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 
+/**
+ * An absolute `http` or `https` URL, which always names a host: `javascript:`,
+ * `file:`, `data:` and every other scheme are refused. `http` serves the local
+ * stack alone, which the configured-host rule enforces on the device.
+ */
+export const HttpUrlSchema = z.url({ protocol: z.regexes.httpProtocol });
+
 /** A bundle or release id: `A–Z a–z 0–9 _ -`, one to 64 characters, since a bundle id names a directory on the device. */
 export const IdentifierSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 

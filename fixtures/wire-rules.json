@@ -1,5 +1,5 @@
 {
-  "description": "The wire rules every reader enforces before a byte is written: bundle and release ids are [A-Za-z0-9_-]{1,64}, a hash is 64 lowercase hex, a manifest path is relative and /-separated with no empty, . or .. segment, no backslash and no NUL, timestamps are UTC with a Z, and every field of the shape is present, a nullable one as null. A refused index is INDEX_INVALID, a refused manifest or envelope MANIFEST_INVALID, the whole document refused for one breach; an unknown field is ignored, and an unknown condition type and an unknown platform parse.",
+  "description": "The wire rules every reader enforces before a byte is written: bundle and release ids are [A-Za-z0-9_-]{1,64}, a hash is 64 lowercase hex, a manifest path is relative and /-separated with no empty, . or .. segment, no backslash and no NUL, timestamps are UTC with a Z, a URL is absolute http or https, and every field of the shape is present, a nullable one as null. A refused index is INDEX_INVALID, a refused manifest or envelope MANIFEST_INVALID, the whole document refused for one breach; an unknown field is ignored, and an unknown condition type and an unknown platform parse.",
   "acceptedIndexes": [
     {
       "name": "should accept the index as the materializer writes it",
@@ -200,6 +200,40 @@
             "isMandatory": false,
             "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept an http manifest URL, as the local stack writes it",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
             "rollout": 100,
@@ -1184,6 +1218,176 @@
         "schema": 1,
         "sequence": 7
       }
+    },
+    {
+      "name": "should refuse a javascript: manifest URL",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "javascript:alert(1)",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a file: manifest URL",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "file:///apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a data: manifest URL",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "data:application/json,{}",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a manifest URL of another scheme with a host",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "ftp://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a manifest URL without a scheme",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
     }
   ],
   "acceptedManifests": [
@@ -1905,6 +2109,27 @@
         ],
         "signature": null
       }
+    },
+    {
+      "name": "should accept http pack and delta URLs, as the local stack writes them",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      }
     }
   ],
   "refusedEnvelopes": [
@@ -2137,6 +2362,48 @@
         "encryption": {
           "keyId": "k1"
         },
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      }
+    },
+    {
+      "name": "should refuse a javascript: pack URL",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "javascript:alert(1)"
+        },
+        "signature": null
+      }
+    },
+    {
+      "name": "should refuse a file: delta URL",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-09-29T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "file:///apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
         "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
