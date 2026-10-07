@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 import { PLATFORMS } from '../results.js';
 
+/** The one public size limit, in decimal bytes: a bundle, any one file, a pack and a delta pack are at most this, and so is what a device downloads for one release. */
+export const BUNDLE_MAX_SIZE_BYTES = 512_000_000;
+
 /** Bytes as base64 in its one canonical spelling: padded, no unused bits set. */
 export const Base64Schema = z
   .string()

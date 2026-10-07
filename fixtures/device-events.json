@@ -823,6 +823,43 @@
         "sdkVersion": "1.2.0"
       },
       "skippedEventIndexes": [0, 1]
+    },
+    {
+      "name": "should skip a downloaded event whose bytes are above 512000000, the bundle cap and so the largest download, and keep one at the cap",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "bundleId": "bundle-2",
+            "bytes": 512000000,
+            "packKind": "full",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-2",
+            "bytes": 512000001,
+            "packKind": "full",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-2",
+            "bytes": 9007199254740991,
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [1, 2]
     }
   ],
   "refusedBatches": [

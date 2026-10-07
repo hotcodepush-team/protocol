@@ -7,6 +7,7 @@ import {
   SKIPPED_REASONS,
 } from '../results.js';
 import {
+  BUNDLE_MAX_SIZE_BYTES,
   IdentifierSchema,
   IsoTimestampSchema,
   NonEmptyStringSchema,
@@ -43,7 +44,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
   }),
   z.looseObject({
     bundleId: IdentifierSchema,
-    bytes: SizeBytesSchema,
+    bytes: SizeBytesSchema.max(BUNDLE_MAX_SIZE_BYTES),
     packKind: z.enum(PACK_KINDS),
     releaseId: IdentifierSchema,
     type: z.literal('downloaded'),
