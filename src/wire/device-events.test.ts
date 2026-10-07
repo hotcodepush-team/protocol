@@ -7,6 +7,7 @@ import {
   DeviceEventSchema,
   DeviceEventsRequestSchema,
   DeviceEventsResponseSchema,
+  MAX_EVENTS_PER_BATCH,
 } from './device-events.js';
 
 interface DeviceEventsFixture {
@@ -27,7 +28,7 @@ const FIXTURE = JSON.parse(
 
 /** The endpoint's reading: the batch whole, its events one by one, an unreadable one skipped. */
 const DeviceBatchSchema = DeviceEventsRequestSchema.extend({
-  events: z.array(z.unknown()),
+  events: z.array(z.unknown()).max(MAX_EVENTS_PER_BATCH),
 });
 
 describe('the events endpoint', () => {

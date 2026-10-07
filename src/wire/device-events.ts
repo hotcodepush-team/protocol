@@ -77,10 +77,13 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
 ]);
 export type DeviceEvent = z.infer<typeof DeviceEventSchema>;
 
+/** The outbox's cap and so the largest batch a device sends; the events endpoint refuses a larger one. */
+export const MAX_EVENTS_PER_BATCH = 200;
+
 /** One batch to `POST /v1/apps/{appId}/events`. */
 export const DeviceEventsRequestSchema = z.looseObject({
   deviceId: NonEmptyStringSchema,
-  events: z.array(DeviceEventSchema),
+  events: z.array(DeviceEventSchema).max(MAX_EVENTS_PER_BATCH),
   platform: PlatformSchema,
   report: DeviceReportSchema.nullable(),
   sdkVersion: NonEmptyStringSchema,
