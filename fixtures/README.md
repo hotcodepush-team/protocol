@@ -64,6 +64,14 @@ Ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is re
 The refused cases pin where the three readers once diverged — a default for an absent field, a lenient type, an offset timestamp, a `..` segment hidden behind a combining mark — so a refusal is the same refusal on every platform.
 A manifest or an envelope stored while bundles carried `patches` is accepted and the field ignored, as any field a reader does not know is; one accepted envelope carries it on itself and in its manifest.
 
+## `device-events.json`
+
+The batches the events endpoint, `POST /v1/apps/{appId}/events`, accepts and refuses, as `acceptedBatches` and `refusedBatches`, each case `{ name, batch }`, so a core tests its encoder against the endpoint's reading instead of a batch of its own.
+The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused with `E_VALIDATION`, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
+An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
+Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
+The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends.
+
 ## `signatures.json`
 
 One scheme is allowed, `rsa-v1_5-sha256`: RSASSA-PKCS1-v1_5 with SHA-256, which Web Crypto, iOS's Security framework and Android's `Signature` verify alike.

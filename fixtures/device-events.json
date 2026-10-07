@@ -1,0 +1,1127 @@
+{
+  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused with E_VALIDATION, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap.",
+  "acceptedBatches": [
+    {
+      "name": "should accept checked events with every skipped reason and every condition type",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "status": "AVAILABLE",
+            "type": "checked"
+          },
+          {
+            "reason": "BUILD_DEBUG",
+            "releaseId": "release-3",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "BUNDLE_FAILED_BEFORE",
+            "releaseId": "release-4",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "CHANNEL_PAUSED",
+            "releaseId": "release-5",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "CONDITION_UNSUPPORTED",
+            "releaseId": "release-6",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "CONNECTION_METERED",
+            "releaseId": "release-7",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "condition": "binary",
+            "reason": "DEVICE_INCOMPATIBLE",
+            "releaseId": "release-8",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "condition": "fingerprint",
+            "reason": "DEVICE_INCOMPATIBLE",
+            "releaseId": "release-9",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "condition": "os",
+            "reason": "DEVICE_INCOMPATIBLE",
+            "releaseId": "release-10",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "DEVICE_NOT_IN_ROLLOUT",
+            "releaseId": "release-11",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "condition": "attribute",
+            "reason": "DEVICE_NOT_TARGETED",
+            "releaseId": "release-12",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "condition": "device",
+            "reason": "DEVICE_NOT_TARGETED",
+            "releaseId": "release-13",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "RELEASE_OLDER_THAN_BINARY",
+            "releaseId": "release-14",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "RELEASE_REVOKED",
+            "releaseId": "release-15",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "SPENDING_CAP_REACHED",
+            "releaseId": "release-16",
+            "status": "SKIPPED",
+            "type": "checked"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept downloaded events of every pack kind",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "bundleId": "bundle-2",
+            "bytes": 18432,
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-3",
+            "bytes": 2048,
+            "packKind": "files",
+            "releaseId": "release-3",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-4",
+            "bytes": 812331,
+            "packKind": "full",
+            "releaseId": "release-4",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-5",
+            "bytes": 40960,
+            "packKind": "streamed",
+            "releaseId": "release-5",
+            "type": "downloaded"
+          }
+        ],
+        "platform": "android",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept an applied event",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a confirmed event",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "confirmed"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept failed events with every reason, a detail on APP_REQUESTED and one of 256 characters",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "reason": "APP_CRASHED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "APP_REQUESTED",
+            "releaseId": "release-2",
+            "type": "failed",
+            "detail": "checkout crashed on launch"
+          },
+          {
+            "reason": "CONTENT_MISMATCHED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "DOWNLOAD_FAILED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "MANIFEST_INVALID",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "READINESS_TIMED_OUT",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "SIGNATURE_INVALID",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "reason": "APP_REQUESTED",
+            "releaseId": "release-2",
+            "type": "failed"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept rolledBack events, to an earlier release and to the embedded bundle with a null toReleaseId",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "fromReleaseId": "release-3",
+            "toReleaseId": "release-2",
+            "type": "rolledBack"
+          },
+          {
+            "fromReleaseId": "release-2",
+            "toReleaseId": null,
+            "type": "rolledBack"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a report with every fact and an update's events",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "status": "AVAILABLE",
+            "type": "checked"
+          },
+          {
+            "bundleId": "bundle-2",
+            "bytes": 18432,
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "confirmed"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a report alone, the facts changed and the outbox empty",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [],
+        "platform": "android",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a report whose nullable facts are null: the embedded bundle of an unregistered build without a fingerprint, on a channel set at runtime",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [],
+        "platform": "ios",
+        "report": {
+          "attributes": {},
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "runtime",
+          "embeddedBundleId": null,
+          "fingerprint": null,
+          "osVersion": "17.4",
+          "releaseId": null
+        },
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept the empty batch the uptime check sends",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept 200 events, the outbox's cap and so the largest batch a device sends",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          { "releaseId": "release-1", "type": "applied" },
+          { "releaseId": "release-1", "type": "confirmed" },
+          { "releaseId": "release-2", "type": "applied" },
+          { "releaseId": "release-2", "type": "confirmed" },
+          { "releaseId": "release-3", "type": "applied" },
+          { "releaseId": "release-3", "type": "confirmed" },
+          { "releaseId": "release-4", "type": "applied" },
+          { "releaseId": "release-4", "type": "confirmed" },
+          { "releaseId": "release-5", "type": "applied" },
+          { "releaseId": "release-5", "type": "confirmed" },
+          { "releaseId": "release-6", "type": "applied" },
+          { "releaseId": "release-6", "type": "confirmed" },
+          { "releaseId": "release-7", "type": "applied" },
+          { "releaseId": "release-7", "type": "confirmed" },
+          { "releaseId": "release-8", "type": "applied" },
+          { "releaseId": "release-8", "type": "confirmed" },
+          { "releaseId": "release-9", "type": "applied" },
+          { "releaseId": "release-9", "type": "confirmed" },
+          { "releaseId": "release-10", "type": "applied" },
+          { "releaseId": "release-10", "type": "confirmed" },
+          { "releaseId": "release-11", "type": "applied" },
+          { "releaseId": "release-11", "type": "confirmed" },
+          { "releaseId": "release-12", "type": "applied" },
+          { "releaseId": "release-12", "type": "confirmed" },
+          { "releaseId": "release-13", "type": "applied" },
+          { "releaseId": "release-13", "type": "confirmed" },
+          { "releaseId": "release-14", "type": "applied" },
+          { "releaseId": "release-14", "type": "confirmed" },
+          { "releaseId": "release-15", "type": "applied" },
+          { "releaseId": "release-15", "type": "confirmed" },
+          { "releaseId": "release-16", "type": "applied" },
+          { "releaseId": "release-16", "type": "confirmed" },
+          { "releaseId": "release-17", "type": "applied" },
+          { "releaseId": "release-17", "type": "confirmed" },
+          { "releaseId": "release-18", "type": "applied" },
+          { "releaseId": "release-18", "type": "confirmed" },
+          { "releaseId": "release-19", "type": "applied" },
+          { "releaseId": "release-19", "type": "confirmed" },
+          { "releaseId": "release-20", "type": "applied" },
+          { "releaseId": "release-20", "type": "confirmed" },
+          { "releaseId": "release-21", "type": "applied" },
+          { "releaseId": "release-21", "type": "confirmed" },
+          { "releaseId": "release-22", "type": "applied" },
+          { "releaseId": "release-22", "type": "confirmed" },
+          { "releaseId": "release-23", "type": "applied" },
+          { "releaseId": "release-23", "type": "confirmed" },
+          { "releaseId": "release-24", "type": "applied" },
+          { "releaseId": "release-24", "type": "confirmed" },
+          { "releaseId": "release-25", "type": "applied" },
+          { "releaseId": "release-25", "type": "confirmed" },
+          { "releaseId": "release-26", "type": "applied" },
+          { "releaseId": "release-26", "type": "confirmed" },
+          { "releaseId": "release-27", "type": "applied" },
+          { "releaseId": "release-27", "type": "confirmed" },
+          { "releaseId": "release-28", "type": "applied" },
+          { "releaseId": "release-28", "type": "confirmed" },
+          { "releaseId": "release-29", "type": "applied" },
+          { "releaseId": "release-29", "type": "confirmed" },
+          { "releaseId": "release-30", "type": "applied" },
+          { "releaseId": "release-30", "type": "confirmed" },
+          { "releaseId": "release-31", "type": "applied" },
+          { "releaseId": "release-31", "type": "confirmed" },
+          { "releaseId": "release-32", "type": "applied" },
+          { "releaseId": "release-32", "type": "confirmed" },
+          { "releaseId": "release-33", "type": "applied" },
+          { "releaseId": "release-33", "type": "confirmed" },
+          { "releaseId": "release-34", "type": "applied" },
+          { "releaseId": "release-34", "type": "confirmed" },
+          { "releaseId": "release-35", "type": "applied" },
+          { "releaseId": "release-35", "type": "confirmed" },
+          { "releaseId": "release-36", "type": "applied" },
+          { "releaseId": "release-36", "type": "confirmed" },
+          { "releaseId": "release-37", "type": "applied" },
+          { "releaseId": "release-37", "type": "confirmed" },
+          { "releaseId": "release-38", "type": "applied" },
+          { "releaseId": "release-38", "type": "confirmed" },
+          { "releaseId": "release-39", "type": "applied" },
+          { "releaseId": "release-39", "type": "confirmed" },
+          { "releaseId": "release-40", "type": "applied" },
+          { "releaseId": "release-40", "type": "confirmed" },
+          { "releaseId": "release-41", "type": "applied" },
+          { "releaseId": "release-41", "type": "confirmed" },
+          { "releaseId": "release-42", "type": "applied" },
+          { "releaseId": "release-42", "type": "confirmed" },
+          { "releaseId": "release-43", "type": "applied" },
+          { "releaseId": "release-43", "type": "confirmed" },
+          { "releaseId": "release-44", "type": "applied" },
+          { "releaseId": "release-44", "type": "confirmed" },
+          { "releaseId": "release-45", "type": "applied" },
+          { "releaseId": "release-45", "type": "confirmed" },
+          { "releaseId": "release-46", "type": "applied" },
+          { "releaseId": "release-46", "type": "confirmed" },
+          { "releaseId": "release-47", "type": "applied" },
+          { "releaseId": "release-47", "type": "confirmed" },
+          { "releaseId": "release-48", "type": "applied" },
+          { "releaseId": "release-48", "type": "confirmed" },
+          { "releaseId": "release-49", "type": "applied" },
+          { "releaseId": "release-49", "type": "confirmed" },
+          { "releaseId": "release-50", "type": "applied" },
+          { "releaseId": "release-50", "type": "confirmed" },
+          { "releaseId": "release-51", "type": "applied" },
+          { "releaseId": "release-51", "type": "confirmed" },
+          { "releaseId": "release-52", "type": "applied" },
+          { "releaseId": "release-52", "type": "confirmed" },
+          { "releaseId": "release-53", "type": "applied" },
+          { "releaseId": "release-53", "type": "confirmed" },
+          { "releaseId": "release-54", "type": "applied" },
+          { "releaseId": "release-54", "type": "confirmed" },
+          { "releaseId": "release-55", "type": "applied" },
+          { "releaseId": "release-55", "type": "confirmed" },
+          { "releaseId": "release-56", "type": "applied" },
+          { "releaseId": "release-56", "type": "confirmed" },
+          { "releaseId": "release-57", "type": "applied" },
+          { "releaseId": "release-57", "type": "confirmed" },
+          { "releaseId": "release-58", "type": "applied" },
+          { "releaseId": "release-58", "type": "confirmed" },
+          { "releaseId": "release-59", "type": "applied" },
+          { "releaseId": "release-59", "type": "confirmed" },
+          { "releaseId": "release-60", "type": "applied" },
+          { "releaseId": "release-60", "type": "confirmed" },
+          { "releaseId": "release-61", "type": "applied" },
+          { "releaseId": "release-61", "type": "confirmed" },
+          { "releaseId": "release-62", "type": "applied" },
+          { "releaseId": "release-62", "type": "confirmed" },
+          { "releaseId": "release-63", "type": "applied" },
+          { "releaseId": "release-63", "type": "confirmed" },
+          { "releaseId": "release-64", "type": "applied" },
+          { "releaseId": "release-64", "type": "confirmed" },
+          { "releaseId": "release-65", "type": "applied" },
+          { "releaseId": "release-65", "type": "confirmed" },
+          { "releaseId": "release-66", "type": "applied" },
+          { "releaseId": "release-66", "type": "confirmed" },
+          { "releaseId": "release-67", "type": "applied" },
+          { "releaseId": "release-67", "type": "confirmed" },
+          { "releaseId": "release-68", "type": "applied" },
+          { "releaseId": "release-68", "type": "confirmed" },
+          { "releaseId": "release-69", "type": "applied" },
+          { "releaseId": "release-69", "type": "confirmed" },
+          { "releaseId": "release-70", "type": "applied" },
+          { "releaseId": "release-70", "type": "confirmed" },
+          { "releaseId": "release-71", "type": "applied" },
+          { "releaseId": "release-71", "type": "confirmed" },
+          { "releaseId": "release-72", "type": "applied" },
+          { "releaseId": "release-72", "type": "confirmed" },
+          { "releaseId": "release-73", "type": "applied" },
+          { "releaseId": "release-73", "type": "confirmed" },
+          { "releaseId": "release-74", "type": "applied" },
+          { "releaseId": "release-74", "type": "confirmed" },
+          { "releaseId": "release-75", "type": "applied" },
+          { "releaseId": "release-75", "type": "confirmed" },
+          { "releaseId": "release-76", "type": "applied" },
+          { "releaseId": "release-76", "type": "confirmed" },
+          { "releaseId": "release-77", "type": "applied" },
+          { "releaseId": "release-77", "type": "confirmed" },
+          { "releaseId": "release-78", "type": "applied" },
+          { "releaseId": "release-78", "type": "confirmed" },
+          { "releaseId": "release-79", "type": "applied" },
+          { "releaseId": "release-79", "type": "confirmed" },
+          { "releaseId": "release-80", "type": "applied" },
+          { "releaseId": "release-80", "type": "confirmed" },
+          { "releaseId": "release-81", "type": "applied" },
+          { "releaseId": "release-81", "type": "confirmed" },
+          { "releaseId": "release-82", "type": "applied" },
+          { "releaseId": "release-82", "type": "confirmed" },
+          { "releaseId": "release-83", "type": "applied" },
+          { "releaseId": "release-83", "type": "confirmed" },
+          { "releaseId": "release-84", "type": "applied" },
+          { "releaseId": "release-84", "type": "confirmed" },
+          { "releaseId": "release-85", "type": "applied" },
+          { "releaseId": "release-85", "type": "confirmed" },
+          { "releaseId": "release-86", "type": "applied" },
+          { "releaseId": "release-86", "type": "confirmed" },
+          { "releaseId": "release-87", "type": "applied" },
+          { "releaseId": "release-87", "type": "confirmed" },
+          { "releaseId": "release-88", "type": "applied" },
+          { "releaseId": "release-88", "type": "confirmed" },
+          { "releaseId": "release-89", "type": "applied" },
+          { "releaseId": "release-89", "type": "confirmed" },
+          { "releaseId": "release-90", "type": "applied" },
+          { "releaseId": "release-90", "type": "confirmed" },
+          { "releaseId": "release-91", "type": "applied" },
+          { "releaseId": "release-91", "type": "confirmed" },
+          { "releaseId": "release-92", "type": "applied" },
+          { "releaseId": "release-92", "type": "confirmed" },
+          { "releaseId": "release-93", "type": "applied" },
+          { "releaseId": "release-93", "type": "confirmed" },
+          { "releaseId": "release-94", "type": "applied" },
+          { "releaseId": "release-94", "type": "confirmed" },
+          { "releaseId": "release-95", "type": "applied" },
+          { "releaseId": "release-95", "type": "confirmed" },
+          { "releaseId": "release-96", "type": "applied" },
+          { "releaseId": "release-96", "type": "confirmed" },
+          { "releaseId": "release-97", "type": "applied" },
+          { "releaseId": "release-97", "type": "confirmed" },
+          { "releaseId": "release-98", "type": "applied" },
+          { "releaseId": "release-98", "type": "confirmed" },
+          { "releaseId": "release-99", "type": "applied" },
+          { "releaseId": "release-99", "type": "confirmed" },
+          { "releaseId": "release-100", "type": "applied" },
+          { "releaseId": "release-100", "type": "confirmed" }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a field it does not know, on the batch, the report and an event",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied",
+            "later": true
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2",
+          "later": true
+        },
+        "sdkVersion": "1.2.0",
+        "later": true
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should skip a rollback without toReleaseId, which is null for the embedded bundle, and keep the events around it",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          },
+          {
+            "fromReleaseId": "release-2",
+            "type": "rolledBack"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "confirmed"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [1]
+    },
+    {
+      "name": "should skip an event whose optional reason, condition or detail is null instead of left out",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "reason": null,
+            "releaseId": "release-2",
+            "status": "AVAILABLE",
+            "type": "checked"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          },
+          {
+            "condition": null,
+            "reason": "DEVICE_NOT_IN_ROLLOUT",
+            "releaseId": "release-3",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "confirmed"
+          },
+          {
+            "detail": null,
+            "reason": "APP_CRASHED",
+            "releaseId": "release-2",
+            "type": "failed"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 2, 4]
+    },
+    {
+      "name": "should skip an event without a required field and keep the others",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "checked"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          },
+          {
+            "bundleId": "bundle-2",
+            "bytes": 18432,
+            "releaseId": "release-2",
+            "type": "downloaded"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 2]
+    },
+    {
+      "name": "should skip an event type it does not know",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "installed"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0]
+    },
+    {
+      "name": "should skip a reason outside the set: a name from before the rename, and a failed reason no event carries",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "condition": "binary",
+            "reason": "INCOMPATIBLE",
+            "releaseId": "release-3",
+            "status": "SKIPPED",
+            "type": "checked"
+          },
+          {
+            "reason": "VERIFICATION_FAILED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "reason": "DEVICE_OFFLINE",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 1, 2]
+    },
+    {
+      "name": "should skip an event whose release id breaks the identifier rule",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "../release-2",
+            "type": "applied"
+          },
+          {
+            "releaseId": "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+            "type": "applied"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "confirmed"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 1]
+    },
+    {
+      "name": "should skip a failure detail of 257 characters or with a control character",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "detail": "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "reason": "APP_REQUESTED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "detail": "checkout\ncrashed",
+            "reason": "APP_REQUESTED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 1]
+    },
+    {
+      "name": "should skip a downloaded event whose bytes are a string or a fraction",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "bundleId": "bundle-2",
+            "bytes": "18432",
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "bundleId": "bundle-2",
+            "bytes": 18432.5,
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 1]
+    }
+  ],
+  "refusedBatches": [
+    {
+      "name": "should refuse a batch without report, which is null when no fact changed",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report without releaseId, which is null on the embedded bundle",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report without embeddedBundleId, which is null for an unregistered build",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report without fingerprint, which is null in a build without one",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report without channelId",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report with a channelSource it does not know",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta",
+            "region": "eu-west"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "remote",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose attribute value carries a control character",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": {
+            "plan": "beta\n"
+          },
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report whose attributes are a list",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": {
+          "attributes": [["plan", "beta"]],
+          "binaryBuild": "57",
+          "binaryVersion": "2.4.1",
+          "channelId": "channel-1",
+          "channelSource": "config",
+          "embeddedBundleId": "bundle-1",
+          "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+          "osVersion": "17.4",
+          "releaseId": "release-2"
+        },
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a report that is not an object",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": "binaryVersion=2.4.1",
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a batch without deviceId",
+      "batch": {
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse an empty deviceId",
+      "batch": {
+        "deviceId": "",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a batch without sdkVersion",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null
+      }
+    },
+    {
+      "name": "should refuse a platform other than ios and android",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "web",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse a batch without events, which is an empty list when the outbox is empty",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    },
+    {
+      "name": "should refuse events that are not a list",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": {
+          "releaseId": "release-2",
+          "type": "applied"
+        },
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      }
+    }
+  ]
+}

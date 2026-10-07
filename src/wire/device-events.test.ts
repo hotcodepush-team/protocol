@@ -1,111 +1,62 @@
+import { readFileSync } from 'node:fs';
+
 import { describe, expect, test } from 'vitest';
+import { z } from 'zod';
 
 import {
+  DeviceEventSchema,
   DeviceEventsRequestSchema,
   DeviceEventsResponseSchema,
 } from './device-events.js';
 
-const REQUEST = {
-  deviceId: 'd1',
-  events: [
-    {
-      condition: 'binary',
-      reason: 'DEVICE_INCOMPATIBLE',
-      releaseId: 'r2',
-      status: 'SKIPPED',
-      type: 'checked',
+interface DeviceEventsFixture {
+  acceptedBatches: {
+    batch: { events: unknown[] };
+    name: string;
+    skippedEventIndexes: number[];
+  }[];
+  refusedBatches: { batch: unknown; name: string }[];
+}
+
+const FIXTURE = JSON.parse(
+  readFileSync(
+    new URL('../../fixtures/device-events.json', import.meta.url),
+    'utf8',
+  ),
+) as DeviceEventsFixture;
+
+/** The endpoint's reading: the batch whole, its events one by one, an unreadable one skipped. */
+const DeviceBatchSchema = DeviceEventsRequestSchema.extend({
+  events: z.array(z.unknown()),
+});
+
+describe('the events endpoint', () => {
+  test.each(FIXTURE.acceptedBatches.map(accepted => [accepted.name, accepted]))(
+    '%s',
+    (_name, accepted) => {
+      const { events } = accepted.batch;
+      const skippedEventIndexes = events.flatMap((event, index) =>
+        DeviceEventSchema.safeParse(event).success ? [] : [index],
+      );
+      const readableBatch = {
+        ...accepted.batch,
+        events: events.filter(
+          (_event, index) => !skippedEventIndexes.includes(index),
+        ),
+      };
+      expect(skippedEventIndexes).toEqual(accepted.skippedEventIndexes);
+      expect(DeviceEventsRequestSchema.parse(readableBatch)).toEqual(
+        readableBatch,
+      );
     },
-    {
-      bundleId: 'b1',
-      bytes: 4096,
-      packKind: 'delta',
-      releaseId: 'r1',
-      type: 'downloaded',
+  );
+
+  test.each(FIXTURE.refusedBatches.map(refused => [refused.name, refused]))(
+    '%s',
+    (_name, refused) => {
+      expect(DeviceBatchSchema.safeParse(refused.batch).success).toBe(false);
     },
-    { releaseId: 'r1', type: 'applied' },
-    { releaseId: 'r1', type: 'confirmed' },
-    { reason: 'READINESS_TIMED_OUT', releaseId: 'r1', type: 'failed' },
-    {
-      detail: 'checkout crashed on launch',
-      reason: 'APP_REQUESTED',
-      releaseId: 'r1',
-      type: 'failed',
-    },
-    { reason: 'SIGNATURE_INVALID', releaseId: 'r2', type: 'failed' },
-    { fromReleaseId: 'r1', toReleaseId: null, type: 'rolledBack' },
-  ],
-  platform: 'android',
-  report: {
-    attributes: { plan: 'beta' },
-    binaryBuild: '57',
-    binaryVersion: '2.4.1',
-    channelId: 'c1',
-    channelSource: 'config',
-    embeddedBundleId: 'b0',
-    fingerprint: 'fp1:a41b',
-    osVersion: '14',
-    releaseId: 'r1',
-  },
-  sdkVersion: '0.3.1',
-};
-
-describe('DeviceEventsRequestSchema', () => {
-  test('should parse a batch with every event type', () => {
-    expect(DeviceEventsRequestSchema.parse(REQUEST)).toEqual(REQUEST);
-  });
-
-  test('should parse a batch without a report', () => {
-    expect(
-      DeviceEventsRequestSchema.parse({ ...REQUEST, report: null }).report,
-    ).toBeNull();
-  });
-
-  test('should reject a release id outside the identifier charset', () => {
-    const events = [{ releaseId: '../r1', type: 'applied' }];
-    expect(
-      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events }).success,
-    ).toBe(false);
-  });
-
-  test('should reject an event type it does not know', () => {
-    const events = [{ releaseId: 'r1', type: 'installed' }];
-    expect(
-      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events }).success,
-    ).toBe(false);
-  });
-
-  test('should reject a failure detail above 256 characters or with a control character', () => {
-    const long = [
-      {
-        detail: 'a'.repeat(257),
-        reason: 'APP_REQUESTED',
-        releaseId: 'r1',
-        type: 'failed',
-      },
-    ];
-    const control = [
-      {
-        detail: 'a\nb',
-        reason: 'APP_REQUESTED',
-        releaseId: 'r1',
-        type: 'failed',
-      },
-    ];
-    expect(
-      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events: long }).success,
-    ).toBe(false);
-    expect(
-      DeviceEventsRequestSchema.safeParse({ ...REQUEST, events: control })
-        .success,
-    ).toBe(false);
-  });
-
-  test('should reject an attribute with a control character', () => {
-    const report = { ...REQUEST.report, attributes: { plan: 'a\nb' } };
-    expect(
-      DeviceEventsRequestSchema.safeParse({ ...REQUEST, report }).success,
-    ).toBe(false);
-  });
+  );
 });
 
 describe('DeviceEventsResponseSchema', () => {
