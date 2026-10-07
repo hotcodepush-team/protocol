@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import type { ProjectDirectoryEntry, ProjectReader } from './project-reader.js';
-import { readProjectText } from './project-reader.js';
+import { parseProjectJson, readProjectText } from './project-reader.js';
 
 const PackageJsonSchema = z.looseObject({
   capacitor: z.record(z.string(), z.unknown()).optional(),
@@ -36,7 +36,7 @@ async function isCapacitorPlugin(
   directory: string,
 ): Promise<boolean> {
   const text = await readProjectText(reader, `${directory}/package.json`);
-  const packageJson = PackageJsonSchema.safeParse(parsePackageJson(text));
+  const packageJson = PackageJsonSchema.safeParse(parseProjectJson(text));
   const capacitor = packageJson.data?.capacitor ?? {};
   return 'ios' in capacitor || 'android' in capacitor;
 }
@@ -77,12 +77,4 @@ function hasDirectory(entries: ProjectDirectoryEntry[], name: string): boolean {
 
 function hasFile(entries: ProjectDirectoryEntry[], name: string): boolean {
   return entries.some(entry => !entry.isDirectory && entry.name === name);
-}
-
-function parsePackageJson(text: string | null): unknown {
-  try {
-    return text === null ? null : JSON.parse(text);
-  } catch {
-    return null;
-  }
 }

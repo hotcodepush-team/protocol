@@ -14,6 +14,7 @@ interface FingerprintProjectFixture {
   files: Record<string, string>;
   name: string;
   nativeSourcePaths: string[];
+  projectPath: string;
 }
 
 interface FingerprintFixture {
@@ -61,6 +62,7 @@ function createMemoryReader(files: Record<string, string>): ProjectReader {
 function projectOf(fixture: FingerprintProjectFixture) {
   return {
     nativeSourcePaths: fixture.nativeSourcePaths,
+    projectPath: fixture.projectPath,
     reader: createMemoryReader(fixture.files),
   };
 }

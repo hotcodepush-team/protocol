@@ -24,21 +24,70 @@ export interface LockedPackage {
   version: string;
 }
 
+/** A dependency as the lockfile resolved it: the lockfile's own key of the installed copy, and its package. */
+export interface LockedDependency {
+  key: string;
+  package: LockedPackage;
+}
+
+/**
+ * The lockfile read as the project's dependency tree: the project's own
+ * dependencies and each locked package's, as the lockfile resolved them.
+ * Workspace packages and links are the app's own code, never a dependency,
+ * and bundled packages ride inside their parent, so the tree holds neither;
+ * a dependency the lockfile does not install is not in it either.
+ */
+export interface LockedTree {
+  projectDependencies: LockedDependency[];
+  resolveDependencies(dependency: LockedDependency): LockedDependency[];
+}
+
+/** The project the tree starts from: its directory relative to the lockfile's, empty when they are one, and its package.json's dependencies. */
+export interface LockedProject {
+  dependencies: DeclaredDependency[];
+  path: string;
+}
+
+/** A dependency as a package.json or a lockfile entry declares it: the name and the range, or the version a lockfile pinned. */
+export interface DeclaredDependency {
+  name: string;
+  range: string;
+}
+
+const DependencyRangesSchema = z.record(z.string(), z.string()).optional();
+
 const NpmLockfileSchema = z.looseObject({
   lockfileVersion: z.int().min(2),
   packages: z.record(
     z.string(),
     z.looseObject({
+      dependencies: DependencyRangesSchema,
       inBundle: z.boolean().optional(),
       integrity: z.string().optional(),
       link: z.boolean().optional(),
+      optionalDependencies: DependencyRangesSchema,
+      peerDependencies: DependencyRangesSchema,
       resolved: z.string().optional(),
       version: z.string().optional(),
     }),
   ),
 });
 
+const PnpmImporterDependenciesSchema = z
+  .record(z.string(), z.looseObject({ version: z.string() }))
+  .optional();
+
 const PnpmLockfileSchema = z.looseObject({
+  importers: z
+    .record(
+      z.string(),
+      z.looseObject({
+        dependencies: PnpmImporterDependenciesSchema,
+        devDependencies: PnpmImporterDependenciesSchema,
+        optionalDependencies: PnpmImporterDependenciesSchema,
+      }),
+    )
+    .default({}),
   lockfileVersion: z.literal('9.0'),
   packages: z
     .record(
@@ -53,43 +102,64 @@ const PnpmLockfileSchema = z.looseObject({
       }),
     )
     .default({}),
+  snapshots: z
+    .record(
+      z.string(),
+      z
+        .looseObject({
+          dependencies: DependencyRangesSchema,
+          optionalDependencies: DependencyRangesSchema,
+        })
+        .nullable(),
+    )
+    .default({}),
 });
 
 /** An entry of either yarn format: classic records `integrity` and `resolved`, berry `checksum` and `resolution`. */
 const YarnLockfileEntrySchema = z.looseObject({
   checksum: z.string().optional(),
+  dependencies: DependencyRangesSchema,
   integrity: z.string().optional(),
   linkType: z.string().optional(),
+  optionalDependencies: DependencyRangesSchema,
   resolution: z.string().optional(),
   resolved: z.string().optional(),
   version: z.string(),
 });
+type YarnLockfileEntry = z.infer<typeof YarnLockfileEntrySchema>;
 
 const NODE_MODULES_SEGMENT = 'node_modules/';
+const PNPM_LINK_PREFIX = 'link:';
+const PNPM_ROOT_IMPORTER = '.';
 const YARN_METADATA_KEY = '__metadata';
+const YARN_ROOT_WORKSPACE = '.';
 
 /**
- * Every package the lockfile installs from a registry, a tarball or a
- * repository, once per name and version; workspace packages and links are
- * the app's own code, never a dependency, and bundled packages ride inside
- * their parent. A lockfile format this recipe was not written against is
+ * The project's dependency tree as the lockfile resolved it, so a monorepo's
+ * root lockfile yields the packages this workspace installs and never a
+ * sibling's. A lockfile format this recipe was not written against is
  * refused rather than misread.
  */
-export function resolveLockedPackages(
+export function resolveLockedTree(
   lockfileName: LockfileName,
   text: string,
-): LockedPackage[] {
+  project: LockedProject,
+): LockedTree {
   switch (lockfileName) {
     case 'package-lock.json':
-      return resolveNpmLockedPackages(text);
+      return resolveNpmLockedTree(text, project);
     case 'pnpm-lock.yaml':
-      return resolvePnpmLockedPackages(text);
+      return resolvePnpmLockedTree(text, project);
     case 'yarn.lock':
-      return resolveYarnLockedPackages(text);
+      return resolveYarnLockedTree(text, project);
   }
 }
 
-function resolveNpmLockedPackages(text: string): LockedPackage[] {
+/** npm keys every installed copy by its path, so a dependency resolves as Node resolves it, from the nearest `node_modules` up. */
+function resolveNpmLockedTree(
+  text: string,
+  project: LockedProject,
+): LockedTree {
   const lockfile = NpmLockfileSchema.safeParse(
     parseLockfileText('package-lock.json', text, JSON.parse),
   );
@@ -98,27 +168,53 @@ function resolveNpmLockedPackages(text: string): LockedPackage[] {
       'package-lock.json is not a lockfile of version 2 or 3; run npm install with npm 7 or later',
     );
   }
-  return Object.entries(lockfile.data.packages).flatMap(([path, entry]) => {
-    const nameIndex = path.lastIndexOf(NODE_MODULES_SEGMENT);
-    if (
-      nameIndex === -1 ||
-      entry.link === true ||
-      entry.inBundle === true ||
-      entry.version === undefined
-    ) {
-      return [];
+  const { packages } = lockfile.data;
+  const resolveDependency = (
+    directory: string,
+    declared: DeclaredDependency,
+  ): LockedDependency[] => {
+    for (const prefix of resolveNodeModulesPrefixes(directory)) {
+      const key = `${prefix}${declared.name}`;
+      const entry = packages[key];
+      if (entry !== undefined) {
+        return entry.link === true ||
+          entry.inBundle === true ||
+          entry.version === undefined
+          ? []
+          : [
+              {
+                key,
+                package: {
+                  integrity: entry.integrity ?? entry.resolved ?? null,
+                  name: declared.name,
+                  version: entry.version,
+                },
+              },
+            ];
+      }
     }
-    return [
-      {
-        integrity: entry.integrity ?? entry.resolved ?? null,
-        name: path.slice(nameIndex + NODE_MODULES_SEGMENT.length),
-        version: entry.version,
-      },
-    ];
-  });
+    return [];
+  };
+  return {
+    projectDependencies: project.dependencies.flatMap(declared =>
+      resolveDependency(project.path, declared),
+    ),
+    resolveDependencies: dependency => {
+      const entry = packages[dependency.key];
+      return [
+        ...resolveDeclaredDependencies(entry?.dependencies),
+        ...resolveDeclaredDependencies(entry?.optionalDependencies),
+        ...resolveDeclaredDependencies(entry?.peerDependencies),
+      ].flatMap(declared => resolveDependency(dependency.key, declared));
+    },
+  };
 }
 
-function resolvePnpmLockedPackages(text: string): LockedPackage[] {
+/** pnpm resolves the project's dependencies in its importer and every package's in its snapshot, whose version carries the peers it resolved. */
+function resolvePnpmLockedTree(
+  text: string,
+  project: LockedProject,
+): LockedTree {
   const lockfile = PnpmLockfileSchema.safeParse(
     parseLockfileText('pnpm-lock.yaml', text, parseYaml),
   );
@@ -127,42 +223,186 @@ function resolvePnpmLockedPackages(text: string): LockedPackage[] {
       'pnpm-lock.yaml is not a lockfile of version 9.0; run pnpm install with pnpm 9 or later',
     );
   }
-  return Object.entries(lockfile.data.packages).map(([key, entry]) => {
-    const name = resolvePackageName(key);
-    return {
-      integrity:
-        entry.resolution?.integrity ?? entry.resolution?.tarball ?? null,
-      name,
-      version: key.slice(name.length + 1),
-    };
+  const { importers, packages, snapshots } = lockfile.data;
+  const importerPath = project.path === '' ? PNPM_ROOT_IMPORTER : project.path;
+  const importer = importers[importerPath];
+  if (importer === undefined) {
+    throw new FingerprintError(
+      `pnpm-lock.yaml holds no importer ${importerPath}; run pnpm install`,
+    );
+  }
+  const importedVersions = new Map(
+    [
+      importer.dependencies,
+      importer.devDependencies,
+      importer.optionalDependencies,
+    ].flatMap(dependencies =>
+      Object.entries(dependencies ?? {}).map(([name, { version }]) => [
+        name,
+        version,
+      ]),
+    ),
+  );
+  const resolveDependency = (
+    declared: DeclaredDependency,
+  ): LockedDependency[] => {
+    const key = `${declared.name}@${declared.range}`;
+    if (declared.range.startsWith(PNPM_LINK_PREFIX) || !(key in snapshots)) {
+      return [];
+    }
+    // The snapshot's version carries the resolved peers in parentheses; the package's does not.
+    const packageKey = key.split('(')[0] ?? key;
+    const resolution = packages[packageKey]?.resolution;
+    return [
+      {
+        key,
+        package: {
+          integrity: resolution?.integrity ?? resolution?.tarball ?? null,
+          name: declared.name,
+          version: packageKey.slice(declared.name.length + 1),
+        },
+      },
+    ];
+  };
+  return {
+    projectDependencies: project.dependencies.flatMap(({ name }) => {
+      const version = importedVersions.get(name);
+      return version === undefined
+        ? []
+        : resolveDependency({ name, range: version });
+    }),
+    resolveDependencies: dependency => {
+      const snapshot = snapshots[dependency.key];
+      return [
+        ...resolveDeclaredDependencies(snapshot?.dependencies),
+        ...resolveDeclaredDependencies(snapshot?.optionalDependencies),
+      ].flatMap(resolveDependency);
+    },
+  };
+}
+
+/**
+ * yarn keys every entry by the descriptors it satisfies, `name@range`. Berry
+ * records each workspace with its dependencies' descriptors, its own
+ * protocols added; classic records no workspace, so the project's ranges
+ * come from its package.json.
+ */
+function resolveYarnLockedTree(
+  text: string,
+  project: LockedProject,
+): LockedTree {
+  const lockfile = parseLockfileText('yarn.lock', text, parseSyml);
+  const entryKeysByDescriptor = new Map(
+    Object.keys(lockfile).flatMap(key =>
+      key.split(', ').map(descriptor => [descriptor, key]),
+    ),
+  );
+  const resolveDependency = (
+    declared: DeclaredDependency,
+  ): LockedDependency[] => {
+    const key = entryKeysByDescriptor.get(`${declared.name}@${declared.range}`);
+    if (key === undefined) {
+      return [];
+    }
+    const entry = parseYarnLockfileEntry(key, lockfile[key]);
+    // A soft link is a workspace, a link or a portal: the app's own code.
+    if (entry.linkType === 'soft') {
+      return [];
+    }
+    const { checksum, integrity, resolution, resolved, version } = entry;
+    return [
+      {
+        key,
+        package: {
+          integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
+          name: declared.name,
+          version,
+        },
+      },
+    ];
+  };
+  const projectDependencies =
+    YARN_METADATA_KEY in lockfile
+      ? resolveBerryWorkspaceDependencies(
+          lockfile,
+          entryKeysByDescriptor,
+          project,
+        )
+      : project.dependencies;
+  return {
+    projectDependencies: projectDependencies.flatMap(resolveDependency),
+    resolveDependencies: dependency => {
+      const entry = parseYarnLockfileEntry(
+        dependency.key,
+        lockfile[dependency.key],
+      );
+      return [
+        ...resolveDeclaredDependencies(entry.dependencies),
+        ...resolveDeclaredDependencies(entry.optionalDependencies),
+      ].flatMap(resolveDependency);
+    },
+  };
+}
+
+/** The project's dependencies under the descriptors berry recorded on the project's workspace entry. */
+function resolveBerryWorkspaceDependencies(
+  lockfile: Record<string, unknown>,
+  entryKeysByDescriptor: Map<string, string>,
+  project: LockedProject,
+): DeclaredDependency[] {
+  const workspacePath =
+    project.path === '' ? YARN_ROOT_WORKSPACE : project.path;
+  const workspaceKey = [...entryKeysByDescriptor].find(([descriptor]) =>
+    descriptor.endsWith(`@workspace:${workspacePath}`),
+  )?.[1];
+  if (workspaceKey === undefined) {
+    throw new FingerprintError(
+      `yarn.lock holds no workspace ${workspacePath}; run yarn install`,
+    );
+  }
+  const workspaceRanges =
+    parseYarnLockfileEntry(workspaceKey, lockfile[workspaceKey]).dependencies ??
+    {};
+  return project.dependencies.flatMap(({ name }) => {
+    const range = workspaceRanges[name];
+    return range === undefined ? [] : [{ name, range }];
   });
 }
 
-function resolveYarnLockedPackages(text: string): LockedPackage[] {
-  const lockfile = parseLockfileText('yarn.lock', text, parseSyml);
-  return Object.entries(lockfile).flatMap(([descriptors, value]) => {
-    if (descriptors === YARN_METADATA_KEY) {
-      return [];
-    }
-    const entry = YarnLockfileEntrySchema.safeParse(value);
-    if (!entry.success) {
-      throw new FingerprintError(
-        `yarn.lock holds an entry without a version, ${descriptors}`,
-      );
-    }
-    // A soft link is a workspace, a link or a portal: the app's own code.
-    if (entry.data.linkType === 'soft') {
-      return [];
-    }
-    const { checksum, integrity, resolution, resolved, version } = entry.data;
-    return [
-      {
-        integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
-        name: resolvePackageName(descriptors),
-        version,
-      },
-    ];
-  });
+function parseYarnLockfileEntry(
+  key: string,
+  value: unknown,
+): YarnLockfileEntry {
+  const entry = YarnLockfileEntrySchema.safeParse(value);
+  if (!entry.success) {
+    throw new FingerprintError(
+      `yarn.lock holds an entry without a version, ${key}`,
+    );
+  }
+  return entry.data;
+}
+
+function resolveDeclaredDependencies(
+  ranges: Record<string, string> | undefined,
+): DeclaredDependency[] {
+  return Object.entries(ranges ?? {}).map(([name, range]) => ({
+    name,
+    range,
+  }));
+}
+
+/**
+ * The `node_modules` directories Node consults from a directory, nearest
+ * first, each as the prefix of a lockfile key: the directory's own, then
+ * every ancestor's that is not itself a `node_modules`.
+ */
+function resolveNodeModulesPrefixes(directory: string): string[] {
+  const segments = directory === '' ? [] : directory.split('/');
+  return segments
+    .map((_segment, index) => segments.slice(0, segments.length - index))
+    .filter(ancestor => ancestor.at(-1) !== 'node_modules')
+    .map(ancestor => `${ancestor.join('/')}/${NODE_MODULES_SEGMENT}`)
+    .concat(NODE_MODULES_SEGMENT);
 }
 
 function parseLockfileText<T>(
@@ -177,15 +417,4 @@ function parseLockfileText<T>(
       cause: error,
     });
   }
-}
-
-/** The name in `name@rest`, scoped or not, since a package name holds no `@` after its first character. */
-function resolvePackageName(descriptor: string): string {
-  const separatorIndex = descriptor.indexOf('@', 1);
-  if (separatorIndex === -1) {
-    throw new FingerprintError(
-      `the lockfile names a package without a version, ${descriptor}`,
-    );
-  }
-  return descriptor.slice(0, separatorIndex);
 }

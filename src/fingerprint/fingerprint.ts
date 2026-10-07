@@ -7,18 +7,32 @@
  * hash — so a change to anything here is `fp2`, never an edit, since
  * fingerprints compare by equality only.
  */
+import { z } from 'zod';
+
 import { stringifyCanonicalJson } from '../canonical-json.js';
 import { computeSha256Hex } from '../hash/sha256.js';
 import { RelativePathSchema } from '../wire/primitives.js';
-import type { LockedPackage, LockfileName } from './lockfiles.js';
-import { LOCKFILE_NAMES, resolveLockedPackages } from './lockfiles.js';
+import type {
+  DeclaredDependency,
+  LockedPackage,
+  LockedTree,
+  LockfileName,
+} from './lockfiles.js';
+import { LOCKFILE_NAMES, resolveLockedTree } from './lockfiles.js';
 import { hasNativeMarkers } from './native-markers.js';
 import type { ProjectReader } from './project-reader.js';
-import { FingerprintError, readProjectText } from './project-reader.js';
+import {
+  FingerprintError,
+  parseProjectJson,
+  readProjectText,
+} from './project-reader.js';
 
 export interface FingerprintProject {
-  /** The custom native sources the app declares: files or directories, relative to the project root. */
+  /** The custom native sources the app declares: files or directories, relative to the reader's root. */
   nativeSourcePaths: readonly string[];
+  /** The project's directory relative to the reader's root, the lockfile's directory: a workspace's path in a monorepo, empty when they are one. */
+  projectPath: string;
+  /** The project from the directory holding its lockfile, a monorepo's root where the workspace installs. */
   reader: ProjectReader;
 }
 
@@ -49,6 +63,12 @@ export const FINGERPRINT_RUNTIME_PACKAGES = [
 
 const FINGERPRINT_RECIPE = 'fp1';
 
+const ProjectManifestSchema = z.looseObject({
+  dependencies: z.record(z.string(), z.string()).optional(),
+  devDependencies: z.record(z.string(), z.string()).optional(),
+  optionalDependencies: z.record(z.string(), z.string()).optional(),
+});
+
 /** `fp1:` and the SHA-256 of the contributors' canonical JSON. */
 export function computeFingerprint(
   contributors: FingerprintContributors,
@@ -58,17 +78,19 @@ export function computeFingerprint(
 
 /**
  * The contributors of the project's fingerprint, read through the project
- * reader: the lockfile, the markers of every package it installs, found in
- * `node_modules` or, for pnpm's hidden hoisting, `node_modules/.pnpm/node_modules`,
- * and the declared native sources. Every package of a kept name contributes,
- * one entry per version and integrity, sorted by name, version and integrity;
- * native sources sorted by path, hidden files inside a declared directory
- * skipped.
+ * reader: the packages the lockfile installs for the project, walked from
+ * its own package.json through the lockfile's dependency tree, so a sibling
+ * workspace's packages never contribute; the markers of each, found in the
+ * project's `node_modules`, the root's or, for pnpm's hidden hoisting,
+ * `node_modules/.pnpm/node_modules`; and the declared native sources. Every
+ * package of a kept name contributes, one entry per version and integrity,
+ * sorted by name, version and integrity; native sources sorted by path,
+ * hidden files inside a declared directory skipped.
  */
 export async function readFingerprintContributors(
   project: FingerprintProject,
 ): Promise<FingerprintContributors> {
-  const { reader } = project;
+  const { projectPath, reader } = project;
   const lockfile = await readLockfile(reader);
   if ((await reader.readDirectory('node_modules')) === null) {
     throw new FingerprintError(
@@ -76,11 +98,16 @@ export async function readFingerprintContributors(
     );
   }
   const lockedPackages = resolveUniquePackages(
-    resolveLockedPackages(lockfile.name, lockfile.text),
+    resolveReachedPackages(
+      resolveLockedTree(lockfile.name, lockfile.text, {
+        dependencies: await readProjectDependencies(reader, projectPath),
+        path: projectPath,
+      }),
+    ),
   );
   const nativeNames = new Set<string>();
   for (const name of new Set(lockedPackages.map(locked => locked.name))) {
-    if (await isNativePackage(reader, name)) {
+    if (await isNativePackage(reader, projectPath, name)) {
       nativeNames.add(name);
     }
   }
@@ -118,6 +145,43 @@ async function readLockfile(
   return lockfile;
 }
 
+/** Every dependency of every kind the project's package.json declares, the walk's start. */
+async function readProjectDependencies(
+  reader: ProjectReader,
+  projectPath: string,
+): Promise<DeclaredDependency[]> {
+  const path = resolveProjectFilePath(projectPath, 'package.json');
+  const text = await readProjectText(reader, path);
+  if (text === null) {
+    throw new FingerprintError(`the project has no ${path}`);
+  }
+  const manifest = ProjectManifestSchema.safeParse(parseProjectJson(text));
+  if (!manifest.success) {
+    throw new FingerprintError(`${path} does not parse`);
+  }
+  const { dependencies, devDependencies, optionalDependencies } = manifest.data;
+  return [dependencies, devDependencies, optionalDependencies].flatMap(ranges =>
+    Object.entries(ranges ?? {}).map(([name, range]) => ({ name, range })),
+  );
+}
+
+/** Each installed copy the walk reaches from the project once, whatever the path it was reached by. */
+function resolveReachedPackages(tree: LockedTree): LockedPackage[] {
+  const reachedPackages = new Map<string, LockedPackage>();
+  const pendingDependencies = [...tree.projectDependencies];
+  for (
+    let dependency = pendingDependencies.shift();
+    dependency !== undefined;
+    dependency = pendingDependencies.shift()
+  ) {
+    if (!reachedPackages.has(dependency.key)) {
+      reachedPackages.set(dependency.key, dependency.package);
+      pendingDependencies.push(...tree.resolveDependencies(dependency));
+    }
+  }
+  return [...reachedPackages.values()];
+}
+
 function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
   const packagesByKey = new Map(
     packages.map(locked => [
@@ -135,15 +199,17 @@ function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
 
 async function isNativePackage(
   reader: ProjectReader,
+  projectPath: string,
   name: string,
 ): Promise<boolean> {
   if ((FINGERPRINT_RUNTIME_PACKAGES as readonly string[]).includes(name)) {
     return true;
   }
-  for (const directory of [
+  for (const directory of new Set([
+    resolveProjectFilePath(projectPath, `node_modules/${name}`),
     `node_modules/${name}`,
     `node_modules/.pnpm/node_modules/${name}`,
-  ]) {
+  ])) {
     if ((await reader.readDirectory(directory)) !== null) {
       return hasNativeMarkers(reader, directory);
     }
@@ -190,6 +256,11 @@ async function collectNativeSourceFiles(
     throw new FingerprintError(`the native source ${path} does not exist`);
   }
   return [{ path, sha256: computeSha256Hex(bytes) }];
+}
+
+/** A path inside the project as the reader takes it, relative to the lockfile's directory. */
+function resolveProjectFilePath(projectPath: string, path: string): string {
+  return projectPath === '' ? path : `${projectPath}/${path}`;
 }
 
 /** Order by UTF-16 code units, the same on every machine and locale. */

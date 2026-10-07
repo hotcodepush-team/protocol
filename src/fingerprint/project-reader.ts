@@ -19,6 +19,15 @@ export class FingerprintError extends Error {
   override readonly name = 'FingerprintError';
 }
 
+/** The JSON value of a file's text, or null when there is no text or it does not parse. */
+export function parseProjectJson(text: string | null): unknown {
+  try {
+    return text === null ? null : JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 /** The file's text, or null when no file is there. */
 export async function readProjectText(
   reader: ProjectReader,
