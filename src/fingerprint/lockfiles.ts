@@ -37,14 +37,25 @@ export interface LockedDependency {
 
 /**
  * The lockfile read as the project's dependency tree: the project's own
- * dependencies and each locked package's, as the lockfile resolved them.
- * Workspace packages and links are the app's own code, never a dependency,
- * and bundled packages ride inside their parent, so the tree holds neither;
- * a dependency the lockfile does not install is not in it either.
+ * dependencies and each locked package's, as the lockfile resolved them, and
+ * where each is installed. Workspace packages and links are the app's own
+ * code, never a dependency, and bundled packages ride inside their parent, so
+ * the tree holds neither; a dependency the lockfile does not install is not
+ * in it either.
  */
 export interface LockedTree {
   projectDependencies: LockedDependency[];
   resolveDependencies(dependency: LockedDependency): LockedDependency[];
+  /**
+   * Where the dependency may be installed, relative to the lockfile's
+   * directory, the first that exists holding it: the directory the lockfile
+   * implies, else the nearest `node_modules` from the directory of the
+   * project or package depending on it, as Node resolves it.
+   */
+  resolveInstallDirectories(
+    dependency: LockedDependency,
+    dependentDirectory: string,
+  ): string[];
 }
 
 /** The project the tree starts from: its directory relative to the lockfile's, empty when they are one, and its package.json's dependencies. */
@@ -141,6 +152,7 @@ type YarnLockfileEntry = z.infer<typeof YarnLockfileEntrySchema>;
 const NODE_MODULES_SEGMENT = 'node_modules/';
 const PNPM_LINK_PREFIX = 'link:';
 const PNPM_ROOT_IMPORTER = '.';
+const PNPM_VIRTUAL_STORE_DIRECTORY = 'node_modules/.pnpm';
 const YARN_METADATA_KEY = '__metadata';
 const YARN_ROOT_WORKSPACE = '.';
 
@@ -165,7 +177,7 @@ export function resolveLockedTree(
   }
 }
 
-/** npm keys every installed copy by its path, so a dependency resolves as Node resolves it, from the nearest `node_modules` up. */
+/** npm keys every installed copy by its path, so a dependency resolves as Node resolves it, from the nearest `node_modules` up, and is installed at its key. */
 function resolveNpmLockedTree(
   text: string,
   project: LockedProject,
@@ -183,8 +195,7 @@ function resolveNpmLockedTree(
     directory: string,
     declared: DeclaredDependency,
   ): LockedDependency[] => {
-    for (const prefix of resolveNodeModulesPrefixes(directory)) {
-      const key = `${prefix}${declared.name}`;
+    for (const key of resolveNodeModulesPaths(directory, declared.name)) {
       const entry = packages[key];
       if (entry !== undefined) {
         return entry.link === true ||
@@ -218,10 +229,15 @@ function resolveNpmLockedTree(
         ...resolveDeclaredDependencies(entry?.peerDependencies, false),
       ].flatMap(declared => resolveDependency(dependency.key, declared));
     },
+    resolveInstallDirectories: dependency => [dependency.key],
   };
 }
 
-/** pnpm resolves the project's dependencies in its importer and every package's in its snapshot, whose version carries the peers it resolved. */
+/**
+ * pnpm resolves the project's dependencies in its importer and every
+ * package's in its snapshot, whose version carries the peers it resolved,
+ * and installs each snapshot in a virtual store directory named after it.
+ */
 function resolvePnpmLockedTree(
   text: string,
   project: LockedProject,
@@ -290,14 +306,32 @@ function resolvePnpmLockedTree(
         ...resolveDeclaredDependencies(snapshot?.optionalDependencies, true),
       ].flatMap(resolveDependency);
     },
+    resolveInstallDirectories: (dependency, dependentDirectory) => [
+      `${PNPM_VIRTUAL_STORE_DIRECTORY}/${resolvePnpmVirtualStoreName(dependency.key)}/${NODE_MODULES_SEGMENT}${dependency.package.name}`,
+      ...resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
+    ],
   };
+}
+
+/**
+ * The name pnpm gives a snapshot's directory in its virtual store: the key,
+ * the characters a file name cannot hold replaced by `+` and the peers'
+ * parentheses by `_`. pnpm hashes a name too long or with capitals, by a
+ * hash its major and the platform choose, so such a package is found as
+ * Node finds it instead.
+ */
+function resolvePnpmVirtualStoreName(snapshotKey: string): string {
+  const name = snapshotKey.replace(/[\\/:*?"<>|#]/g, '+');
+  return name.includes('(')
+    ? name.replace(/\)$/, '').replace(/\)\(|\(|\)/g, '_')
+    : name;
 }
 
 /**
  * yarn keys every entry by the descriptors it satisfies, `name@range`. Berry
  * records each workspace with its dependencies' descriptors, its own
  * protocols added; classic records no workspace, so the project's ranges
- * come from its package.json.
+ * come from its package.json. Neither records where an entry is installed.
  */
 function resolveYarnLockedTree(
   text: string,
@@ -358,6 +392,8 @@ function resolveYarnLockedTree(
         ...resolveDeclaredDependencies(entry.optionalDependencies, true),
       ].flatMap(resolveDependency);
     },
+    resolveInstallDirectories: (dependency, dependentDirectory) =>
+      resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
   };
 }
 
@@ -412,17 +448,19 @@ export function resolveDeclaredDependencies(
 }
 
 /**
- * The `node_modules` directories Node consults from a directory, nearest
- * first, each as the prefix of a lockfile key: the directory's own, then
- * every ancestor's that is not itself a `node_modules`.
+ * The paths Node consults for a package from a directory, nearest first,
+ * relative to the lockfile's directory: in the directory's own
+ * `node_modules`, then in every ancestor's that is not itself a
+ * `node_modules`.
  */
-function resolveNodeModulesPrefixes(directory: string): string[] {
+function resolveNodeModulesPaths(directory: string, name: string): string[] {
   const segments = directory === '' ? [] : directory.split('/');
   return segments
     .map((_segment, index) => segments.slice(0, segments.length - index))
     .filter(ancestor => ancestor.at(-1) !== 'node_modules')
     .map(ancestor => `${ancestor.join('/')}/${NODE_MODULES_SEGMENT}`)
-    .concat(NODE_MODULES_SEGMENT);
+    .concat(NODE_MODULES_SEGMENT)
+    .map(prefix => `${prefix}${name}`);
 }
 
 function parseLockfileText<T>(

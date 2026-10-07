@@ -1,5 +1,5 @@
 {
-  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. refusedProjects are the projects whose fingerprint cannot be computed.",
+  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. Each installed copy's markers are read where the lockfile installs it — npm's key, pnpm's virtual store directory, else the nearest node_modules from the package depending on it, as Node resolves it — so a nested copy is never read from a hoisted namesake of another version. refusedProjects are the projects whose fingerprint cannot be computed.",
   "cases": [
     {
       "name": "should keep the native packages and the Capacitor runtime of an npm project",
@@ -106,12 +106,12 @@
         "node_modules/@capacitor/ios/package.json": "{\n  \"name\": \"@capacitor/ios\",\n  \"version\": \"7.4.3\"\n}\n",
         "node_modules/@example/capacitor-ios-only/package.json": "{\n  \"name\": \"@example/capacitor-ios-only\",\n  \"version\": \"1.2.0\",\n  \"capacitor\": {\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
         "node_modules/@example/capacitor-web-only/package.json": "{\n  \"name\": \"@example/capacitor-web-only\",\n  \"version\": \"0.4.1\",\n  \"capacitor\": {}\n}\n",
-        "node_modules/.pnpm/node_modules/@example/native-core/package.json": "{\n  \"name\": \"@example/native-core\",\n  \"version\": \"2.0.1\"\n}\n",
+        "node_modules/.pnpm/@example+native-core@2.0.1/node_modules/@example/native-core/package.json": "{\n  \"name\": \"@example/native-core\",\n  \"version\": \"2.0.1\"\n}\n",
         "node_modules/@example/pure-js/package.json": "{\n  \"name\": \"@example/pure-js\",\n  \"version\": \"3.1.4\"\n}\n",
         "node_modules/cordova-plugin-example/package.json": "{\n  \"name\": \"cordova-plugin-example\",\n  \"version\": \"6.0.0\"\n}\n",
         "node_modules/react-native-example-gradle/package.json": "{\n  \"name\": \"react-native-example-gradle\",\n  \"version\": \"0.9.2\"\n}\n",
         "node_modules/react-native-example-podspec/package.json": "{\n  \"name\": \"react-native-example-podspec\",\n  \"version\": \"1.0.0\"\n}\n",
-        "node_modules/.pnpm/node_modules/tslib/package.json": "{\n  \"name\": \"tslib\",\n  \"version\": \"2.8.1\"\n}\n",
+        "node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/package.json": "{\n  \"name\": \"tslib\",\n  \"version\": \"2.8.1\"\n}\n",
         "node_modules/@capacitor/android/capacitor/build.gradle": "apply plugin: \"com.android.library\"\n",
         "node_modules/@capacitor/camera/CapacitorCamera.podspec": "Pod::Spec.new do |s|\n  s.name = 'CapacitorCamera'\nend\n",
         "node_modules/@capacitor/camera/android/build.gradle": "apply plugin: \"com.android.library\"\n",
@@ -120,14 +120,14 @@
         "node_modules/@capacitor/ios/Capacitor/Capacitor/CAPBridge.swift": "import Foundation\n",
         "node_modules/@example/capacitor-ios-only/ios/Plugin/Plugin.swift": "import Capacitor\n",
         "node_modules/@example/capacitor-web-only/dist/plugin.js": "export {};\n",
-        "node_modules/.pnpm/node_modules/@example/native-core/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/.pnpm/@example+native-core@2.0.1/node_modules/@example/native-core/android/build.gradle": "apply plugin: \"com.android.library\"\n",
         "node_modules/@example/pure-js/index.js": "module.exports = {};\n",
         "node_modules/cordova-plugin-example/plugin.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<plugin xmlns=\"http://apache.org/cordova/ns/plugins/1.0\" id=\"cordova-plugin-example\" version=\"6.0.0\"/>\n",
         "node_modules/react-native-example-gradle/android/build.gradle.kts": "plugins { id(\"com.android.library\") }\n",
         "node_modules/react-native-example-gradle/ios/README.md": "No iOS module.\n",
         "node_modules/react-native-example-podspec/ios/ExampleModule.podspec": "Pod::Spec.new do |s|\n  s.name = 'ExampleModule'\nend\n",
         "node_modules/react-native-example-podspec/ios/ExampleModule.mm": "#import <React/RCTBridgeModule.h>\n",
-        "node_modules/.pnpm/node_modules/tslib/tslib.js": "var __extends;\n",
+        "node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.js": "var __extends;\n",
         "packages/local-plugin/package.json": "{\n  \"name\": \"@example/local-plugin\",\n  \"version\": \"0.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
         "node_modules/@example/local-plugin/package.json": "{\n  \"name\": \"@example/local-plugin\",\n  \"version\": \"0.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
         "node_modules/@example/local-plugin/android/build.gradle": "apply plugin: \"com.android.library\"\n"
@@ -582,6 +582,110 @@
         ]
       },
       "fingerprint": "fp1:becd1bdecb82ffd086aadecc8555feba69afe979c525624b479701ae0f569465"
+    },
+    {
+      "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in an npm project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/scanner-kit\": \"^1.0.0\",\n    \"@example/vision\": \"^1.4.0\"\n  }\n}\n",
+        "package-lock.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/scanner-kit\": \"^1.0.0\",\n        \"@example/vision\": \"^1.4.0\"\n      }\n    },\n    \"node_modules/@example/scanner-kit\": {\n      \"version\": \"1.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/scanner-kit/-/scanner-kit-1.0.0.tgz\",\n      \"integrity\": \"sha512-CqFkH+7bgNqKUdZXCxk5IHiTfo97wk0trqVYxQ4BIZMXavGuFTS/Ns2e4Hx1B9084dqyG6nc/Ctr/YlrbQds0w==\",\n      \"dependencies\": {\n        \"@example/vision\": \"^2.0.0\",\n        \"@example/vision-loader\": \"^1.0.0\"\n      }\n    },\n    \"node_modules/@example/scanner-kit/node_modules/@example/vision\": {\n      \"version\": \"2.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/vision/-/vision-2.0.0.tgz\",\n      \"integrity\": \"sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==\"\n    },\n    \"node_modules/@example/scanner-kit/node_modules/@example/vision-loader\": {\n      \"version\": \"1.0.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/vision-loader/-/vision-loader-1.0.0.tgz\",\n      \"integrity\": \"sha512-IIJPG4cQakKeEw+hR+bnrSjZtTM7gzH8WhphO370hY6EIhP66jeJ8+IeglEOnuuwTxCGZDA/U3dgD7dpl2F/AA==\",\n      \"peerDependencies\": {\n        \"@example/vision\": \"^2.0.0\"\n      }\n    },\n    \"node_modules/@example/vision\": {\n      \"version\": \"1.4.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/vision/-/vision-1.4.0.tgz\",\n      \"integrity\": \"sha512-TlY3WqL6gOR5+1vOrcm4GlnmM/AMwT2+/QRJt/UmIv+LCO4bDcNqK12kJQhYdiENktXDjp6fImKbJSUy2wIVDQ==\"\n    }\n  }\n}\n",
+        "node_modules/@example/scanner-kit/package.json": "{\n  \"name\": \"@example/scanner-kit\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"@example/vision\": \"^2.0.0\",\n    \"@example/vision-loader\": \"^1.0.0\"\n  }\n}\n",
+        "node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"1.4.0\"\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"2.0.0\"\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision-loader/package.json": "{\n  \"name\": \"@example/vision-loader\",\n  \"version\": \"1.0.0\",\n  \"peerDependencies\": {\n    \"@example/vision\": \"^2.0.0\"\n  }\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
+            "name": "@example/vision",
+            "version": "2.0.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+    },
+    {
+      "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a pnpm project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/scanner-kit\": \"^1.0.0\",\n    \"@example/vision\": \"^1.4.0\"\n  }\n}\n",
+        "pnpm-lock.yaml": "lockfileVersion: '9.0'\n\nsettings:\n  autoInstallPeers: true\n  excludeLinksFromLockfile: false\n\nimporters:\n\n  .:\n    dependencies:\n      '@example/scanner-kit':\n        specifier: ^1.0.0\n        version: 1.0.0\n      '@example/vision':\n        specifier: ^1.4.0\n        version: 1.4.0\n\npackages:\n\n  '@example/scanner-kit@1.0.0':\n    resolution: {integrity: sha512-CqFkH+7bgNqKUdZXCxk5IHiTfo97wk0trqVYxQ4BIZMXavGuFTS/Ns2e4Hx1B9084dqyG6nc/Ctr/YlrbQds0w==}\n\n  '@example/vision-loader@1.0.0':\n    resolution: {integrity: sha512-IIJPG4cQakKeEw+hR+bnrSjZtTM7gzH8WhphO370hY6EIhP66jeJ8+IeglEOnuuwTxCGZDA/U3dgD7dpl2F/AA==}\n    peerDependencies:\n      '@example/vision': ^2.0.0\n\n  '@example/vision@1.4.0':\n    resolution: {integrity: sha512-TlY3WqL6gOR5+1vOrcm4GlnmM/AMwT2+/QRJt/UmIv+LCO4bDcNqK12kJQhYdiENktXDjp6fImKbJSUy2wIVDQ==}\n\n  '@example/vision@2.0.0':\n    resolution: {integrity: sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==}\n\nsnapshots:\n\n  '@example/scanner-kit@1.0.0':\n    dependencies:\n      '@example/vision': 2.0.0\n      '@example/vision-loader': 1.0.0(@example/vision@2.0.0)\n\n  '@example/vision-loader@1.0.0(@example/vision@2.0.0)':\n    dependencies:\n      '@example/vision': 2.0.0\n\n  '@example/vision@1.4.0': {}\n\n  '@example/vision@2.0.0': {}\n",
+        "node_modules/.modules.yaml": "layoutVersion: 5\nnodeLinker: isolated\n",
+        "node_modules/@example/scanner-kit/package.json": "{\n  \"name\": \"@example/scanner-kit\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"@example/vision\": \"^2.0.0\",\n    \"@example/vision-loader\": \"^1.0.0\"\n  }\n}\n",
+        "node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"1.4.0\"\n}\n",
+        "node_modules/.pnpm/@example+scanner-kit@1.0.0/node_modules/@example/scanner-kit/package.json": "{\n  \"name\": \"@example/scanner-kit\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"@example/vision\": \"^2.0.0\",\n    \"@example/vision-loader\": \"^1.0.0\"\n  }\n}\n",
+        "node_modules/.pnpm/@example+vision-loader@1.0.0_@example+vision@2.0.0/node_modules/@example/vision-loader/package.json": "{\n  \"name\": \"@example/vision-loader\",\n  \"version\": \"1.0.0\",\n  \"peerDependencies\": {\n    \"@example/vision\": \"^2.0.0\"\n  }\n}\n",
+        "node_modules/.pnpm/@example+vision@1.4.0/node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"1.4.0\"\n}\n",
+        "node_modules/.pnpm/@example+vision@2.0.0/node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"2.0.0\"\n}\n",
+        "node_modules/.pnpm/@example+vision@2.0.0/node_modules/@example/vision/android/build.gradle": "apply plugin: \"com.android.library\"\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
+            "name": "@example/vision",
+            "version": "2.0.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+    },
+    {
+      "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a yarn classic project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/scanner-kit\": \"^1.0.0\",\n    \"@example/vision\": \"^1.4.0\"\n  }\n}\n",
+        "yarn.lock": "# THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.\n# yarn lockfile v1\n\n\n\"@example/scanner-kit@^1.0.0\":\n  version \"1.0.0\"\n  resolved \"https://registry.yarnpkg.com/@example/scanner-kit/-/scanner-kit-1.0.0.tgz\"\n  integrity sha512-CqFkH+7bgNqKUdZXCxk5IHiTfo97wk0trqVYxQ4BIZMXavGuFTS/Ns2e4Hx1B9084dqyG6nc/Ctr/YlrbQds0w==\n  dependencies:\n    \"@example/vision\" \"^2.0.0\"\n    \"@example/vision-loader\" \"^1.0.0\"\n\n\"@example/vision-loader@^1.0.0\":\n  version \"1.0.0\"\n  resolved \"https://registry.yarnpkg.com/@example/vision-loader/-/vision-loader-1.0.0.tgz\"\n  integrity sha512-IIJPG4cQakKeEw+hR+bnrSjZtTM7gzH8WhphO370hY6EIhP66jeJ8+IeglEOnuuwTxCGZDA/U3dgD7dpl2F/AA==\n\n\"@example/vision@^1.4.0\":\n  version \"1.4.0\"\n  resolved \"https://registry.yarnpkg.com/@example/vision/-/vision-1.4.0.tgz\"\n  integrity sha512-TlY3WqL6gOR5+1vOrcm4GlnmM/AMwT2+/QRJt/UmIv+LCO4bDcNqK12kJQhYdiENktXDjp6fImKbJSUy2wIVDQ==\n\n\"@example/vision@^2.0.0\":\n  version \"2.0.0\"\n  resolved \"https://registry.yarnpkg.com/@example/vision/-/vision-2.0.0.tgz\"\n  integrity sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==\n",
+        "node_modules/@example/scanner-kit/package.json": "{\n  \"name\": \"@example/scanner-kit\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"@example/vision\": \"^2.0.0\",\n    \"@example/vision-loader\": \"^1.0.0\"\n  }\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"2.0.0\"\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"1.4.0\"\n}\n",
+        "node_modules/@example/vision-loader/package.json": "{\n  \"name\": \"@example/vision-loader\",\n  \"version\": \"1.0.0\",\n  \"peerDependencies\": {\n    \"@example/vision\": \"^2.0.0\"\n  }\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
+            "name": "@example/vision",
+            "version": "2.0.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+    },
+    {
+      "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a yarn berry project",
+      "projectPath": "",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/scanner-kit\": \"^1.0.0\",\n    \"@example/vision\": \"^1.4.0\"\n  }\n}\n",
+        ".yarnrc.yml": "nodeLinker: node-modules\n",
+        "yarn.lock": "# This file is generated by running \"yarn install\" inside your project.\n# Manual changes might be lost - proceed with caution!\n\n__metadata:\n  version: 8\n  cacheKey: 10c0\n\n\"@example/scanner-kit@npm:^1.0.0\":\n  version: 1.0.0\n  resolution: \"@example/scanner-kit@npm:1.0.0\"\n  dependencies:\n    \"@example/vision\": \"npm:^2.0.0\"\n    \"@example/vision-loader\": \"npm:^1.0.0\"\n  checksum: 10c0/ef7aa06d569ff4c2e4b098d6d3dac3b568fb4298ae47b2194dba4a3b65375d85\n  languageName: node\n  linkType: hard\n\n\"@example/vision-loader@npm:^1.0.0\":\n  version: 1.0.0\n  resolution: \"@example/vision-loader@npm:1.0.0\"\n  peerDependencies:\n    \"@example/vision\": ^2.0.0\n  checksum: 10c0/1f7ee30061a514b2f008d0188f268168c1450ab0329a57bc2f31cb8014bae96f\n  languageName: node\n  linkType: hard\n\n\"@example/vision@npm:^1.4.0\":\n  version: 1.4.0\n  resolution: \"@example/vision@npm:1.4.0\"\n  checksum: 10c0/1d8e405a7afd0ff536cc4871f04d79f8ca4d3e6855d208b964d492f8f5e5233a\n  languageName: node\n  linkType: hard\n\n\"@example/vision@npm:^2.0.0\":\n  version: 2.0.0\n  resolution: \"@example/vision@npm:2.0.0\"\n  checksum: 10c0/4c1ffc2e61896369f53e9d33dc1381b432e5e242e0c32e86c5d2847e3ff9d3b2\n  languageName: node\n  linkType: hard\n\n\"example-app@workspace:.\":\n  version: 0.0.0-use.local\n  resolution: \"example-app@workspace:.\"\n  dependencies:\n    \"@example/scanner-kit\": \"npm:^1.0.0\"\n    \"@example/vision\": \"npm:^1.4.0\"\n  languageName: unknown\n  linkType: soft\n",
+        "node_modules/@example/scanner-kit/package.json": "{\n  \"name\": \"@example/scanner-kit\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"@example/vision\": \"^2.0.0\",\n    \"@example/vision-loader\": \"^1.0.0\"\n  }\n}\n",
+        "node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"1.4.0\"\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/package.json": "{\n  \"name\": \"@example/vision\",\n  \"version\": \"2.0.0\"\n}\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision/android/build.gradle": "apply plugin: \"com.android.library\"\n",
+        "node_modules/@example/scanner-kit/node_modules/@example/vision-loader/package.json": "{\n  \"name\": \"@example/vision-loader\",\n  \"version\": \"1.0.0\",\n  \"peerDependencies\": {\n    \"@example/vision\": \"^2.0.0\"\n  }\n}\n"
+      },
+      "nativeSourcePaths": [],
+      "contributors": {
+        "nativeSources": [],
+        "packages": [
+          {
+            "integrity": "10c0/4c1ffc2e61896369f53e9d33dc1381b432e5e242e0c32e86c5d2847e3ff9d3b2",
+            "name": "@example/vision",
+            "version": "2.0.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:1c4c8d985463571b8915153fa2584032006865c9a3387c1355d4366e946d9dd2"
     },
     {
       "name": "should keep two builds of one 0.0.0 package apart by their integrity",

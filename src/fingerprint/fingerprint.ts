@@ -14,6 +14,7 @@ import { computeSha256Hex } from '../hash/sha256.js';
 import { RelativePathSchema } from '../wire/primitives.js';
 import type {
   DeclaredDependency,
+  LockedDependency,
   LockedPackage,
   LockedTree,
   LockfileName,
@@ -57,6 +58,12 @@ interface InstalledPackage {
   locked: LockedPackage;
 }
 
+/** A dependency the walk has yet to find, with the directory of the project or package depending on it. */
+interface PendingDependency {
+  dependency: LockedDependency;
+  dependentDirectory: string;
+}
+
 /**
  * The packages whose version is the native layer itself, contributing
  * whatever their markers say: the Capacitor runtime, and React Native and the
@@ -90,12 +97,13 @@ export function computeFingerprint(
  * The contributors of the project's fingerprint, read through the project
  * reader: the packages the lockfile installs for the project, walked from
  * its own package.json through the lockfile's dependency tree, so a sibling
- * workspace's packages never contribute; the markers of each, found in the
- * project's `node_modules`, the root's or, for pnpm's hidden hoisting,
- * `node_modules/.pnpm/node_modules`; and the declared native sources. Every
- * package of a kept name contributes, one entry per version and integrity,
- * sorted by name, version and integrity; native sources sorted by path,
- * hidden files inside a declared directory skipped.
+ * workspace's packages never contribute; the markers of each installed copy,
+ * read in the directory the lockfile installs it in, so a nested copy is
+ * never read from a hoisted namesake of another version; and the declared
+ * native sources. Every copy that ships native code or is a runtime package
+ * contributes, one entry per name, version and integrity, sorted by name,
+ * version and integrity; native sources sorted by path, hidden files inside
+ * a declared directory skipped.
  */
 export async function readFingerprintContributors(
   project: FingerprintProject,
@@ -110,27 +118,18 @@ export async function readFingerprintContributors(
       path: projectPath,
     }),
   );
-  const directoriesByName = new Map(
-    installedPackages.map(installed => [
-      installed.locked.name,
-      installed.directory,
-    ]),
-  );
-  const nativeNames = new Set<string>();
-  for (const [name, directory] of directoriesByName) {
-    if (await isNativePackage(reader, name, directory)) {
-      nativeNames.add(name);
+  const nativePackages: LockedPackage[] = [];
+  for (const { directory, locked } of installedPackages) {
+    if (await isNativePackage(reader, locked.name, directory)) {
+      nativePackages.push(locked);
     }
   }
-  const lockedPackages = resolveUniquePackages(
-    installedPackages.map(installed => installed.locked),
-  );
   return {
     nativeSources: await resolveNativeSources(
       reader,
       project.nativeSourcePaths,
     ),
-    packages: lockedPackages.filter(locked => nativeNames.has(locked.name)),
+    packages: resolveUniquePackages(nativePackages),
   };
 }
 
@@ -194,21 +193,27 @@ async function readInstalledPackages(
   tree: LockedTree,
 ): Promise<InstalledPackage[]> {
   const installedPackages = new Map<string, InstalledPackage>();
-  const pendingDependencies = [...tree.projectDependencies];
+  const pendingDependencies: PendingDependency[] = tree.projectDependencies.map(
+    dependency => ({ dependency, dependentDirectory: projectPath }),
+  );
   for (
-    let dependency = pendingDependencies.shift();
-    dependency !== undefined;
-    dependency = pendingDependencies.shift()
+    let pending = pendingDependencies.shift();
+    pending !== undefined;
+    pending = pendingDependencies.shift()
   ) {
+    const { dependency, dependentDirectory } = pending;
     if (installedPackages.has(dependency.key)) {
       continue;
     }
-    const { name, version } = dependency.package;
-    const directory = await readInstallDirectory(reader, projectPath, name);
+    const directory = await readInstallDirectory(
+      reader,
+      tree.resolveInstallDirectories(dependency, dependentDirectory),
+    );
     if (directory === null) {
       if (dependency.isOptional) {
         continue;
       }
+      const { name, version } = dependency.package;
       throw new FingerprintError(
         `the lockfile installs ${name} ${version} and node_modules does not hold it; install the dependencies first`,
       );
@@ -217,22 +222,21 @@ async function readInstalledPackages(
       directory,
       locked: dependency.package,
     });
-    pendingDependencies.push(...tree.resolveDependencies(dependency));
+    pendingDependencies.push(
+      ...tree
+        .resolveDependencies(dependency)
+        .map(next => ({ dependency: next, dependentDirectory: directory })),
+    );
   }
   return [...installedPackages.values()];
 }
 
-/** The directory a package is installed in: the project's `node_modules`, the root's, or pnpm's hidden hoisting; null when none holds it. */
+/** The first of the directories a package may be installed in that exists; null when none does. */
 async function readInstallDirectory(
   reader: ProjectReader,
-  projectPath: string,
-  name: string,
+  directories: string[],
 ): Promise<string | null> {
-  for (const directory of new Set([
-    resolveProjectFilePath(projectPath, `node_modules/${name}`),
-    `node_modules/${name}`,
-    `node_modules/.pnpm/node_modules/${name}`,
-  ])) {
+  for (const directory of directories) {
     if ((await reader.readDirectory(directory)) !== null) {
       return directory;
     }
