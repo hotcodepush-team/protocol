@@ -52,15 +52,6 @@ export function evaluateChannelIndex(
   device: DeviceInfo,
 ): ChannelIndexEvaluation {
   const currentIndexRelease = resolveCurrentIndexRelease(index, device);
-  if (
-    device.appliedIndexSequence !== null &&
-    index.sequence < device.appliedIndexSequence
-  ) {
-    return {
-      outcome: { release: currentIndexRelease, status: 'UP_TO_DATE' },
-      verdicts: [],
-    };
-  }
   if (isDeviceBeyondCap(index, device)) {
     return {
       outcome: {

@@ -1,7 +1,5 @@
 /** What the device knows when it evaluates a channel index. */
 export interface DeviceInfo {
-  /** The sequence of the index the device has already evaluated; an older index is ignored. */
-  appliedIndexSequence: number | null;
   attributes: Record<string, string>;
   binaryBuild: string;
   binaryVersion: string;

@@ -35,7 +35,6 @@
         "sequence": 10
       },
       "device": {
-        "appliedIndexSequence": null,
         "attributes": {},
         "binaryBuild": "57",
         "binaryVersion": "2.4.1",
@@ -107,7 +106,6 @@
         "sequence": 10
       },
       "device": {
-        "appliedIndexSequence": null,
         "attributes": {},
         "binaryBuild": "57",
         "binaryVersion": "2.4.1",
