@@ -1,5 +1,5 @@
 {
-  "description": "A mandatory release is mandatory, transitively: a device that skipped one treats the newest as mandatory.",
+  "description": "A mandatory release is mandatory, transitively: a device that skipped one it could take treats the newest as mandatory, and one it could never take, excluded by a condition or any other rule, does not count.",
   "cases": [
     {
       "name": "should offer a mandatory release as mandatory",
@@ -106,6 +106,158 @@
         "releaseId": "release-2",
         "status": "AVAILABLE"
       }
+    },
+    {
+      "name": "should not count a skipped mandatory release when the device misses its binary range",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=3",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": true,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          },
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.0.2",
+            "conditions": [],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null
+      },
+      "expected": {
+        "isMandatory": false,
+        "releaseId": "release-2",
+        "status": "AVAILABLE"
+      },
+      "verdicts": [
+        {
+          "isEligible": true,
+          "releaseId": "release-2"
+        },
+        {
+          "condition": "binary",
+          "isEligible": false,
+          "reason": "DEVICE_INCOMPATIBLE",
+          "releaseId": "release-1"
+        }
+      ]
+    },
+    {
+      "name": "should count a skipped mandatory release when the device satisfies its binary range",
+      "index": {
+        "appId": "app",
+        "cappedAt": null,
+        "channelId": "chan",
+        "isPaused": false,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-1",
+            "bundleVersion": "1.0.1",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-1",
+            "isMandatory": true,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
+            "notes": null,
+            "number": 1,
+            "rollout": 100,
+            "sizeBytes": 1000
+          },
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.0.2",
+            "conditions": [],
+            "createdAt": "2026-09-20T00:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rollout": 100,
+            "sizeBytes": 1000
+          }
+        ],
+        "revokedReleaseIds": [],
+        "schema": 1,
+        "sequence": 10
+      },
+      "device": {
+        "attributes": {},
+        "binaryBuild": "57",
+        "binaryVersion": "2.4.1",
+        "builtAt": "2026-09-01T00:00:00.000Z",
+        "currentRelease": null,
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "failedBundleIds": [],
+        "fingerprint": "fp1:4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9",
+        "osVersion": "17.4",
+        "reportedAt": null
+      },
+      "expected": {
+        "isMandatory": true,
+        "releaseId": "release-2",
+        "status": "AVAILABLE"
+      },
+      "verdicts": [
+        {
+          "isEligible": true,
+          "releaseId": "release-2"
+        },
+        {
+          "isEligible": true,
+          "releaseId": "release-1"
+        }
+      ]
     },
     {
       "name": "should not count a mandatory release the device already runs",

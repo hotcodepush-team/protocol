@@ -112,7 +112,11 @@ export function evaluateChannelIndex(
     const target = newerEligibleVerdict.release;
     return {
       outcome: {
-        isMandatory: isMandatoryTransitively(target, currentNumber, verdicts),
+        isMandatory: isMandatoryTransitively(
+          target,
+          currentNumber,
+          eligibleVerdicts,
+        ),
         release: target,
         status: 'AVAILABLE',
       },
@@ -158,13 +162,18 @@ function isDeviceBeyondCap(index: ChannelIndex, device: DeviceInfo): boolean {
   );
 }
 
-/** A release is mandatory for the device when it or any release it skipped over is. */
+/**
+ * A release is mandatory for the device when it or any release it skips over
+ * is, counting only the releases the device could take: one a condition, the
+ * floor, a revocation, an earlier failure or the rollout keeps from it never
+ * makes the move mandatory.
+ */
 function isMandatoryTransitively(
   target: IndexRelease,
   currentNumber: number,
-  verdicts: readonly ReleaseVerdict[],
+  eligibleVerdicts: readonly ReleaseVerdict[],
 ): boolean {
-  return verdicts.some(
+  return eligibleVerdicts.some(
     verdict =>
       verdict.release.isMandatory &&
       verdict.release.number > currentNumber &&
