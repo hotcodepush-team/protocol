@@ -16,6 +16,16 @@ export const Base64Schema = z
 export const ChannelNameSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 
 /**
+ * A path `extraFingerprintPaths` lists in `hotcodepush.json`, relative to the
+ * project's directory: `/`-separated, with no empty or `.` segment, no
+ * backslash and no NUL, `..` climbing to a sibling workspace; the fingerprint
+ * refuses one that leaves the lockfile's directory.
+ */
+export const ExtraFingerprintPathSchema = z
+  .string()
+  .refine(isClimbingRelativePath);
+
+/**
  * An absolute `http` or `https` URL, which always names a host: `javascript:`,
  * `file:`, `data:` and every other scheme are refused. `http` serves the local
  * stack alone, which the configured-host rule enforces on the device.
@@ -27,14 +37,6 @@ export const IdentifierSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 
 /** An ISO 8601 timestamp in UTC, `2026-09-29T10:00:00.000Z`. */
 export const IsoTimestampSchema = z.iso.datetime();
-
-/**
- * A custom native source as `hotcodepush.json` declares it, relative to the
- * project's directory: `/`-separated, with no empty or `.` segment, no
- * backslash and no NUL, `..` climbing to a sibling workspace; the fingerprint
- * refuses one that leaves the lockfile's directory.
- */
-export const NativeSourcePathSchema = z.string().refine(isClimbingRelativePath);
 
 export const NonEmptyStringSchema = z.string().min(1);
 

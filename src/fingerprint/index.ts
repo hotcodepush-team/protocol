@@ -4,9 +4,9 @@ export {
   readFingerprintContributors,
 } from './fingerprint.js';
 export type {
+  ExtraFingerprintFile,
   FingerprintContributors,
   FingerprintProject,
-  NativeSourceFile,
 } from './fingerprint.js';
 export { LOCKFILE_NAMES } from './lockfiles.js';
 export type { LockedPackage } from './lockfiles.js';

@@ -1,7 +1,7 @@
 /**
  * The `fp1` fingerprint, the hash of the native contract (decided
  * 2026-09-16): from the committed lockfile, the packages that ship native
- * code and the runtime packages, plus the custom native sources the app
+ * code and the runtime packages, plus the files under the extra paths the app
  * declares; the canonical JSON of those contributors, its SHA-256, the `fp1:`
  * prefix. `fp1` versions the whole recipe — inputs, canonicalization and
  * hash — so a change to anything here is `fp2`, never an edit, since
@@ -11,7 +11,7 @@ import { z } from 'zod';
 
 import { stringifyCanonicalJson } from '../canonical-json.js';
 import { computeSha256Hex } from '../hash/sha256.js';
-import { NativeSourcePathSchema } from '../wire/primitives.js';
+import { ExtraFingerprintPathSchema } from '../wire/primitives.js';
 import type {
   DeclaredDependency,
   LockedDependency,
@@ -33,8 +33,8 @@ import {
 } from './project-reader.js';
 
 export interface FingerprintProject {
-  /** The custom native sources the app declares: files or directories, relative to the project's directory, a sibling workspace's through `..`, inside the reader's root. */
-  nativeSourcePaths: readonly string[];
+  /** The extra paths the app declares in `extraFingerprintPaths`: files or directories, relative to the project's directory, a sibling workspace's through `..`, inside the reader's root. */
+  extraFingerprintPaths: readonly string[];
   /** The project's directory relative to the reader's root, the lockfile's directory: a workspace's path in a monorepo, empty when they are one. */
   projectPath: string;
   /** The project from the directory holding its lockfile, a monorepo's root where the workspace installs. */
@@ -43,11 +43,12 @@ export interface FingerprintProject {
 
 /** What the fingerprint hashes, and what `hotcodepush fingerprint` prints and `fingerprint diff` compares. */
 export interface FingerprintContributors {
-  nativeSources: NativeSourceFile[];
+  /** The files under the extra paths; the key keeps its fp1 name, since a renamed key changes every fingerprint. */
+  nativeSources: ExtraFingerprintFile[];
   packages: LockedPackage[];
 }
 
-export interface NativeSourceFile {
+export interface ExtraFingerprintFile {
   path: string;
   sha256: string;
 }
@@ -99,11 +100,11 @@ export function computeFingerprint(
  * its own package.json through the lockfile's dependency tree, so a sibling
  * workspace's packages never contribute; the markers of each installed copy,
  * read in the directory the lockfile installs it in, so a nested copy is
- * never read from a hoisted namesake of another version; and the declared
- * native sources. Every copy that ships native code or is a runtime package
+ * never read from a hoisted namesake of another version; and the files under
+ * the extra paths. Every copy that ships native code or is a runtime package
  * contributes, one entry per name, version and integrity, sorted by name,
- * version and integrity; native sources sorted by path, hidden files inside
- * a declared directory skipped.
+ * version and integrity; the files sorted by path, hidden files inside a
+ * declared directory skipped.
  */
 export async function readFingerprintContributors(
   project: FingerprintProject,
@@ -130,10 +131,10 @@ export async function readFingerprintContributors(
     }
   }
   return {
-    nativeSources: await resolveNativeSources(
+    nativeSources: await readExtraFingerprintFiles(
       reader,
       projectPath,
-      project.nativeSourcePaths,
+      project.extraFingerprintPaths,
     ),
     packages: resolveUniquePackages(nativePackages),
   };
@@ -276,19 +277,19 @@ async function isNativePackage(
   );
 }
 
-async function resolveNativeSources(
+async function readExtraFingerprintFiles(
   reader: ProjectReader,
   projectPath: string,
   declaredPaths: readonly string[],
-): Promise<NativeSourceFile[]> {
-  const filesByPath = new Map<string, NativeSourceFile>();
+): Promise<ExtraFingerprintFile[]> {
+  const filesByPath = new Map<string, ExtraFingerprintFile>();
   for (const declaredPath of declaredPaths) {
-    const realPath = await readNativeSourceRealPath(
+    const realPath = await readExtraFingerprintRealPath(
       reader,
       projectPath,
       declaredPath,
     );
-    for (const file of await collectNativeSourceFiles(reader, realPath)) {
+    for (const file of await collectExtraFingerprintFiles(reader, realPath)) {
       filesByPath.set(file.path, file);
     }
   }
@@ -298,20 +299,20 @@ async function resolveNativeSources(
 }
 
 /**
- * Where a declared native source lies, relative to the lockfile's directory:
+ * Where a declared extra path lies, relative to the lockfile's directory:
  * resolved against the project's directory, then its symbolic links resolved
  * by the reader. A path that leaves the lockfile's directory is refused before
  * the reader resolves it and after, so a sibling workspace can be named and
  * nothing outside the repository can.
  */
-async function readNativeSourceRealPath(
+async function readExtraFingerprintRealPath(
   reader: ProjectReader,
   projectPath: string,
   declaredPath: string,
 ): Promise<string> {
-  if (!NativeSourcePathSchema.safeParse(declaredPath).success) {
+  if (!ExtraFingerprintPathSchema.safeParse(declaredPath).success) {
     throw new FingerprintError(
-      `the native source ${JSON.stringify(declaredPath)} is not a relative path without empty or . segments`,
+      `the extra fingerprint path ${JSON.stringify(declaredPath)} is not a relative path without empty or . segments`,
     );
   }
   const resolvedPath = resolveParentSegments(
@@ -322,34 +323,39 @@ async function readNativeSourceRealPath(
     : resolvedPath;
   if (realPath === null) {
     throw new FingerprintError(
-      `the native source ${declaredPath} does not exist`,
+      `the extra fingerprint path ${declaredPath} does not exist`,
     );
   }
   if (!isInsideRoot(realPath)) {
     throw new FingerprintError(
-      `the native source ${declaredPath} is not inside the lockfile's directory`,
+      `the extra fingerprint path ${declaredPath} is not inside the lockfile's directory`,
     );
   }
   return realPath;
 }
 
-async function collectNativeSourceFiles(
+async function collectExtraFingerprintFiles(
   reader: ProjectReader,
   path: string,
-): Promise<NativeSourceFile[]> {
+): Promise<ExtraFingerprintFile[]> {
   const entries = await reader.readDirectory(path);
   if (entries !== null) {
-    const files: NativeSourceFile[] = [];
+    const files: ExtraFingerprintFile[] = [];
     for (const entry of entries.filter(entry => !entry.name.startsWith('.'))) {
       files.push(
-        ...(await collectNativeSourceFiles(reader, `${path}/${entry.name}`)),
+        ...(await collectExtraFingerprintFiles(
+          reader,
+          `${path}/${entry.name}`,
+        )),
       );
     }
     return files;
   }
   const bytes = await reader.readFile(path);
   if (bytes === null) {
-    throw new FingerprintError(`the native source ${path} does not exist`);
+    throw new FingerprintError(
+      `the extra fingerprint path ${path} does not exist`,
+    );
   }
   return [{ path, sha256: computeSha256Hex(bytes) }];
 }

@@ -11,10 +11,10 @@ import { BundleManifestSchema } from './bundle-manifest.js';
 import {
   Base64Schema,
   ChannelNameSchema,
+  ExtraFingerprintPathSchema,
   HttpUrlSchema,
   IdentifierSchema,
   IsoTimestampSchema,
-  NativeSourcePathSchema,
   NonEmptyStringSchema,
 } from './primitives.js';
 
@@ -53,15 +53,15 @@ export type DevicePublicKey = z.infer<typeof DevicePublicKeySchema>;
 /**
  * `hotcodepush.json` in the project root, written by `init` and read by every
  * CLI command: the app id, the channel by name, the SDK options and, for the
- * CLI alone, `dir` and `nativeSources`.
+ * CLI alone, `dir` and `extraFingerprintPaths`.
  */
 export const ProjectConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   channel: ChannelNameSchema.default('production'),
   dir: z.string().optional(),
-  /** The custom native sources the fingerprint hashes: files or directories, relative to the project root, a sibling workspace's through `..`. */
-  nativeSources: z.array(NativeSourcePathSchema).default([]),
+  /** The extra paths the fingerprint hashes beside the packages: files or directories, relative to the project root, a sibling workspace's through `..`. */
+  extraFingerprintPaths: z.array(ExtraFingerprintPathSchema).default([]),
   /** The keys the app's binaries accept, self-describing, `rsa-v1_5-sha256:` and the base64 of the SPKI DER. */
   publicKeys: z.array(SigningPublicKeySchema).default([]),
 });

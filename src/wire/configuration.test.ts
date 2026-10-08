@@ -61,7 +61,7 @@ describe('ProjectConfigurationSchema', () => {
       installOnResumeAfter: 300,
       installStrategy: 'next-start',
       mandatoryInstallStrategy: 'immediate',
-      nativeSources: [],
+      extraFingerprintPaths: [],
       publicKeys: [],
       readySignal: 'render',
       readyTimeout: 10,
@@ -106,25 +106,25 @@ describe('ProjectConfigurationSchema', () => {
     expect(parsed).toHaveProperty('$schema');
   });
 
-  test('should read the native sources the CLI hashes', () => {
-    const nativeSources = [
+  test('should read the extra fingerprint paths the CLI hashes', () => {
+    const extraFingerprintPaths = [
       'ios/App/App/Plugins',
       'android/app/src/main/java',
       '../../packages/scanner-native/ios',
     ];
     expect(
-      ProjectConfigurationSchema.parse({ ...PROJECT, nativeSources })
-        .nativeSources,
-    ).toEqual(nativeSources);
+      ProjectConfigurationSchema.parse({ ...PROJECT, extraFingerprintPaths })
+        .extraFingerprintPaths,
+    ).toEqual(extraFingerprintPaths);
   });
 
   test.each(['./shared/Plugins', 'shared//Plugins', '/shared/Plugins'])(
-    'should reject the native source %s, not a clean relative path',
-    nativeSource => {
+    'should reject the extra fingerprint path %s, not a clean relative path',
+    extraFingerprintPath => {
       expect(
         ProjectConfigurationSchema.safeParse({
           ...PROJECT,
-          nativeSources: [nativeSource],
+          extraFingerprintPaths: [extraFingerprintPath],
         }).success,
       ).toBe(false);
     },
@@ -249,13 +249,13 @@ describe('ConfigurationSchema', () => {
     );
   });
 
-  test('should ignore the native sources, which only the CLI reads', () => {
+  test('should ignore the extra fingerprint paths, which only the CLI reads', () => {
     const [registered] = RESOURCE_FILE_CASES;
     const resourceFile = registered?.resourceFile as Record<string, unknown>;
     expect(
       ConfigurationSchema.safeParse({
         ...resourceFile,
-        nativeSources: ['./shared/Plugins'],
+        extraFingerprintPaths: ['./shared/Plugins'],
       }).success,
     ).toBe(true);
   });

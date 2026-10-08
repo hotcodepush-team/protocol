@@ -13,7 +13,7 @@ import { FingerprintError } from './project-reader.js';
 interface FingerprintProjectFixture {
   files: Record<string, string>;
   name: string;
-  nativeSourcePaths: string[];
+  extraFingerprintPaths: string[];
   projectPath: string;
 }
 
@@ -32,7 +32,7 @@ const FIXTURE = JSON.parse(
   ),
 ) as FingerprintFixture;
 
-/** A workspace `apps/scanner` with no dependencies, its native sources added per test. */
+/** A workspace `apps/scanner` with no dependencies, its extra fingerprint paths added per test. */
 const LINKED_PROJECT_FILES: Record<string, string> = {
   'apps/scanner/package.json': JSON.stringify({ name: 'scanner' }),
   'package-lock.json': JSON.stringify({
@@ -91,7 +91,7 @@ function createLinkedReader(
 
 function projectOf(fixture: FingerprintProjectFixture) {
   return {
-    nativeSourcePaths: fixture.nativeSourcePaths,
+    extraFingerprintPaths: fixture.extraFingerprintPaths,
     projectPath: fixture.projectPath,
     reader: createMemoryReader(fixture.files),
   };
@@ -130,14 +130,14 @@ describe('readFingerprintContributors', () => {
     });
     await expect(
       readFingerprintContributors({
-        nativeSourcePaths: [],
+        extraFingerprintPaths: [],
         projectPath: '',
         reader,
       }),
     ).rejects.toThrow('@capacitor/core 7.4.3');
   });
 
-  test('should hash a native source under the path its symbolic link resolves to', async () => {
+  test('should hash an extra fingerprint path under the path its symbolic link resolves to', async () => {
     const reader = createLinkedReader(
       {
         ...LINKED_PROJECT_FILES,
@@ -147,7 +147,7 @@ describe('readFingerprintContributors', () => {
       'packages/scanner-native/ios',
     );
     const contributors = await readFingerprintContributors({
-      nativeSourcePaths: ['native'],
+      extraFingerprintPaths: ['native'],
       projectPath: 'apps/scanner',
       reader,
     });
@@ -156,7 +156,7 @@ describe('readFingerprintContributors', () => {
     ]);
   });
 
-  test("should refuse a native source when its symbolic link leads out of the lockfile's directory", async () => {
+  test("should refuse an extra fingerprint path when its symbolic link leads out of the lockfile's directory", async () => {
     const reader = createLinkedReader(
       LINKED_PROJECT_FILES,
       'apps/scanner/native',
@@ -164,12 +164,12 @@ describe('readFingerprintContributors', () => {
     );
     await expect(
       readFingerprintContributors({
-        nativeSourcePaths: ['native'],
+        extraFingerprintPaths: ['native'],
         projectPath: 'apps/scanner',
         reader,
       }),
     ).rejects.toThrow(
-      "the native source native is not inside the lockfile's directory",
+      "the extra fingerprint path native is not inside the lockfile's directory",
     );
   });
 });
