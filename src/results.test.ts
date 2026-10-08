@@ -2,13 +2,14 @@ import { describe, expectTypeOf, test } from 'vitest';
 
 import type {
   ApplyResult,
+  ApplyStrategy,
+  CheckStrategy,
   DownloadResult,
   DownloadStrategy,
   GetChannelResult,
   GetDeviceResult,
   InstallMoment,
-  InstallStrategy,
-  MandatoryInstallStrategy,
+  MandatoryApplyStrategy,
   Platform,
   ReadySignal,
   Release,
@@ -44,24 +45,28 @@ describe('Platform', () => {
 });
 
 describe('the strategies', () => {
-  test('should name the four install strategies with next-resume', () => {
-    expectTypeOf<InstallStrategy>().toEqualTypeOf<
-      'immediate' | 'manual' | 'next-resume' | 'next-start'
-    >();
-    expectTypeOf<InstallMoment>().toEqualTypeOf<InstallStrategy>();
+  test('should name the two check strategies', () => {
+    expectTypeOf<CheckStrategy>().toEqualTypeOf<'auto' | 'manual'>();
   });
 
-  test('should keep next-start out of the mandatory install strategies', () => {
-    expectTypeOf<MandatoryInstallStrategy>().toEqualTypeOf<
+  test('should name the four apply strategies with next-resume', () => {
+    expectTypeOf<ApplyStrategy>().toEqualTypeOf<
+      'immediate' | 'manual' | 'next-resume' | 'next-start'
+    >();
+    expectTypeOf<InstallMoment>().toEqualTypeOf<ApplyStrategy>();
+  });
+
+  test('should keep next-start out of the mandatory apply strategies', () => {
+    expectTypeOf<MandatoryApplyStrategy>().toEqualTypeOf<
       'immediate' | 'manual'
     >();
   });
 
   test('should let a sync call override each stage', () => {
     expectTypeOf<SyncOptions>().toEqualTypeOf<{
+      applyStrategy?: ApplyStrategy;
       downloadStrategy?: DownloadStrategy;
-      installStrategy?: InstallStrategy;
-      mandatoryInstallStrategy?: MandatoryInstallStrategy;
+      mandatoryApplyStrategy?: MandatoryApplyStrategy;
     }>();
     expectTypeOf<DownloadStrategy>().toEqualTypeOf<
       'auto' | 'manual' | 'unmetered'

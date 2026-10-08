@@ -4,6 +4,19 @@
  * Additive only: a value is added, never removed, renamed or retyped.
  */
 
+/** When a downloaded update is applied. */
+export const APPLY_STRATEGIES = [
+  'immediate',
+  'manual',
+  'next-resume',
+  'next-start',
+] as const;
+export type ApplyStrategy = (typeof APPLY_STRATEGIES)[number];
+
+/** Whether the SDK checks on its own, at start, on resume and at the interval; `manual` leaves every cycle to the app's `sync()`. */
+export const CHECK_STRATEGIES = ['auto', 'manual'] as const;
+export type CheckStrategy = (typeof CHECK_STRATEGIES)[number];
+
 export const CONDITION_TYPES = [
   'attribute',
   'binary',
@@ -28,19 +41,10 @@ export const FAILED_REASONS = [
 ] as const;
 export type FailedReason = (typeof FAILED_REASONS)[number];
 
-/** When a downloaded update is applied. */
-export const INSTALL_STRATEGIES = [
-  'immediate',
-  'manual',
-  'next-resume',
-  'next-start',
-] as const;
-export type InstallStrategy = (typeof INSTALL_STRATEGIES)[number];
-
 /** When a mandatory update is applied; `next-start` is excluded, since it would make the flag mean nothing. */
-export const MANDATORY_INSTALL_STRATEGIES = ['immediate', 'manual'] as const;
-export type MandatoryInstallStrategy =
-  (typeof MANDATORY_INSTALL_STRATEGIES)[number];
+export const MANDATORY_APPLY_STRATEGIES = ['immediate', 'manual'] as const;
+export type MandatoryApplyStrategy =
+  (typeof MANDATORY_APPLY_STRATEGIES)[number];
 
 export const PLATFORMS = ['android', 'ios'] as const;
 export type Platform = (typeof PLATFORMS)[number];
@@ -85,7 +89,7 @@ export interface Release {
 }
 
 /** When a downloaded update runs, in the strategies' vocabulary. */
-export type InstallMoment = InstallStrategy;
+export type InstallMoment = ApplyStrategy;
 
 export type SyncResult =
   | { release: Release | null; status: 'UP_TO_DATE' }
@@ -215,9 +219,9 @@ export interface RollbackUpdateOptions {
 
 /** Each stage's strategy for this call, overriding the configuration. */
 export interface SyncOptions {
+  applyStrategy?: ApplyStrategy;
   downloadStrategy?: DownloadStrategy;
-  installStrategy?: InstallStrategy;
-  mandatoryInstallStrategy?: MandatoryInstallStrategy;
+  mandatoryApplyStrategy?: MandatoryApplyStrategy;
 }
 
 export interface SetRestartAllowedOptions {

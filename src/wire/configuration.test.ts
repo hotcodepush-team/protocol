@@ -36,7 +36,7 @@ const CONFIGURED_HOST_CASES = (
   ) as { cases: ConfiguredHostCase[] }
 ).cases;
 
-const PROJECT = { appId: 'a1', channel: 'staging', dir: 'dist' };
+const PROJECT = { appId: 'a1', channel: 'staging' };
 
 const RESOURCE_FILES = JSON.parse(
   readFileSync(
@@ -54,17 +54,17 @@ describe('ProjectConfigurationSchema', () => {
   test('should apply the defaults to a file with the app id and a channel', () => {
     expect(ProjectConfigurationSchema.parse(PROJECT)).toEqual({
       ...PROJECT,
-      autoCheck: true,
-      checkInterval: 900,
+      applyOnResumeAfterSeconds: 300,
+      applyStrategy: 'next-start',
+      checkIntervalSeconds: 900,
+      checkStrategy: 'auto',
       downloadStrategy: 'auto',
       enabledInDebugBuilds: true,
-      installOnResumeAfter: 300,
-      installStrategy: 'next-start',
-      mandatoryInstallStrategy: 'immediate',
       extraFingerprintPaths: [],
+      mandatoryApplyStrategy: 'immediate',
       publicKeys: [],
       readySignal: 'render',
-      readyTimeout: 10,
+      readyTimeoutSeconds: 10,
     });
   });
 
@@ -89,12 +89,19 @@ describe('ProjectConfigurationSchema', () => {
     ).toBe(false);
   });
 
-  test('should reject a mandatory install strategy of next-start', () => {
+  test('should reject a mandatory apply strategy of next-start', () => {
     expect(
       ProjectConfigurationSchema.safeParse({
         ...PROJECT,
-        mandatoryInstallStrategy: 'next-start',
+        mandatoryApplyStrategy: 'next-start',
       }).success,
+    ).toBe(false);
+  });
+
+  test('should reject a check strategy given as a boolean', () => {
+    expect(
+      ProjectConfigurationSchema.safeParse({ ...PROJECT, checkStrategy: true })
+        .success,
     ).toBe(false);
   });
 
@@ -153,15 +160,17 @@ describe('ProjectConfigurationSchema', () => {
 
   test('should read a check interval of sixty seconds, the floor', () => {
     expect(
-      ProjectConfigurationSchema.parse({ ...PROJECT, checkInterval: 60 })
-        .checkInterval,
+      ProjectConfigurationSchema.parse({ ...PROJECT, checkIntervalSeconds: 60 })
+        .checkIntervalSeconds,
     ).toBe(60);
   });
 
   test('should reject a ready timeout below one second', () => {
     expect(
-      ProjectConfigurationSchema.safeParse({ ...PROJECT, readyTimeout: 0 })
-        .success,
+      ProjectConfigurationSchema.safeParse({
+        ...PROJECT,
+        readyTimeoutSeconds: 0,
+      }).success,
     ).toBe(false);
   });
 });
@@ -236,6 +245,31 @@ describe('ConfigurationSchema', () => {
         publicKeys: [publicKey],
       }).success,
     ).toBe(false);
+  });
+
+  test('should default every SDK option to the value the resource file at the defaults spells out', () => {
+    const atDefaults = RESOURCE_FILE_CASES.find(({ name }) =>
+      name.includes('at their defaults'),
+    );
+    const resourceFile = atDefaults?.resourceFile as Record<string, unknown>;
+    const {
+      appId,
+      builtAt,
+      channelId,
+      embeddedBundleId,
+      embeddedBundleManifest,
+      fingerprint,
+    } = resourceFile;
+    expect(
+      ConfigurationSchema.parse({
+        appId,
+        builtAt,
+        channelId,
+        embeddedBundleId,
+        embeddedBundleManifest,
+        fingerprint,
+      }),
+    ).toEqual(resourceFile);
   });
 
   test('should type the hosts a staging or local build carries', () => {

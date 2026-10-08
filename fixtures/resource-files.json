@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. embeddedBundleManifest is null in a build that bundled no JavaScript, a React Native or Expo debug build: its build step registers no binary and asks the API nothing, so embeddedBundleId is null with it, and the SDK answers SKIPPED with BUILD_DEBUG. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names. refusedResourceFiles are files a reader refuses: a checkInterval below 60 seconds, the floor, since a zero made the core check in a tight loop.",
+  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. embeddedBundleManifest is null in a build that bundled no JavaScript, a React Native or Expo debug build: its build step registers no binary and asks the API nothing, so embeddedBundleId is null with it, and the SDK answers SKIPPED with BUILD_DEBUG. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names. refusedResourceFiles are files a reader refuses: a checkIntervalSeconds below 60, the floor, since a zero made the core check in a tight loop.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -7,7 +7,6 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "dir": "dist",
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
@@ -56,7 +55,6 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "dir": "dist",
         "embeddedBundleId": null,
         "embeddedBundleManifest": {
           "appId": "a1",
@@ -103,11 +101,12 @@
       "name": "should read the hosts and the SDK options of a build against staging",
       "resourceFile": {
         "appId": "a1",
-        "autoCheck": true,
+        "applyOnResumeAfterSeconds": 300,
+        "applyStrategy": "next-resume",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "checkInterval": 900,
-        "dir": "dist",
+        "checkIntervalSeconds": 900,
+        "checkStrategy": "manual",
         "downloadStrategy": "unmetered",
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
@@ -132,9 +131,7 @@
         "enabledInDebugBuilds": false,
         "filesBaseUrl": "https://files.staging.hotcodepush.com",
         "fingerprint": null,
-        "installOnResumeAfter": 300,
-        "installStrategy": "next-resume",
-        "mandatoryInstallStrategy": "manual",
+        "mandatoryApplyStrategy": "manual",
         "publicKeys": [
           {
             "der": "MIICCgKCAgEAg+CkUpcpvOayIrXRnz+mSa3PkHWUFX689CTG44ZTlaaz6AgX0iESUZzC7iVZW4pmOIMmq/ZGh8whcDqJ8s6+B47725531tLzdbezek4ZVjsPjJykKBXmTs8bfYTl4GKv4MB6KnZHt+IalM9HjjyRE0EWLtrqFKyIt3seE9NE/z1DBk39gVY52ukHq9BY4jqEthaDVbu6tIKx2DRgqLPJQvkrlcuD7RhOucClaw2anANr7GEJEh3ISwE2vESfyiedVO0uVIEWbsVmGtM1CuM0n8+rquDqQ0MPAU3vLBVx8x9oOFqbswWTNuXQO3+R5KZHKFj4EQ16nPfbdRiLSN+5gI8qdaBdhxGv2Yr7s8WOYt1tksY0krOUY4o9biYA8JGVXkjRrTUZ4+/VpCoQwctVe7hdDbWweXgfAE0fOeJ1uzuAtSXIeJ4BJIaHGPZl3rdJIVE6RtVEhJUwQGI26dtW1xX7cM7ocCb8yzEIxY+GRTOIlQj+WluhzMBnRz4cf7YVMR6CbXWBtzBVHVkn2+eKO6/oonKhlcTpMQQO0u59OiswJ5QsPiHlozQ6f29hH1g495f3AKQn0BhxZR0VQzqxZeGSSooXBCE3fv7pqHPJJUyGWrbMyMDh0JBgGPACWIz1VfZ6KUF7g/s8sujO5OrYhY4U6/jZyJugkB9yLo7NjqUCAwEAAQ==",
@@ -142,8 +139,66 @@
           }
         ],
         "readySignal": "manual",
-        "readyTimeout": 10,
+        "readyTimeoutSeconds": 10,
         "updatesBaseUrl": "https://updates.staging.hotcodepush.com"
+      },
+      "embeddedBundleManifest": {
+        "appId": "a1",
+        "bundleVersion": "1.4.1",
+        "files": [
+          {
+            "path": "assets/index-a1b2c3.js",
+            "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "sizeBytes": 37
+          },
+          {
+            "path": "index.html",
+            "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+            "sizeBytes": 81
+          }
+        ],
+        "fingerprint": null,
+        "keyId": null,
+        "platforms": ["ios"]
+      }
+    },
+    {
+      "name": "should read a build whose SDK options are spelled out at their defaults",
+      "resourceFile": {
+        "appId": "a1",
+        "applyOnResumeAfterSeconds": 300,
+        "applyStrategy": "next-start",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "checkIntervalSeconds": 900,
+        "checkStrategy": "auto",
+        "downloadStrategy": "auto",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "enabledInDebugBuilds": true,
+        "fingerprint": null,
+        "mandatoryApplyStrategy": "immediate",
+        "publicKeys": [],
+        "readySignal": "render",
+        "readyTimeoutSeconds": 10
       },
       "embeddedBundleManifest": {
         "appId": "a1",
@@ -171,7 +226,6 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": null,
-        "dir": "dist",
         "embeddedBundleId": null,
         "embeddedBundleManifest": {
           "appId": "a1",
@@ -220,7 +274,6 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "dir": "dist",
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
@@ -279,7 +332,6 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "dir": "dist",
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
@@ -352,8 +404,7 @@
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
-        "checkInterval": 59,
-        "dir": "dist",
+        "checkIntervalSeconds": 59,
         "embeddedBundleId": "b0",
         "embeddedBundleManifest": {
           "appId": "a1",
