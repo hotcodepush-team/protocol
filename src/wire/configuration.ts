@@ -24,7 +24,8 @@ const SecondsSchema = z.number().nonnegative();
 /** The SDK options every build carries, each with its default, so a file with the app id alone is complete; the public keys join per file, in the form each is read in. */
 const SDK_OPTIONS_SHAPE = {
   autoCheck: z.boolean().default(true),
-  checkInterval: SecondsSchema.default(900),
+  /** At least 60 seconds, the floor, since a zero made the core check in a tight loop; 900 when the project sets none. */
+  checkInterval: SecondsSchema.min(60).default(900),
   downloadStrategy: z.enum(DOWNLOAD_STRATEGIES).default('auto'),
   enabledInDebugBuilds: z.boolean().default(true),
   installOnResumeAfter: SecondsSchema.default(300),

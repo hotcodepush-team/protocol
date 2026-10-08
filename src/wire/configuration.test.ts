@@ -16,6 +16,11 @@ interface ConfiguredHostCase {
   url: string;
 }
 
+interface RefusedResourceFileCase {
+  name: string;
+  resourceFile: unknown;
+}
+
 interface ResourceFileCase {
   embeddedBundleManifest: unknown;
   name: string;
@@ -33,14 +38,17 @@ const CONFIGURED_HOST_CASES = (
 
 const PROJECT = { appId: 'a1', channel: 'staging', dir: 'dist' };
 
-const RESOURCE_FILE_CASES = (
-  JSON.parse(
-    readFileSync(
-      new URL('../../fixtures/resource-files.json', import.meta.url),
-      'utf8',
-    ),
-  ) as { cases: ResourceFileCase[] }
-).cases;
+const RESOURCE_FILES = JSON.parse(
+  readFileSync(
+    new URL('../../fixtures/resource-files.json', import.meta.url),
+    'utf8',
+  ),
+) as {
+  cases: ResourceFileCase[];
+  refusedResourceFiles: RefusedResourceFileCase[];
+};
+
+const RESOURCE_FILE_CASES = RESOURCE_FILES.cases;
 
 describe('ProjectConfigurationSchema', () => {
   test('should apply the defaults to a file with the app id and a channel', () => {
@@ -141,6 +149,13 @@ describe('ProjectConfigurationSchema', () => {
         publicKeys: ['rsa-v1_5-sha256:AQID'],
       }).publicKeys,
     ).toEqual(['rsa-v1_5-sha256:AQID']);
+  });
+
+  test('should read a check interval of sixty seconds, the floor', () => {
+    expect(
+      ProjectConfigurationSchema.parse({ ...PROJECT, checkInterval: 60 })
+        .checkInterval,
+    ).toBe(60);
   });
 
   test('should reject a ready timeout below one second', () => {
@@ -271,6 +286,13 @@ describe('ConfigurationSchema', () => {
       expect(
         ConfigurationSchema.parse(resourceFile).embeddedBundleManifest,
       ).toEqual(embeddedBundleManifest);
+    },
+  );
+
+  test.each(RESOURCE_FILES.refusedResourceFiles)(
+    '$name',
+    ({ resourceFile }) => {
+      expect(ConfigurationSchema.safeParse(resourceFile).success).toBe(false);
     },
   );
 });
