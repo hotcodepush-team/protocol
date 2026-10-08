@@ -43,7 +43,7 @@ export type BundleManifest = z.infer<typeof BundleManifestSchema>;
  * Whether the manifest names the device's app and lists its platform, signed
  * or not: a manifest for another app or another platform is
  * `MANIFEST_INVALID` before a byte is written, so neither a tampered index
- * nor a cache serving another app's bundle installs it.
+ * nor a cache serving another app's bundle puts it on the device.
  */
 export function isManifestForDevice(
   manifest: BundleManifest,
