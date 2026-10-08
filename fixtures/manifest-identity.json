@@ -1,5 +1,5 @@
 {
-  "description": "The manifest's identity against the device: its appId is the app's id from the resource file and its platforms list the device's platform, signed or not. A manifest for another app or another platform is MANIFEST_INVALID before a byte is written, so neither an index pointing at another app's bundle nor a cache serving one installs it.",
+  "description": "The manifest's identity against the device: its appId is the app's id from the resource file and its platforms list the device's platform, signed or not. A manifest for another app or another platform is MANIFEST_INVALID before a byte is written, so neither an index pointing at another app's bundle nor a cache serving one puts it on the device.",
   "cases": [
     {
       "name": "should accept a manifest of the device's app that lists both platforms",
