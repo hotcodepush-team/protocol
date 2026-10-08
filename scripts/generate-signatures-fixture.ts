@@ -59,7 +59,7 @@ const MANIFEST = {
     },
   ],
   fingerprint:
-    'fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125',
+    'fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d',
   platforms: ['android', 'ios'],
 };
 

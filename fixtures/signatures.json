@@ -35,10 +35,10 @@
       "name": "should accept a manifest signed by a listed key",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:bBokVPPuCiUGJTWaLzMBelzwIm1Rjue6Wpo/nXkZPC5lQCyTnljshShMCKF0G0C20Vm4c0ghL30HHgNPDo9+CznPAtd64lqSaTcr0sNep9v0TbV2lvWGgnQxVJKe12Nbq6AoADyuIRJWQtuOUmBM5w1Y9X6lcI6wR7t/X4vy51rE4H/nydnq/75baJzIh3dmoER9+7g7tO640fyuABxIyT9ENPkSfBg1Xud49R2ylMzy8pTCQ9ohBJsqEv0AqnqrIJoGlns+5i8dHfIM5YOz2gWDqEU/HuC3LpQEvxyFfWssosYjx4UpUx5kzYy/KL8gC74siyXi73OXz7HisFcdgbyFdmd69Ku2Sd+pl6LLPQ5IiQP5rKnGqVzqfHqgsHbkYMPickZDLVz8jQzfVO6gRUI9BSpGBvDor8lyjv4Ww4Yk2R8oVsCxsXx2Y2R9q2qiIoRav6kUFhg3zcBbK3d0KIfG2fYflcc2WPNNNgdYaEkOVYWwZ0o5Rz9vNcg8990sf/qAFDtfgAYO9aAax87hI5XHGOlzVZ/cggDaIBNCC2aihzSn6dPzAKsOmd8dDYFRDrt4RBff2x2MjlTktvTa2NwkZuVqyy1fPmzKTDjnyMQEb+xKlMFYzBarMBH7vXKe6ZySBqNvD9iNEvLVKRzNHFse5NMkc8aC+TJLZCuXYEU="
+          "value": "rsa-v1_5-sha256:RA/sMszbwAhf/sIayR1mzpYBEKkcvVpdBp9+nHf+cdQalQG9QozKCWdFQ9j2qK+gjV+V8sbmkF5zL8Cn+qSZmkKkBI7NdVYOUMr+rGvZNQMYNJiMKnHYSZmnB8VZJgTQGj6nPQh58x3tHBhLBXhjYhcC7lx48CdFj5kMpjktd5cAmAk45w0Ctn+Cc4nnEghShG/zeue8vlnpq1akOkhq4St7eFQEtFtDvLk7b7Tbck8N4AlxXWkJf4kCzr6fLHJ+Nt0Wz3jPMGvPJfAWgdBEz1KTxa93i2R7QIhVklSIDwnw70mKJN0CUEE+Y9pQzSF5rW2C8RsR3sj6vqXmwxaiWI0Z2CRQUHoWGOV3ZeS+jSIUvmiB2ThuY7kihnKlkAdQt46ZAH5uLZN/o2i/q3shWgBFeCe1bIO+uzUQ8PaG32J0zZ9FEcaZ0joaRiCuwRswaoa1JOyseIZrJRq1QK0ayU+nuZgS3sBn1nabe/FTamP785vWpJkDjxvQ6D0nLzv2kOcnmPU3T7XxsEzprcuSrDTkohPBOvtbLe3YIvwH9M+PFCZfJdM1xqq1/fxPkN60eoc5QUIdgNgJG2XLomXP1FSs/+zpZjpQLi1xP8aptED7UqcCHqNfL5crjcpdoxFFlp3S5h2Pri+GxuuyacPYhsq8XjIGNKQ3JcW3ZdEQYfs="
         }
       },
       "publicKeys": [
@@ -64,10 +64,10 @@
       "name": "should accept a manifest signed by a key of 2048 bits, the minimum",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:43a7b30ddb5c554c193934a126ed177fb441780aff2bc6d514dff0fb424c7f9f\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:43a7b30ddb5c554c193934a126ed177fb441780aff2bc6d514dff0fb424c7f9f\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:43a7b30ddb5c554c193934a126ed177fb441780aff2bc6d514dff0fb424c7f9f",
-          "value": "rsa-v1_5-sha256:jZPzx72ve93tIba1PAHiSnfZK69GqsZFY3fW2QfXFmBIhBkPAHufkr2CdFerx1KDzChdIBf+0V59+/Lh89Qcx0v5N5I4W78gYbcgW/YGQ/wU/fTHRZ+DhMeP+zduNB6iWwhd2PpADQrO6KxPG6qya5dCEKT/W8GR74onqkAB8kkUKqflAWRdUx8bsQxpoucpgW6aqUzynA+sHL6sXH91QmG3e1EGoZzToJRA0TFDn5wRZ03V6CzF1NS+ixOVLWV1uqiC+vH43m0tOugZEQFb94LI/f6bACs/L2gKspxGINfS/O8urrO8ovQSuQyoSX0gk/1kzpy7Wk/GEmLPQkCu3w=="
+          "value": "rsa-v1_5-sha256:xheLk9V59/7CFl6pyFzLwt6pKjVaXzEzNETZ/96iNVr7njaj9/K5p3tm38iIM7rMEru6fCzieoEm+VU7qgVDABPqpZlkrErvMFL4c4Ze159ZNn+THDrTWmp7IzxsZC34C+6tm9tgggvjKPo7rtSsURZ6r8ZGJ+yf9Wt0XJ+AOCAL5pwPQQFQtXOOrDUiA/2tmfdFujAoiMgXfLPFxTEkx6ph4cnJc5k8A1Yr9XC1ISZbdy7BMwgFyfZQwUrqXgLgA1eSdigUH+lK/+Yfze7uIAIwjIQs43WZPR4oCzW+sl7id7BE2XZkjKSkzy7hWtrJKEOCeBjNJuj/JdF26Am5+Q=="
         }
       },
       "publicKeys": [
@@ -93,10 +93,10 @@
       "name": "should select the key the keyId names among several",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:bBokVPPuCiUGJTWaLzMBelzwIm1Rjue6Wpo/nXkZPC5lQCyTnljshShMCKF0G0C20Vm4c0ghL30HHgNPDo9+CznPAtd64lqSaTcr0sNep9v0TbV2lvWGgnQxVJKe12Nbq6AoADyuIRJWQtuOUmBM5w1Y9X6lcI6wR7t/X4vy51rE4H/nydnq/75baJzIh3dmoER9+7g7tO640fyuABxIyT9ENPkSfBg1Xud49R2ylMzy8pTCQ9ohBJsqEv0AqnqrIJoGlns+5i8dHfIM5YOz2gWDqEU/HuC3LpQEvxyFfWssosYjx4UpUx5kzYy/KL8gC74siyXi73OXz7HisFcdgbyFdmd69Ku2Sd+pl6LLPQ5IiQP5rKnGqVzqfHqgsHbkYMPickZDLVz8jQzfVO6gRUI9BSpGBvDor8lyjv4Ww4Yk2R8oVsCxsXx2Y2R9q2qiIoRav6kUFhg3zcBbK3d0KIfG2fYflcc2WPNNNgdYaEkOVYWwZ0o5Rz9vNcg8990sf/qAFDtfgAYO9aAax87hI5XHGOlzVZ/cggDaIBNCC2aihzSn6dPzAKsOmd8dDYFRDrt4RBff2x2MjlTktvTa2NwkZuVqyy1fPmzKTDjnyMQEb+xKlMFYzBarMBH7vXKe6ZySBqNvD9iNEvLVKRzNHFse5NMkc8aC+TJLZCuXYEU="
+          "value": "rsa-v1_5-sha256:RA/sMszbwAhf/sIayR1mzpYBEKkcvVpdBp9+nHf+cdQalQG9QozKCWdFQ9j2qK+gjV+V8sbmkF5zL8Cn+qSZmkKkBI7NdVYOUMr+rGvZNQMYNJiMKnHYSZmnB8VZJgTQGj6nPQh58x3tHBhLBXhjYhcC7lx48CdFj5kMpjktd5cAmAk45w0Ctn+Cc4nnEghShG/zeue8vlnpq1akOkhq4St7eFQEtFtDvLk7b7Tbck8N4AlxXWkJf4kCzr6fLHJ+Nt0Wz3jPMGvPJfAWgdBEz1KTxa93i2R7QIhVklSIDwnw70mKJN0CUEE+Y9pQzSF5rW2C8RsR3sj6vqXmwxaiWI0Z2CRQUHoWGOV3ZeS+jSIUvmiB2ThuY7kihnKlkAdQt46ZAH5uLZN/o2i/q3shWgBFeCe1bIO+uzUQ8PaG32J0zZ9FEcaZ0joaRiCuwRswaoa1JOyseIZrJRq1QK0ayU+nuZgS3sBn1nabe/FTamP785vWpJkDjxvQ6D0nLzv2kOcnmPU3T7XxsEzprcuSrDTkohPBOvtbLe3YIvwH9M+PFCZfJdM1xqq1/fxPkN60eoc5QUIdgNgJG2XLomXP1FSs/+zpZjpQLi1xP8aptED7UqcCHqNfL5crjcpdoxFFlp3S5h2Pri+GxuuyacPYhsq8XjIGNKQ3JcW3ZdEQYfs="
         }
       },
       "publicKeys": [
@@ -140,10 +140,10 @@
       "name": "should refuse a manifest changed after signing",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:bBokVPPuCiUGJTWaLzMBelzwIm1Rjue6Wpo/nXkZPC5lQCyTnljshShMCKF0G0C20Vm4c0ghL30HHgNPDo9+CznPAtd64lqSaTcr0sNep9v0TbV2lvWGgnQxVJKe12Nbq6AoADyuIRJWQtuOUmBM5w1Y9X6lcI6wR7t/X4vy51rE4H/nydnq/75baJzIh3dmoER9+7g7tO640fyuABxIyT9ENPkSfBg1Xud49R2ylMzy8pTCQ9ohBJsqEv0AqnqrIJoGlns+5i8dHfIM5YOz2gWDqEU/HuC3LpQEvxyFfWssosYjx4UpUx5kzYy/KL8gC74siyXi73OXz7HisFcdgbyFdmd69Ku2Sd+pl6LLPQ5IiQP5rKnGqVzqfHqgsHbkYMPickZDLVz8jQzfVO6gRUI9BSpGBvDor8lyjv4Ww4Yk2R8oVsCxsXx2Y2R9q2qiIoRav6kUFhg3zcBbK3d0KIfG2fYflcc2WPNNNgdYaEkOVYWwZ0o5Rz9vNcg8990sf/qAFDtfgAYO9aAax87hI5XHGOlzVZ/cggDaIBNCC2aihzSn6dPzAKsOmd8dDYFRDrt4RBff2x2MjlTktvTa2NwkZuVqyy1fPmzKTDjnyMQEb+xKlMFYzBarMBH7vXKe6ZySBqNvD9iNEvLVKRzNHFse5NMkc8aC+TJLZCuXYEU="
+          "value": "rsa-v1_5-sha256:RA/sMszbwAhf/sIayR1mzpYBEKkcvVpdBp9+nHf+cdQalQG9QozKCWdFQ9j2qK+gjV+V8sbmkF5zL8Cn+qSZmkKkBI7NdVYOUMr+rGvZNQMYNJiMKnHYSZmnB8VZJgTQGj6nPQh58x3tHBhLBXhjYhcC7lx48CdFj5kMpjktd5cAmAk45w0Ctn+Cc4nnEghShG/zeue8vlnpq1akOkhq4St7eFQEtFtDvLk7b7Tbck8N4AlxXWkJf4kCzr6fLHJ+Nt0Wz3jPMGvPJfAWgdBEz1KTxa93i2R7QIhVklSIDwnw70mKJN0CUEE+Y9pQzSF5rW2C8RsR3sj6vqXmwxaiWI0Z2CRQUHoWGOV3ZeS+jSIUvmiB2ThuY7kihnKlkAdQt46ZAH5uLZN/o2i/q3shWgBFeCe1bIO+uzUQ8PaG32J0zZ9FEcaZ0joaRiCuwRswaoa1JOyseIZrJRq1QK0ayU+nuZgS3sBn1nabe/FTamP785vWpJkDjxvQ6D0nLzv2kOcnmPU3T7XxsEzprcuSrDTkohPBOvtbLe3YIvwH9M+PFCZfJdM1xqq1/fxPkN60eoc5QUIdgNgJG2XLomXP1FSs/+zpZjpQLi1xP8aptED7UqcCHqNfL5crjcpdoxFFlp3S5h2Pri+GxuuyacPYhsq8XjIGNKQ3JcW3ZdEQYfs="
         }
       },
       "publicKeys": [
@@ -169,10 +169,10 @@
       "name": "should refuse a signature changed after signing",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:ABokVPPuCiUGJTWaLzMBelzwIm1Rjue6Wpo/nXkZPC5lQCyTnljshShMCKF0G0C20Vm4c0ghL30HHgNPDo9+CznPAtd64lqSaTcr0sNep9v0TbV2lvWGgnQxVJKe12Nbq6AoADyuIRJWQtuOUmBM5w1Y9X6lcI6wR7t/X4vy51rE4H/nydnq/75baJzIh3dmoER9+7g7tO640fyuABxIyT9ENPkSfBg1Xud49R2ylMzy8pTCQ9ohBJsqEv0AqnqrIJoGlns+5i8dHfIM5YOz2gWDqEU/HuC3LpQEvxyFfWssosYjx4UpUx5kzYy/KL8gC74siyXi73OXz7HisFcdgbyFdmd69Ku2Sd+pl6LLPQ5IiQP5rKnGqVzqfHqgsHbkYMPickZDLVz8jQzfVO6gRUI9BSpGBvDor8lyjv4Ww4Yk2R8oVsCxsXx2Y2R9q2qiIoRav6kUFhg3zcBbK3d0KIfG2fYflcc2WPNNNgdYaEkOVYWwZ0o5Rz9vNcg8990sf/qAFDtfgAYO9aAax87hI5XHGOlzVZ/cggDaIBNCC2aihzSn6dPzAKsOmd8dDYFRDrt4RBff2x2MjlTktvTa2NwkZuVqyy1fPmzKTDjnyMQEb+xKlMFYzBarMBH7vXKe6ZySBqNvD9iNEvLVKRzNHFse5NMkc8aC+TJLZCuXYEU="
+          "value": "rsa-v1_5-sha256:AA/sMszbwAhf/sIayR1mzpYBEKkcvVpdBp9+nHf+cdQalQG9QozKCWdFQ9j2qK+gjV+V8sbmkF5zL8Cn+qSZmkKkBI7NdVYOUMr+rGvZNQMYNJiMKnHYSZmnB8VZJgTQGj6nPQh58x3tHBhLBXhjYhcC7lx48CdFj5kMpjktd5cAmAk45w0Ctn+Cc4nnEghShG/zeue8vlnpq1akOkhq4St7eFQEtFtDvLk7b7Tbck8N4AlxXWkJf4kCzr6fLHJ+Nt0Wz3jPMGvPJfAWgdBEz1KTxa93i2R7QIhVklSIDwnw70mKJN0CUEE+Y9pQzSF5rW2C8RsR3sj6vqXmwxaiWI0Z2CRQUHoWGOV3ZeS+jSIUvmiB2ThuY7kihnKlkAdQt46ZAH5uLZN/o2i/q3shWgBFeCe1bIO+uzUQ8PaG32J0zZ9FEcaZ0joaRiCuwRswaoa1JOyseIZrJRq1QK0ayU+nuZgS3sBn1nabe/FTamP785vWpJkDjxvQ6D0nLzv2kOcnmPU3T7XxsEzprcuSrDTkohPBOvtbLe3YIvwH9M+PFCZfJdM1xqq1/fxPkN60eoc5QUIdgNgJG2XLomXP1FSs/+zpZjpQLi1xP8aptED7UqcCHqNfL5crjcpdoxFFlp3S5h2Pri+GxuuyacPYhsq8XjIGNKQ3JcW3ZdEQYfs="
         }
       },
       "publicKeys": [
@@ -198,7 +198,7 @@
       "name": "should refuse an unsigned manifest",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "signature": null
       },
       "publicKeys": [
@@ -224,10 +224,10 @@
       "name": "should refuse a signature by a key not in the list",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:5a1efe194720f4636245afd18a6336c2f313367c8c318e807c4fdca67c0905d6\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:5a1efe194720f4636245afd18a6336c2f313367c8c318e807c4fdca67c0905d6\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:5a1efe194720f4636245afd18a6336c2f313367c8c318e807c4fdca67c0905d6",
-          "value": "rsa-v1_5-sha256:Gno8MpN+2Ks9IMtWnkBdpNbi8hcrblQcUwouTTNBESqBwRsRv6Wm7n/jJ+Lc0CAlb2nZxEULgfhlmC5s3M8Te3x6yhm1jM++3/XIzC8YxFB6+NwbyJjnjThnMTshyqVWQKFLZkAkBtpKMiTlTIZHoztiFHYeCZvBOcnimpgEsqxwVRbunTtt44GTwwAkxc4C12v5qkPw7XDszag5j+gnN1GE6oyQ3nJZkyq30hnO7Ksv1xQGCkTloZPu6DzMWkDg3A8+tPuMUDoMnMspB9ZR/eu/OtjzH8LxN4iz/YV7Cn1NUhqErfLqjS3QG71bz1ia8GecnISEtfLkqva7GENBYudDkX+yfZZkEAnHP+aES7g9GKj83w8K9efxu13JeqGvbz4HsAFSr1h4DEyAjhXn9RupKuYSJs6nNPrWRkFHi5LQTQNGbZRw2sXZ/WpD9Iz43DCt7NLP7OnVfPfK+m9Zpry0kE4DQ/xK+NE2B3L6+noKuxTYeHjjIHlsSTWEdQVqC4/YoLBx03EiibvMMu3wL9upMhu+j+yW5zGXfTSlKsRgaPGE4/TVyLCuNud+a7FT+s/timS/2x0O/4VYgMTVmW1wsxTU4/3zxiV5BStcsPwqnCeVKRzt/4mYYffHFigEdCBQvCV1foGUkBxMFs7PjhF4FcA4aa2IqTx8bwpcdEA="
+          "value": "rsa-v1_5-sha256:ILmJJrg59YJX4xbkCmwzahqA7qwioJPA9i3JBu9cDV43eNDPhUg6Sb4tVJNcgbVs/ZVWzMyr5ckv8qRM+MLc28txvFiyqoJWnoPUok41BNAwe4HYqfy1P05apJCd93TCzZVY3HoGokQ5B/T/77wWt9GIVgIIUJwAavYRTPtQaWkgdIqnCKYl9Ee/Ie0fSkq+24L+Nz7OeAo9Ses9/Xu+fvXtZ4A4CMyL7fmIfTq9BKJUBTVN8p+ropxauJhmRX72a7Htk6KgcpaHFMiW4WKqihCPEpJSjcDCdNXgPayJAwHpjFN+crJoAVdaFAMgIZVcQGNupoQeRfXLJg73MVpvruSALSEhN2Fy8xUos6VnxuunE/z2nbvikY5arIhH3okcJ7MaVRZJf1z00Y+/Y/pFIpsE7p3ZxqzYnSDqX2PbaKxD72iFy5WyR6zL2+9BSKe3kpzQn+hXl2fp86Y+9fwFM0Pz1eUk8KpMUmPNChQRd9Jj/N1GipTgp8L/qqNIA2lGLZcHKqbfZeF9fW7wKCN8/K/ocZRwtt6hQX/CTLqAljWS6Bo0EUgLBA+Hl/KdhUjmyFpuE/1AVVFRgXy+SVWtZ45q6s2UDGJWRY35YYvX1dZ63dMX30No7z1HlYd1WcLIrq/JNRa/F4dJSMlHi2PMhn27c1r2aRJ5uDOhE4/vQuE="
         }
       },
       "publicKeys": [
@@ -253,10 +253,10 @@
       "name": "should refuse a signature checked against the key its keyId names when another listed key made it",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:6v0utFIHlNsxLZN8ns5e5sYPdmiQ0Trk5kMxjXH3UJB2P6bAivVwG+BeWJje6x4Nu2xYBOFfeYLO+6Uj2S0hpGhUjeBHYhqJyetUzeoiNB5R5lbLUT+ope+FDfY6PxP82lovJMAKldUaPPh0a9XoRSuhUe08aauFlrMFYuJY7qBdXGOFZEcxsL0QqfRwQD46y3yKDfMLIplRkUB1qdKrji5G0TyrpyRHpJBzu7an5apC40caXVIf/QzkoNZpDpYK0WNZr10I3Axhg0XEGwhf+F0OsE9iZ1Enst74fm12c0BsZrWKkP/1t9FZGUpwkcHw4RNZgoR60HHYx/vzPSe64ByDt+j/LaJcUfNfGdUv0S9Jxu1qp/wrbFTxzH8rN4KqpfsSBa6BShjc4QliJuDSPPad2dfcT5R+M/TGw/NKx9tAixSUJD8AEcL+stWw4yetTsaQPv0yyJ1trBAal3REXkOW+gX91aemlVM022dm2lvymLF3f6vTalTj2tq66DOfWoJ4t45V3oZU0KfEgI+Aih471K5KjlbUjNK4im0iKV7OU5ltL8yw2+xaGNOwTVcoW6MTinmURVNR7I+P2ftNkSlZXWb5NtvJAR9pro64cT0Mga0cfxhJ5CCY71sGTOzxINb+uTYY2mxjzhrGBRkNQCqmE0u79BA9evGjb7RhUOI="
+          "value": "rsa-v1_5-sha256:Q/JhFqvZzxbQ9J+exFcaedoXGtGIAN+j7spLQ7PZIj+F6DExOWj1q0yBFsJ821Grb7C9YAcrl5wDrCpYJ9NyLS1pmRgUCQmPUASTRJSbQimHz7s4g9Sr38m7wiXzuzQl74cydYIi0j6OlNu2/xzfdoUa2TsCOskk4GMh+VoZgZA5rqkxynageXwAYwY6Bv90ctdrmNHQe1BiKhQ/Qfs90TgbY38ph/IKbUBORnG2Ca/eB579G78g5R4eJbtfk99KeMm8gh0abXfi4afj7r327Fs0B4BkOAYH4fUpsTUZkwQNvqGgD1tAHSqOih31S8GXV6c0JOtO9ubDMS/yu5AVQJReQreRLgAh6UapK+paD2bFtfGnahA7XH22zs4C0tL2k/1ybpUuyVmcaUVoIjevdv24B+BRphIbyj9y4bCXNQS+ImQsiKZo5juzXQmKWPkGJql8Wwbb/o0iSbiGgzT0iDghG+8GkenWYp9PYCtECf7WoavIPf6YdObFs72Lbqrw/NHznsAUdEGV6fLpvf2CsGQfo2zKYT6umip5kjdPMhFGjgquJXf1YHqAO8viVwgOdU+gxpp2GoPgVy+koKUM1cwfM0tvbHLYFGbfnaC9802xoCDdnWt2x2jWPQBuKj4rVbCs+3VklFbdGg6PnmnO/zffwCUUvu8xbhl7qlt2z5o="
         }
       },
       "publicKeys": [
@@ -291,7 +291,7 @@
       "name": "should refuse a scheme outside the allow-list, ed25519",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
           "value": "ed25519:1GP+qGsACCYnFnEQwrAary024EqZa6UNX9QiljIM6SAv5wmJ4ph/lIPfD0H7xN7QXxu+brdspejCCrQF1BLNBA=="
@@ -320,10 +320,10 @@
       "name": "should refuse a signature by a key under 2048 bits",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8cc1d40a3e870b025279c3a8f2a5acedd0b160e55845793e61de5c620f8d9804\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8cc1d40a3e870b025279c3a8f2a5acedd0b160e55845793e61de5c620f8d9804\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8cc1d40a3e870b025279c3a8f2a5acedd0b160e55845793e61de5c620f8d9804",
-          "value": "rsa-v1_5-sha256:yGPnHhHw/FMpad9g1FKwG2POgWKZZMgn6IHU4eXr+3c8XXJZ/6jPdt+sYK6oyZVcTebNpYr2OySTd+4PWskI8Nn339RDVdXaxzhbHJVIVWgVFCE6rmSMnr6GBFOqbSMGEAd86UDYj07V1bAKWUo6jFZ8mJ/OyFBla3+Pd6b02vI="
+          "value": "rsa-v1_5-sha256:FA2F8scvD5q7fy0wIwf8D/LsgWLLmFc3MnBC2GFWzcZ8VVjz1SDnEqiqMIENMBDe15pT0S1TGLX2qGk/tDwc2TYB08ouUF2xGTMA4DcWJfHDe70O3iW1yk3Fn0HKPMFRYJIHgKEhRPZ4E+WQYfvsniNTlSw/a6Hm5kOXzJdMeQw="
         }
       },
       "publicKeys": [
@@ -349,10 +349,10 @@
       "name": "should refuse every signature when no key is listed",
       "envelope": {
         "encryption": null,
-        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"a1\",\"bundleVersion\":\"1.0.1\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":\"sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8\",\"platforms\":[\"android\",\"ios\"]}",
         "signature": {
           "keyId": "sha256:8b579a37c82909808051bbfe4966a75e7286084e2fead107c0115003996dcdc8",
-          "value": "rsa-v1_5-sha256:bBokVPPuCiUGJTWaLzMBelzwIm1Rjue6Wpo/nXkZPC5lQCyTnljshShMCKF0G0C20Vm4c0ghL30HHgNPDo9+CznPAtd64lqSaTcr0sNep9v0TbV2lvWGgnQxVJKe12Nbq6AoADyuIRJWQtuOUmBM5w1Y9X6lcI6wR7t/X4vy51rE4H/nydnq/75baJzIh3dmoER9+7g7tO640fyuABxIyT9ENPkSfBg1Xud49R2ylMzy8pTCQ9ohBJsqEv0AqnqrIJoGlns+5i8dHfIM5YOz2gWDqEU/HuC3LpQEvxyFfWssosYjx4UpUx5kzYy/KL8gC74siyXi73OXz7HisFcdgbyFdmd69Ku2Sd+pl6LLPQ5IiQP5rKnGqVzqfHqgsHbkYMPickZDLVz8jQzfVO6gRUI9BSpGBvDor8lyjv4Ww4Yk2R8oVsCxsXx2Y2R9q2qiIoRav6kUFhg3zcBbK3d0KIfG2fYflcc2WPNNNgdYaEkOVYWwZ0o5Rz9vNcg8990sf/qAFDtfgAYO9aAax87hI5XHGOlzVZ/cggDaIBNCC2aihzSn6dPzAKsOmd8dDYFRDrt4RBff2x2MjlTktvTa2NwkZuVqyy1fPmzKTDjnyMQEb+xKlMFYzBarMBH7vXKe6ZySBqNvD9iNEvLVKRzNHFse5NMkc8aC+TJLZCuXYEU="
+          "value": "rsa-v1_5-sha256:RA/sMszbwAhf/sIayR1mzpYBEKkcvVpdBp9+nHf+cdQalQG9QozKCWdFQ9j2qK+gjV+V8sbmkF5zL8Cn+qSZmkKkBI7NdVYOUMr+rGvZNQMYNJiMKnHYSZmnB8VZJgTQGj6nPQh58x3tHBhLBXhjYhcC7lx48CdFj5kMpjktd5cAmAk45w0Ctn+Cc4nnEghShG/zeue8vlnpq1akOkhq4St7eFQEtFtDvLk7b7Tbck8N4AlxXWkJf4kCzr6fLHJ+Nt0Wz3jPMGvPJfAWgdBEz1KTxa93i2R7QIhVklSIDwnw70mKJN0CUEE+Y9pQzSF5rW2C8RsR3sj6vqXmwxaiWI0Z2CRQUHoWGOV3ZeS+jSIUvmiB2ThuY7kihnKlkAdQt46ZAH5uLZN/o2i/q3shWgBFeCe1bIO+uzUQ8PaG32J0zZ9FEcaZ0joaRiCuwRswaoa1JOyseIZrJRq1QK0ayU+nuZgS3sBn1nabe/FTamP785vWpJkDjxvQ6D0nLzv2kOcnmPU3T7XxsEzprcuSrDTkohPBOvtbLe3YIvwH9M+PFCZfJdM1xqq1/fxPkN60eoc5QUIdgNgJG2XLomXP1FSs/+zpZjpQLi1xP8aptED7UqcCHqNfL5crjcpdoxFFlp3S5h2Pri+GxuuyacPYhsq8XjIGNKQ3JcW3ZdEQYfs="
         }
       },
       "publicKeys": [],

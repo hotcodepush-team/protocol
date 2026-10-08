@@ -43,8 +43,8 @@ export interface FingerprintProject {
 
 /** What the fingerprint hashes, and what `hotcodepush fingerprint` prints and `fingerprint diff` compares. */
 export interface FingerprintContributors {
-  /** The files under the extra paths; the key keeps its fp1 name, since a renamed key changes every fingerprint. */
-  nativeSources: ExtraFingerprintFile[];
+  /** The files under the extra paths, each with its hash. */
+  extraFingerprintPaths: ExtraFingerprintFile[];
   packages: LockedPackage[];
 }
 
@@ -131,7 +131,7 @@ export async function readFingerprintContributors(
     }
   }
   return {
-    nativeSources: await readExtraFingerprintFiles(
+    extraFingerprintPaths: await readExtraFingerprintFiles(
       reader,
       projectPath,
       project.extraFingerprintPaths,

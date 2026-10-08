@@ -1408,7 +1408,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1440,7 +1440,7 @@
             "sizeBytes": 37
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1462,7 +1462,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1485,7 +1485,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "laterField": 1,
         "platforms": ["android", "ios"]
@@ -1508,7 +1508,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": "sha256:c94659a0e65e23d4dbeb8c193e8053c8a8ad23598d3b7be1e6f10cbcc1c80081",
         "platforms": ["android", "ios"]
       }
@@ -1552,7 +1552,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["electron", "ios"]
       }
@@ -1576,7 +1576,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1598,7 +1598,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1620,7 +1620,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1642,7 +1642,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1664,7 +1664,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1686,7 +1686,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1708,7 +1708,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1730,7 +1730,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1752,7 +1752,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1774,7 +1774,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1796,7 +1796,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1818,7 +1818,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1840,7 +1840,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1862,7 +1862,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1883,7 +1883,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1904,7 +1904,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": ["android", "ios"]
       }
@@ -1947,7 +1947,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "platforms": ["android", "ios"]
       }
     },
@@ -1968,7 +1968,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null
       }
     },
@@ -1989,7 +1989,7 @@
             "sizeBytes": 81
           }
         ],
-        "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125",
+        "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d",
         "keyId": null,
         "platforms": [""]
       }
@@ -2009,7 +2009,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2030,7 +2030,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2056,7 +2056,7 @@
         ],
         "encryption": null,
         "laterField": "ignored",
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2071,7 +2071,7 @@
         "createdAt": "2026-09-29T10:00:00.000Z",
         "deltas": [],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2092,7 +2092,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"patches\":[{\"format\":\"bsdiff\",\"fromSha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"path\":\"assets/index-a1b2c3.js\",\"toSha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\"}],\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2123,7 +2123,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/pack"
@@ -2146,7 +2146,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2167,7 +2167,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2188,7 +2188,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2209,7 +2209,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
@@ -2228,7 +2228,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2249,7 +2249,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": null,
         "signature": null
       }
@@ -2267,7 +2267,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "signature": null
       }
     },
@@ -2277,7 +2277,7 @@
         "bundleId": "bundle-2",
         "createdAt": "2026-09-29T10:00:00.000Z",
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2298,7 +2298,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2340,7 +2340,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2362,7 +2362,7 @@
         "encryption": {
           "keyId": "k1"
         },
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
@@ -2383,7 +2383,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "javascript:alert(1)"
@@ -2404,7 +2404,7 @@
           }
         ],
         "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"

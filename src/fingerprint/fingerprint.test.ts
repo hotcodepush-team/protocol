@@ -151,7 +151,7 @@ describe('readFingerprintContributors', () => {
       projectPath: 'apps/scanner',
       reader,
     });
-    expect(contributors.nativeSources.map(file => file.path)).toEqual([
+    expect(contributors.extraFingerprintPaths.map(file => file.path)).toEqual([
       'packages/scanner-native/ios/Bridge.swift',
     ]);
   });
@@ -185,8 +185,8 @@ describe('computeFingerprint', () => {
   });
 
   test('should prefix the recipe version to the SHA-256 hex', () => {
-    expect(computeFingerprint({ nativeSources: [], packages: [] })).toMatch(
-      /^fp1:[0-9a-f]{64}$/,
-    );
+    expect(
+      computeFingerprint({ extraFingerprintPaths: [], packages: [] }),
+    ).toMatch(/^fp1:[0-9a-f]{64}$/);
   });
 });

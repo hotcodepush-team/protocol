@@ -92,6 +92,11 @@ export const ConfigurationSchema = z.looseObject({
    */
   embeddedBundleManifest: BundleManifestSchema.nullable(),
   filesBaseUrl: HttpUrlSchema.optional(),
+  /**
+   * The fingerprint of the native contract the build was made from, `fp1:`
+   * and the hash: the same string the device reports and a release's
+   * conditions name; null when the recipe could not read the project.
+   */
   fingerprint: NonEmptyStringSchema.nullable(),
   /** The project's public keys as the embed step re-encoded them for the platform the file is written for. */
   publicKeys: z.array(DevicePublicKeySchema).default([]),

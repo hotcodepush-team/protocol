@@ -42,7 +42,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==",
@@ -91,7 +91,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+      "fingerprint": "fp1:2a5a0a020b7165d9fb33468b1c22ec84c7ff8d998f5f9bdfc0f967bd163c4543"
     },
     {
       "name": "should yield the same fingerprint from a pnpm project with the same dependencies",
@@ -135,7 +135,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==",
@@ -184,7 +184,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+      "fingerprint": "fp1:2a5a0a020b7165d9fb33468b1c22ec84c7ff8d998f5f9bdfc0f967bd163c4543"
     },
     {
       "name": "should yield the same fingerprint from a yarn classic project with the same dependencies",
@@ -227,7 +227,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==",
@@ -276,7 +276,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+      "fingerprint": "fp1:2a5a0a020b7165d9fb33468b1c22ec84c7ff8d998f5f9bdfc0f967bd163c4543"
     },
     {
       "name": "should take each package's checksum as its integrity in a yarn berry project",
@@ -320,7 +320,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "10c0/aad536b293909488eccb343e454cc5a427e92ddb3fc61213b50ab5f0fc7c76e3",
@@ -369,7 +369,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c8ac16b5a3f761809bf7494f9bcc3c59ca0afae7db7479ec3c7ac022aeba3d1f"
+      "fingerprint": "fp1:510f39b4eed53b30f666a3ad9b9b7d86ddfd5f21767a739e4f273e1695e1a53c"
     },
     {
       "name": "should hash the files under the extra fingerprint paths, one by one, skipping hidden files",
@@ -420,7 +420,7 @@
       ],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [
+        "extraFingerprintPaths": [
           {
             "path": "android/app/src/main/java/com/example/app/plugins/EchoPlugin.kt",
             "sha256": "c761e8d57ba50988dd9d3fc681e107dda367371914f8ab73c9f39e2022996920"
@@ -482,7 +482,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:915e7bf749d4d7efafb7f91aacf8e3d9d9f910349aa92a67ede423822a9d766e"
+      "fingerprint": "fp1:26bcb11b2b6a65e7011d2df22e902d2f4e21bf08cfe61735a0c8507d993d3cf8"
     },
     {
       "name": "should keep every version of a native package the lockfile installs",
@@ -527,7 +527,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==",
@@ -581,7 +581,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:becd1bdecb82ffd086aadecc8555feba69afe979c525624b479701ae0f569465"
+      "fingerprint": "fp1:60456f63b149776b477f700a6568e1364718892e69dd89d47a446de3b1effff5"
     },
     {
       "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in an npm project",
@@ -597,7 +597,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
@@ -606,7 +606,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+      "fingerprint": "fp1:76aecd20d9dec283838eb2cc414a2103f8c6fbb790727d752407656650fe0862"
     },
     {
       "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a pnpm project",
@@ -625,7 +625,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
@@ -634,7 +634,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+      "fingerprint": "fp1:76aecd20d9dec283838eb2cc414a2103f8c6fbb790727d752407656650fe0862"
     },
     {
       "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a yarn classic project",
@@ -650,7 +650,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-m3j8Ng3jwVoEzS8eS+tcw2zK5nL8cGdqePs6EcgvYKPypNraksR2EKAL8uDRzLC2+d/VttTWl/lo8wLKUGZZeA==",
@@ -659,7 +659,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:a210c2da294cd4c44033460f969869e38540728ec77e581c22953e323061e698"
+      "fingerprint": "fp1:76aecd20d9dec283838eb2cc414a2103f8c6fbb790727d752407656650fe0862"
     },
     {
       "name": "should read a nested copy's markers in its own directory, never in its hoisted namesake's, in a yarn berry project",
@@ -676,7 +676,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "10c0/4c1ffc2e61896369f53e9d33dc1381b432e5e242e0c32e86c5d2847e3ff9d3b2",
@@ -685,7 +685,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:1c4c8d985463571b8915153fa2584032006865c9a3387c1355d4366e946d9dd2"
+      "fingerprint": "fp1:8cdbad41e12f698f57b53263855ee44b68114a158474fabf3e925240d856e873"
     },
     {
       "name": "should take an aliased package's version and integrity under the name the project declares, in a pnpm project",
@@ -699,7 +699,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==",
@@ -708,7 +708,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:ba81be4093f6efb715ad18ebaab955ac6bb4ac4903022fdd015a857ba4f34585"
+      "fingerprint": "fp1:fe4e6cf2a17778b82932a5743e2598f2c15edef0e499385eb94eff1b090b45eb"
     },
     {
       "name": "should take an aliased package's version and integrity under the name the project declares, in an npm project",
@@ -720,7 +720,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-FKY2cTYSAlBqDAfIwaKGP8JCX+OpFCGiDgV2jsv8s2MBTSIsnzhbGBNmFQHc61IRhT2Z9K30+uMKzGNy58O63g==",
@@ -729,7 +729,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:ba81be4093f6efb715ad18ebaab955ac6bb4ac4903022fdd015a857ba4f34585"
+      "fingerprint": "fp1:fe4e6cf2a17778b82932a5743e2598f2c15edef0e499385eb94eff1b090b45eb"
     },
     {
       "name": "should read each package pnpm stores under a shortened, hashed name in its own virtual-store directory, a dependent's and its dependency's alike",
@@ -764,7 +764,7 @@
       },
       "extraFingerprintPaths": [],
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-yTzKN0YfYzPWN8WGSRthzKEO2G94tJoDHOrZ6qTH49f4oUmTkSmHONc53TljjzLvFkVzgiSn9cl8Kbmr9OPKyw==",
@@ -783,7 +783,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:a28151576234c9980a07b48281fb1a6ea25de6d4004bc1c7b2a3c64d9152d073"
+      "fingerprint": "fp1:ea883badd240f7c85c118f89ee4d169ca95f85b799be215ca6accef4c071040f"
     },
     {
       "name": "should keep two builds of one 0.0.0 package apart by their integrity",
@@ -798,7 +798,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-rrqE9yrn6MHTedoubCO7vkTvKy0P0cJi9iZ+TSassqrwzlz2FX4TwH/Jeeakc9Vel3lysxcn47Orh05XU4S3Lw==",
@@ -822,7 +822,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:a181757220acf8fad87ead40180b2ad4268b4db124a82827947feec8d67bc0dc"
+      "fingerprint": "fp1:ce071c02c7d0c4ad562a9653f492b12724511424fc5053a41326fd40b613f5a7"
     },
     {
       "name": "should take the resolved URL of an npm package without integrity, and null where the lockfile records neither",
@@ -835,7 +835,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "git+ssh://git@github.com/example/capacitor-git.git#0123456789abcdef0123456789abcdef01234567",
@@ -849,7 +849,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:ecede12bb25d392a37004446137a708c16de1cf4f7015d22838cb317b393d253"
+      "fingerprint": "fp1:d6d4a5952a734ba1cc81190e30e281da62a18ca97b44b4a5133ebeb61ce76970"
     },
     {
       "name": "should take the tarball URL of a pnpm package without integrity",
@@ -861,7 +861,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "https://codeload.github.com/example/capacitor-git/tar.gz/0123456789abcdef0123456789abcdef01234567",
@@ -870,7 +870,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:54deb42887dcc21a61dc0ba60a123438054083cea5ac3d1c23834929630639fb"
+      "fingerprint": "fp1:fa08f28b5102b5b32df51bb6c19078e4ab065f390f3d8e5115709ef2cb4f0bdb"
     },
     {
       "name": "should take the resolved URL of a yarn classic package without integrity",
@@ -882,7 +882,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "git+https://github.com/example/capacitor-git.git#0123456789abcdef0123456789abcdef01234567",
@@ -891,7 +891,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:12da8240f92f0c29f6d334257e11c88a31766fc0d6ea39b15470c3191f463b3a"
+      "fingerprint": "fp1:f77173b357bd7247b1d13346ba36f5cb30c4b1ec372c6829f4f96ec2a633137a"
     },
     {
       "name": "should take the resolution of a yarn berry package without checksum",
@@ -903,7 +903,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "@example/capacitor-git@https://github.com/example/capacitor-git.git#commit=0123456789abcdef0123456789abcdef01234567",
@@ -912,7 +912,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:44c3ae709f0cfcfec931c3cb0daf150a00f7ae810f7f5c5a57a4a56cf6c53b67"
+      "fingerprint": "fp1:f8e7dcf6b40bc063acd5a4cabde778fe6e44c3c7256817f5cdf4376a5d8ded9b"
     },
     {
       "name": "should skip an optional dependency this machine's platform does not install",
@@ -955,7 +955,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-nN1gAG5io2J5Xg7QHT7uMnAZAZm7jlGhkEKaCky6gdQKYI4ga9wsUSjAotDF6bsvzdDUxOrYEHkw1mLWVpLDmA==",
@@ -1004,7 +1004,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:73e9f29f06ce3f1ddb5a00719e8dcb5b77e6ea55fd814ef02a1f948553804471"
+      "fingerprint": "fp1:2a5a0a020b7165d9fb33468b1c22ec84c7ff8d998f5f9bdfc0f967bd163c4543"
     },
     {
       "name": "should skip a package's optional dependency this machine's platform does not install, in an npm project",
@@ -1017,7 +1017,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1026,7 +1026,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should skip a package's optional dependency this machine's platform does not install, in a pnpm project",
@@ -1040,7 +1040,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1049,7 +1049,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should skip a package's optional dependency this machine's platform does not install, in a yarn classic project",
@@ -1062,7 +1062,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1071,7 +1071,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should skip a package's optional dependency this machine's platform does not install, in a yarn berry project",
@@ -1085,7 +1085,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "10c0/76e1d72c2b496faf925f3ec61a4bd7b9d34f5c6a1e8f339b6fb497036c6a0539",
@@ -1094,7 +1094,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c0562665ab3e3278aabc06780169857c129e68b97e5dc06dafade04cffae7a51"
+      "fingerprint": "fp1:60a7c25d55ee23f2ae4acbd24600fc7398f907991f677a9c922d11aa69edb7f6"
     },
     {
       "name": "should yield the fingerprint of an empty contract when nothing ships native code",
@@ -1107,10 +1107,10 @@
       "extraFingerprintPaths": [],
       "projectPath": "",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": []
       },
-      "fingerprint": "fp1:a0c0fb8fa5c59bbc0f00c9339d378525f68d0f8b942d4a787c4a18f76190a125"
+      "fingerprint": "fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d"
     },
     {
       "name": "should hash the scanner workspace's native package alone in an npm monorepo",
@@ -1127,7 +1127,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/scanner",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1136,7 +1136,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should hash the checkout workspace's native package alone in an npm monorepo",
@@ -1153,7 +1153,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/checkout",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-5SQ7px5X0RqPIbuRQdV41JSArr3oyVahZvVToUDcDamNxG/SKcMPi7ks9b6ir4LG6KWMs+X1p9PJuVSlPiYmJQ==",
@@ -1162,7 +1162,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c1e21ea506d7f493eff4f51fd0a673ace14a73c80c561a9da0ac95908a9d5895"
+      "fingerprint": "fp1:65913f82f32cff0ef1f5351b18ff957f0493150aba391516fbc42eebb688c6b2"
     },
     {
       "name": "should hash the scanner workspace's native package alone in a pnpm monorepo",
@@ -1181,7 +1181,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/scanner",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1190,7 +1190,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should hash the checkout workspace's native package alone in a pnpm monorepo",
@@ -1209,7 +1209,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/checkout",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-5SQ7px5X0RqPIbuRQdV41JSArr3oyVahZvVToUDcDamNxG/SKcMPi7ks9b6ir4LG6KWMs+X1p9PJuVSlPiYmJQ==",
@@ -1218,7 +1218,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c1e21ea506d7f493eff4f51fd0a673ace14a73c80c561a9da0ac95908a9d5895"
+      "fingerprint": "fp1:65913f82f32cff0ef1f5351b18ff957f0493150aba391516fbc42eebb688c6b2"
     },
     {
       "name": "should hash the scanner workspace's native package alone in a yarn classic monorepo",
@@ -1235,7 +1235,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/scanner",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
@@ -1244,7 +1244,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:4d01ec6dde0990c074e9939008e99ecc6f97fa0080a9fed7ea657ac17f9395f4"
+      "fingerprint": "fp1:b1de9e37e6ff76fd56176a4f5ae39bca596aba3755ddd3ff1b1fa450d22eee87"
     },
     {
       "name": "should hash the checkout workspace's native package alone in a yarn classic monorepo",
@@ -1261,7 +1261,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/checkout",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "sha512-5SQ7px5X0RqPIbuRQdV41JSArr3oyVahZvVToUDcDamNxG/SKcMPi7ks9b6ir4LG6KWMs+X1p9PJuVSlPiYmJQ==",
@@ -1270,7 +1270,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c1e21ea506d7f493eff4f51fd0a673ace14a73c80c561a9da0ac95908a9d5895"
+      "fingerprint": "fp1:65913f82f32cff0ef1f5351b18ff957f0493150aba391516fbc42eebb688c6b2"
     },
     {
       "name": "should hash the scanner workspace's native package alone in a yarn berry monorepo",
@@ -1288,7 +1288,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/scanner",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "10c0/76e1d72c2b496faf925f3ec61a4bd7b9d34f5c6a1e8f339b6fb497036c6a0539",
@@ -1297,7 +1297,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c0562665ab3e3278aabc06780169857c129e68b97e5dc06dafade04cffae7a51"
+      "fingerprint": "fp1:60a7c25d55ee23f2ae4acbd24600fc7398f907991f677a9c922d11aa69edb7f6"
     },
     {
       "name": "should hash the checkout workspace's native package alone in a yarn berry monorepo",
@@ -1315,7 +1315,7 @@
       "extraFingerprintPaths": [],
       "projectPath": "apps/checkout",
       "contributors": {
-        "nativeSources": [],
+        "extraFingerprintPaths": [],
         "packages": [
           {
             "integrity": "10c0/3342330ef53acb8db1836e852f51039a48b98c1bcc01b7e134f4c77390e8d9f5",
@@ -1324,7 +1324,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:c9cef84ce22d7105e2a5e6dadd37fb81fec4c3152af1d1bc5e5199e5e1ac6f37"
+      "fingerprint": "fp1:b7e493ad3ed3ea68d32ce5822c3c78c0ad8f1bd2eb08785c59419dec49eade56"
     },
     {
       "name": "should hash an extra fingerprint path the workspace declares in a sibling workspace through .., inside the lockfile's directory",
@@ -1344,7 +1344,7 @@
       "extraFingerprintPaths": ["../../packages/scanner-native/ios"],
       "projectPath": "apps/scanner",
       "contributors": {
-        "nativeSources": [
+        "extraFingerprintPaths": [
           {
             "path": "packages/scanner-native/ios/ScannerBridge.swift",
             "sha256": "0914a2f6008c90cde192c696b349fc4fd70f3e05a4b5e676c7ca1bfaecb87c89"
@@ -1362,7 +1362,7 @@
           }
         ]
       },
-      "fingerprint": "fp1:6c962d521fc42cbd78b036c3327f21b7ee2fa4b580e798d8a8c26ab604b3276d"
+      "fingerprint": "fp1:6791a34265f1fc13dae67af72e41385db471db6d6092bf0d03b3a8d84d3e75e6"
     }
   ],
   "refusedProjects": [
