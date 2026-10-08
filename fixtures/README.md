@@ -22,10 +22,10 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the build step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest, the same shape whether the build step registered the bundle or not, `embeddedBundleId` null when it did not.
 `embeddedBundleManifest` is `null` in a build that bundled no JavaScript, a React Native or Expo debug build the development server serves: a reader takes the file, and every check answers `SKIPPED` with `BUILD_DEBUG`.
-The file carries `channelId`, the id the build step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
+The file carries `channelId`, the id the build step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names. The file carries no CLI key: `extraFingerprintPaths` is left out and nothing names a build directory; one case spells out every SDK option at its default.
 `channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `FAILED` with `CHANNEL_UNKNOWN`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
 `publicKeys` are the project's public keys as the build step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
-`refusedResourceFiles` are `{ name, resourceFile }` a reader refuses: a `checkInterval` below 60 seconds, the floor, since a zero made the core check in a tight loop.
+`refusedResourceFiles` are `{ name, resourceFile }` a reader refuses: a `checkIntervalSeconds` below 60, the floor, since a zero made the core check in a tight loop.
 
 ## `version-ranges.json`
 
@@ -51,7 +51,7 @@ A reader composes an entry's name as the prefix, a `/` and the name when the pre
 `files` are the contents the cases name by hash, `{ name, contentBase64, sha256 }`.
 `deltaPack` is a pack of a file entry and a patch entry as the writer produces it — `packBase64`, its `packSha256`, and `entries` in order, each with its `type` and `bodyBase64`, the file's `sha256` or the patch's `fromSha256` and `toSha256`.
 `skippedEntryPack` holds a file entry, an entry named `skippedName` — `future/{hash}/{hash}`, through the prefix field as a later kind could be — and a patch entry; a reader yields its two `entries` and no error.
-`patchCases` are `{ name, heldSha256s, manifestFiles, patchEntry, outcome }`: a patch entry, the hashes of the files the device holds in its file store and its embedded bundle, the files of the signed manifest it installs, and one of three outcomes, none of which fails the update.
+`patchCases` are `{ name, heldSha256s, manifestFiles, patchEntry, outcome }`: a patch entry, the hashes of the files the device holds in its file store and its embedded bundle, the files of the signed manifest it downloads, and one of three outcomes, none of which fails the update.
 `applied`: the device applies the patch to the file `fromSha256` it holds, and the patched bytes hash to `toSha256`.
 `fallback`: the device fetches the file `toSha256` as it fetches any file the pack did not bring — when it does not hold the base, the patch is truncated, the patched bytes hash to another file, or the patch's control triples seek before the start of the base.
 `ignored`: `toSha256` is not a file of the manifest, and the device leaves the entry aside.
@@ -98,11 +98,11 @@ They are test keys, generated once, and sign nothing real.
 
 ## `fingerprints.json`
 
-`cases` are sample projects, `{ name, projectPath, files, nativeSourcePaths, contributors, fingerprint }`, `projectPath` the workspace's directory relative to the lockfile's, `''` for the root: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
+`cases` are sample projects, `{ name, projectPath, files, extraFingerprintPaths, contributors, fingerprint }`, `projectPath` the workspace's directory relative to the lockfile's, `''` for the root: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
 npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
 An aliased package (`npm:` in its specifier) contributes the aliased package's version and integrity under the declared name, so the four formats agree; a pnpm store directory whose name pnpm shortened to a hash is found as the one `.pnpm` entry whose prefix the full name starts with, the walk up from the dependent standing in when none or several match.
-`nativeSourcePaths` are the native sources as `hotcodepush.json` declares them, relative to the workspace's directory: `..` may reach a sibling workspace, and a path that leaves the lockfile's directory, symbolic links resolved, is refused.
-`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, a declared native source that does not exist, a declared native source outside the lockfile's directory.
+`extraFingerprintPaths` are the paths `hotcodepush.json` lists under the same key, relative to the workspace's directory: `..` may reach a sibling workspace, and a path that leaves the lockfile's directory, symbolic links resolved, is refused. Their files appear in the contributors under `nativeSources`, the key the fp1 contract hashes, which a rename would move every fingerprint for.
+`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, an extra fingerprint path that does not exist, one outside the lockfile's directory.
 
 ## `bounds.json`
 
