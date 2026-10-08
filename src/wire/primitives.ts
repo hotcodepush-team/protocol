@@ -28,6 +28,14 @@ export const IdentifierSchema = z.string().regex(/^[A-Za-z0-9_-]{1,64}$/);
 /** An ISO 8601 timestamp in UTC, `2026-09-29T10:00:00.000Z`. */
 export const IsoTimestampSchema = z.iso.datetime();
 
+/**
+ * A custom native source as `hotcodepush.json` declares it, relative to the
+ * project's directory: `/`-separated, with no empty or `.` segment, no
+ * backslash and no NUL, `..` climbing to a sibling workspace; the fingerprint
+ * refuses one that leaves the lockfile's directory.
+ */
+export const NativeSourcePathSchema = z.string().refine(isClimbingRelativePath);
+
 export const NonEmptyStringSchema = z.string().min(1);
 
 export const PlatformSchema = z.enum(PLATFORMS);
@@ -56,12 +64,14 @@ export const SignatureSchema = z.looseObject({
 });
 export type Signature = z.infer<typeof SignatureSchema>;
 
-function isRelativePath(path: string): boolean {
+function isClimbingRelativePath(path: string): boolean {
   return (
     !path.includes('\\') &&
     !path.includes('\0') &&
-    path
-      .split('/')
-      .every(segment => segment !== '' && segment !== '.' && segment !== '..')
+    path.split('/').every(segment => segment !== '' && segment !== '.')
   );
+}
+
+function isRelativePath(path: string): boolean {
+  return isClimbingRelativePath(path) && !path.split('/').includes('..');
 }

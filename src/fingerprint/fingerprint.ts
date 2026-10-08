@@ -11,7 +11,7 @@ import { z } from 'zod';
 
 import { stringifyCanonicalJson } from '../canonical-json.js';
 import { computeSha256Hex } from '../hash/sha256.js';
-import { RelativePathSchema } from '../wire/primitives.js';
+import { NativeSourcePathSchema } from '../wire/primitives.js';
 import type {
   DeclaredDependency,
   LockedDependency,
@@ -33,7 +33,7 @@ import {
 } from './project-reader.js';
 
 export interface FingerprintProject {
-  /** The custom native sources the app declares: files or directories, relative to the reader's root. */
+  /** The custom native sources the app declares: files or directories, relative to the project's directory, a sibling workspace's through `..`, inside the reader's root. */
   nativeSourcePaths: readonly string[];
   /** The project's directory relative to the reader's root, the lockfile's directory: a workspace's path in a monorepo, empty when they are one. */
   projectPath: string;
@@ -132,6 +132,7 @@ export async function readFingerprintContributors(
   return {
     nativeSources: await resolveNativeSources(
       reader,
+      projectPath,
       project.nativeSourcePaths,
     ),
     packages: resolveUniquePackages(nativePackages),
@@ -277,22 +278,59 @@ async function isNativePackage(
 
 async function resolveNativeSources(
   reader: ProjectReader,
-  paths: readonly string[],
+  projectPath: string,
+  declaredPaths: readonly string[],
 ): Promise<NativeSourceFile[]> {
   const filesByPath = new Map<string, NativeSourceFile>();
-  for (const path of paths) {
-    if (!RelativePathSchema.safeParse(path).success) {
-      throw new FingerprintError(
-        `the native source ${JSON.stringify(path)} is not a relative path without . or .. segments`,
-      );
-    }
-    for (const file of await collectNativeSourceFiles(reader, path)) {
+  for (const declaredPath of declaredPaths) {
+    const realPath = await readNativeSourceRealPath(
+      reader,
+      projectPath,
+      declaredPath,
+    );
+    for (const file of await collectNativeSourceFiles(reader, realPath)) {
       filesByPath.set(file.path, file);
     }
   }
   return [...filesByPath.values()].sort((first, second) =>
     compareCodeUnits(first.path, second.path),
   );
+}
+
+/**
+ * Where a declared native source lies, relative to the lockfile's directory:
+ * resolved against the project's directory, then its symbolic links resolved
+ * by the reader. A path that leaves the lockfile's directory is refused before
+ * the reader resolves it and after, so a sibling workspace can be named and
+ * nothing outside the repository can.
+ */
+async function readNativeSourceRealPath(
+  reader: ProjectReader,
+  projectPath: string,
+  declaredPath: string,
+): Promise<string> {
+  if (!NativeSourcePathSchema.safeParse(declaredPath).success) {
+    throw new FingerprintError(
+      `the native source ${JSON.stringify(declaredPath)} is not a relative path without empty or . segments`,
+    );
+  }
+  const resolvedPath = resolveParentSegments(
+    resolveProjectFilePath(projectPath, declaredPath),
+  );
+  const realPath = isInsideRoot(resolvedPath)
+    ? await reader.readRealPath(resolvedPath)
+    : resolvedPath;
+  if (realPath === null) {
+    throw new FingerprintError(
+      `the native source ${declaredPath} does not exist`,
+    );
+  }
+  if (!isInsideRoot(realPath)) {
+    throw new FingerprintError(
+      `the native source ${declaredPath} is not inside the lockfile's directory`,
+    );
+  }
+  return realPath;
 }
 
 async function collectNativeSourceFiles(
@@ -319,6 +357,24 @@ async function collectNativeSourceFiles(
 /** A path inside the project as the reader takes it, relative to the lockfile's directory. */
 function resolveProjectFilePath(projectPath: string, path: string): string {
   return projectPath === '' ? path : `${projectPath}/${path}`;
+}
+
+/** The path with each `..` segment taking off the named segment before it, `..`-led when it climbs above the root. */
+function resolveParentSegments(path: string): string {
+  const segments: string[] = [];
+  for (const segment of path.split('/')) {
+    if (segment === '..' && segments.length > 0 && segments.at(-1) !== '..') {
+      segments.pop();
+    } else {
+      segments.push(segment);
+    }
+  }
+  return segments.join('/');
+}
+
+/** Whether a path relative to the root names something below it, never the root itself. */
+function isInsideRoot(path: string): boolean {
+  return path !== '' && path !== '..' && !path.startsWith('../');
 }
 
 /** Order by UTF-16 code units, the same on every machine and locale. */

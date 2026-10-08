@@ -32,7 +32,17 @@ const FIXTURE = JSON.parse(
   ),
 ) as FingerprintFixture;
 
-/** A project held in memory: the files by path, the directories implied by them. */
+/** A workspace `apps/scanner` with no dependencies, its native sources added per test. */
+const LINKED_PROJECT_FILES: Record<string, string> = {
+  'apps/scanner/package.json': JSON.stringify({ name: 'scanner' }),
+  'package-lock.json': JSON.stringify({
+    lockfileVersion: 3,
+    packages: { '': {}, 'apps/scanner': { name: 'scanner' } },
+  }),
+  'package.json': JSON.stringify({ workspaces: ['apps/*'] }),
+};
+
+/** A project held in memory: the files by path, the directories implied by them, no symbolic links. */
 function createMemoryReader(files: Record<string, string>): ProjectReader {
   return {
     readDirectory(path) {
@@ -56,6 +66,26 @@ function createMemoryReader(files: Record<string, string>): ProjectReader {
         text === undefined ? null : new TextEncoder().encode(text),
       );
     },
+    readRealPath(path) {
+      const isPresent = Object.keys(files).some(
+        filePath => filePath === path || filePath.startsWith(`${path}/`),
+      );
+      return Promise.resolve(isPresent ? path : null);
+    },
+  };
+}
+
+/** The memory project with one symbolic link: the path `link` resolving to `target`. */
+function createLinkedReader(
+  files: Record<string, string>,
+  link: string,
+  target: string,
+): ProjectReader {
+  const reader = createMemoryReader(files);
+  return {
+    ...reader,
+    readRealPath: path =>
+      path === link ? Promise.resolve(target) : reader.readRealPath(path),
   };
 }
 
@@ -105,6 +135,42 @@ describe('readFingerprintContributors', () => {
         reader,
       }),
     ).rejects.toThrow('@capacitor/core 7.4.3');
+  });
+
+  test('should hash a native source under the path its symbolic link resolves to', async () => {
+    const reader = createLinkedReader(
+      {
+        ...LINKED_PROJECT_FILES,
+        'packages/scanner-native/ios/Bridge.swift': '',
+      },
+      'apps/scanner/native',
+      'packages/scanner-native/ios',
+    );
+    const contributors = await readFingerprintContributors({
+      nativeSourcePaths: ['native'],
+      projectPath: 'apps/scanner',
+      reader,
+    });
+    expect(contributors.nativeSources.map(file => file.path)).toEqual([
+      'packages/scanner-native/ios/Bridge.swift',
+    ]);
+  });
+
+  test("should refuse a native source when its symbolic link leads out of the lockfile's directory", async () => {
+    const reader = createLinkedReader(
+      LINKED_PROJECT_FILES,
+      'apps/scanner/native',
+      '../outside/ios',
+    );
+    await expect(
+      readFingerprintContributors({
+        nativeSourcePaths: ['native'],
+        projectPath: 'apps/scanner',
+        reader,
+      }),
+    ).rejects.toThrow(
+      "the native source native is not inside the lockfile's directory",
+    );
   });
 });
 

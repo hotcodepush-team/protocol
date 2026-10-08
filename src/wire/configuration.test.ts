@@ -99,21 +99,28 @@ describe('ProjectConfigurationSchema', () => {
   });
 
   test('should read the native sources the CLI hashes', () => {
-    const nativeSources = ['ios/App/App/Plugins', 'android/app/src/main/java'];
+    const nativeSources = [
+      'ios/App/App/Plugins',
+      'android/app/src/main/java',
+      '../../packages/scanner-native/ios',
+    ];
     expect(
       ProjectConfigurationSchema.parse({ ...PROJECT, nativeSources })
         .nativeSources,
     ).toEqual(nativeSources);
   });
 
-  test('should reject a native source that is not a clean relative path', () => {
-    expect(
-      ProjectConfigurationSchema.safeParse({
-        ...PROJECT,
-        nativeSources: ['../shared/Plugins'],
-      }).success,
-    ).toBe(false);
-  });
+  test.each(['./shared/Plugins', 'shared//Plugins', '/shared/Plugins'])(
+    'should reject the native source %s, not a clean relative path',
+    nativeSource => {
+      expect(
+        ProjectConfigurationSchema.safeParse({
+          ...PROJECT,
+          nativeSources: [nativeSource],
+        }).success,
+      ).toBe(false);
+    },
+  );
 
   test.each(['ed25519:AAAA', 'ecdsa-p256-sha256:AAAA'])(
     'should reject the public key %s, outside the one signing scheme',
@@ -233,7 +240,7 @@ describe('ConfigurationSchema', () => {
     expect(
       ConfigurationSchema.safeParse({
         ...resourceFile,
-        nativeSources: ['../shared/Plugins'],
+        nativeSources: ['./shared/Plugins'],
       }).success,
     ).toBe(true);
   });

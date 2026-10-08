@@ -14,8 +14,8 @@ import {
   HttpUrlSchema,
   IdentifierSchema,
   IsoTimestampSchema,
+  NativeSourcePathSchema,
   NonEmptyStringSchema,
-  RelativePathSchema,
 } from './primitives.js';
 
 /** Every duration in seconds, one unit, no suffix in the key. */
@@ -59,8 +59,8 @@ export const ProjectConfigurationSchema = z.looseObject({
   appId: NonEmptyStringSchema,
   channel: ChannelNameSchema.default('production'),
   dir: z.string().optional(),
-  /** The custom native sources the fingerprint hashes: files or directories, relative to the project root. */
-  nativeSources: z.array(RelativePathSchema).default([]),
+  /** The custom native sources the fingerprint hashes: files or directories, relative to the project root, a sibling workspace's through `..`. */
+  nativeSources: z.array(NativeSourcePathSchema).default([]),
   /** The keys the app's binaries accept, self-describing, `rsa-v1_5-sha256:` and the base64 of the SPKI DER. */
   publicKeys: z.array(SigningPublicKeySchema).default([]),
 });

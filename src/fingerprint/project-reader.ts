@@ -8,6 +8,8 @@ export interface ProjectReader {
   readDirectory(path: string): Promise<ProjectDirectoryEntry[] | null>;
   /** The bytes of the file at the path, or null when no file is there. */
   readFile(path: string): Promise<Uint8Array | null>;
+  /** The path with every symbolic link resolved, relative to the root and `/`-separated, `..`-led when it lies outside the root, or null when nothing is there. */
+  readRealPath(path: string): Promise<string | null>;
 }
 
 export interface ProjectDirectoryEntry {

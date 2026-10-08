@@ -1,5 +1,5 @@
 {
-  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. Each installed copy's markers are read where the lockfile installs it — npm's key, pnpm's virtual store directory, else the nearest node_modules from the package depending on it, as Node resolves it — so a nested copy is never read from a hoisted namesake of another version; a virtual store name pnpm shortened to a prefix and a hash is the one store directory the unshortened name begins with. An aliased dependency, npm: and another package, contributes that package's version and integrity under the name the project declares, in every lockfile. refusedProjects are the projects whose fingerprint cannot be computed.",
+  "description": "Sample projects, a lockfile and the installed packages' marker files, with the contributors and the fp1 fingerprint they yield: the native packages and the runtime packages the project's package.json reaches through the lockfile's dependency tree, the project at projectPath from the lockfile's directory, so a monorepo's workspace never hashes a sibling's packages, one entry per name, version and integrity — the lockfile's integrity hash, yarn berry's checksum, else the resolved URL or berry's resolution, else null — and the declared native sources file by file, each resolved against the project's directory, so .. reaches a sibling workspace, and refused when it leaves the lockfile's directory. npm, pnpm and yarn classic record the registry's integrity, so one dependency set yields one fingerprint in the three; yarn berry's checksum is its own. A package the walk reaches is installed or the project is refused, since its markers cannot be read; an optional dependency a platform does not install is skipped with its own dependencies. Each installed copy's markers are read where the lockfile installs it — npm's key, pnpm's virtual store directory, else the nearest node_modules from the package depending on it, as Node resolves it — so a nested copy is never read from a hoisted namesake of another version; a virtual store name pnpm shortened to a prefix and a hash is the one store directory the unshortened name begins with. An aliased dependency, npm: and another package, contributes that package's version and integrity under the name the project declares, in every lockfile. refusedProjects are the projects whose fingerprint cannot be computed.",
   "cases": [
     {
       "name": "should keep the native packages and the Capacitor runtime of an npm project",
@@ -1325,6 +1325,44 @@
         ]
       },
       "fingerprint": "fp1:c9cef84ce22d7105e2a5e6dadd37fb81fec4c3152af1d1bc5e5199e5e1ac6f37"
+    },
+    {
+      "name": "should hash a native source the workspace declares in a sibling workspace through .., inside the lockfile's directory",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-monorepo\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"workspaces\": [\n    \"apps/*\"\n  ]\n}\n",
+        "apps/scanner/package.json": "{\n  \"name\": \"@example/scanner-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        "apps/checkout/package.json": "{\n  \"name\": \"@example/checkout-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-payments\": \"^2.1.0\"\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n",
+        "node_modules/@example/capacitor-payments/package.json": "{\n  \"name\": \"@example/capacitor-payments\",\n  \"version\": \"2.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-payments/android/build.gradle": "apply plugin: 'com.android.library'\n",
+        "package-lock.json": "{\n  \"name\": \"example-monorepo\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-monorepo\",\n      \"version\": \"1.0.0\",\n      \"workspaces\": [\n        \"apps/*\"\n      ]\n    },\n    \"apps/checkout\": {\n      \"name\": \"@example/checkout-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/capacitor-payments\": \"^2.1.0\"\n      }\n    },\n    \"apps/scanner\": {\n      \"name\": \"@example/scanner-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/capacitor-scanner\": \"^1.3.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-payments\": {\n      \"version\": \"2.1.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-payments/-/capacitor-payments-2.1.0.tgz\",\n      \"integrity\": \"sha512-5SQ7px5X0RqPIbuRQdV41JSArr3oyVahZvVToUDcDamNxG/SKcMPi7ks9b6ir4LG6KWMs+X1p9PJuVSlPiYmJQ==\"\n    },\n    \"node_modules/@example/capacitor-scanner\": {\n      \"version\": \"1.3.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-scanner/-/capacitor-scanner-1.3.0.tgz\",\n      \"integrity\": \"sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==\"\n    },\n    \"node_modules/@example/checkout-app\": {\n      \"resolved\": \"apps/checkout\",\n      \"link\": true\n    },\n    \"node_modules/@example/scanner-app\": {\n      \"resolved\": \"apps/scanner\",\n      \"link\": true\n    }\n  }\n}\n",
+        "packages/scanner-native/ios/ScannerBridge.swift": "import Foundation\n\nfinal class ScannerBridge {}\n",
+        "packages/scanner-native/ios/ScannerView.swift": "import UIKit\n\nfinal class ScannerView: UIView {}\n",
+        "packages/scanner-native/ios/.DS_Store": "Finder metadata\n"
+      },
+      "nativeSourcePaths": ["../../packages/scanner-native/ios"],
+      "projectPath": "apps/scanner",
+      "contributors": {
+        "nativeSources": [
+          {
+            "path": "packages/scanner-native/ios/ScannerBridge.swift",
+            "sha256": "0914a2f6008c90cde192c696b349fc4fd70f3e05a4b5e676c7ca1bfaecb87c89"
+          },
+          {
+            "path": "packages/scanner-native/ios/ScannerView.swift",
+            "sha256": "1f78f93aef09c84ee3a0dce16b5b86ec009b57d083486cc0a55916f60e412de0"
+          }
+        ],
+        "packages": [
+          {
+            "integrity": "sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==",
+            "name": "@example/capacitor-scanner",
+            "version": "1.3.0"
+          }
+        ]
+      },
+      "fingerprint": "fp1:6c962d521fc42cbd78b036c3327f21b7ee2fa4b580e798d8a8c26ab604b3276d"
     }
   ],
   "refusedProjects": [
@@ -1504,6 +1542,21 @@
       },
       "nativeSourcePaths": [],
       "projectPath": "apps/kiosk"
+    },
+    {
+      "name": "should refuse a declared native source that climbs out of the lockfile's directory",
+      "files": {
+        "package.json": "{\n  \"name\": \"example-monorepo\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"workspaces\": [\n    \"apps/*\"\n  ]\n}\n",
+        "apps/scanner/package.json": "{\n  \"name\": \"@example/scanner-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-scanner\": \"^1.3.0\"\n  }\n}\n",
+        "apps/checkout/package.json": "{\n  \"name\": \"@example/checkout-app\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@example/capacitor-payments\": \"^2.1.0\"\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/package.json": "{\n  \"name\": \"@example/capacitor-scanner\",\n  \"version\": \"1.3.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-scanner/android/build.gradle": "apply plugin: 'com.android.library'\n",
+        "node_modules/@example/capacitor-payments/package.json": "{\n  \"name\": \"@example/capacitor-payments\",\n  \"version\": \"2.1.0\",\n  \"capacitor\": {\n    \"android\": {\n      \"src\": \"android\"\n    },\n    \"ios\": {\n      \"src\": \"ios\"\n    }\n  }\n}\n",
+        "node_modules/@example/capacitor-payments/android/build.gradle": "apply plugin: 'com.android.library'\n",
+        "package-lock.json": "{\n  \"name\": \"example-monorepo\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"\": {\n      \"name\": \"example-monorepo\",\n      \"version\": \"1.0.0\",\n      \"workspaces\": [\n        \"apps/*\"\n      ]\n    },\n    \"apps/checkout\": {\n      \"name\": \"@example/checkout-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/capacitor-payments\": \"^2.1.0\"\n      }\n    },\n    \"apps/scanner\": {\n      \"name\": \"@example/scanner-app\",\n      \"version\": \"1.0.0\",\n      \"dependencies\": {\n        \"@example/capacitor-scanner\": \"^1.3.0\"\n      }\n    },\n    \"node_modules/@example/capacitor-payments\": {\n      \"version\": \"2.1.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-payments/-/capacitor-payments-2.1.0.tgz\",\n      \"integrity\": \"sha512-5SQ7px5X0RqPIbuRQdV41JSArr3oyVahZvVToUDcDamNxG/SKcMPi7ks9b6ir4LG6KWMs+X1p9PJuVSlPiYmJQ==\"\n    },\n    \"node_modules/@example/capacitor-scanner\": {\n      \"version\": \"1.3.0\",\n      \"resolved\": \"https://registry.npmjs.org/@example/capacitor-scanner/-/capacitor-scanner-1.3.0.tgz\",\n      \"integrity\": \"sha512-K80TUlEHYZUL0P+ndZ9QDnGkAfKtCTTdJPZWcuLPXhpEzpZm5o3EJnfBAHXaeQaF2+0pmbrjETCaP1pzZIpedw==\"\n    },\n    \"node_modules/@example/checkout-app\": {\n      \"resolved\": \"apps/checkout\",\n      \"link\": true\n    },\n    \"node_modules/@example/scanner-app\": {\n      \"resolved\": \"apps/scanner\",\n      \"link\": true\n    }\n  }\n}\n"
+      },
+      "nativeSourcePaths": ["../../../shared/ios"],
+      "projectPath": "apps/scanner"
     }
   ]
 }
