@@ -25,6 +25,7 @@ On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resol
 The file carries `channelId`, the id the build step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names.
 `channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `FAILED` with `CHANNEL_UNKNOWN`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
 `publicKeys` are the project's public keys as the build step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
+`refusedResourceFiles` are `{ name, resourceFile }` a reader refuses: a `checkInterval` below 60 seconds, the floor, since a zero made the core check in a tight loop.
 
 ## `version-ranges.json`
 
@@ -100,7 +101,8 @@ They are test keys, generated once, and sign nothing real.
 `cases` are sample projects, `{ name, projectPath, files, nativeSourcePaths, contributors, fingerprint }`, `projectPath` the workspace's directory relative to the lockfile's, `''` for the root: a lockfile and the installed packages' marker files as `files`, the contributors the recipe yields — one entry per name, version and integrity, the lockfile's integrity hash, yarn berry's checksum, else the resolved URL — and the `fp1:` hash of the canonical contract.
 npm, pnpm and yarn classic yield one fingerprint for one dependency set; yarn berry yields its own, since its checksum is not the registry's integrity.
 An aliased package (`npm:` in its specifier) contributes the aliased package's version and integrity under the declared name, so the four formats agree; a pnpm store directory whose name pnpm shortened to a hash is found as the one `.pnpm` entry whose prefix the full name starts with, the walk up from the dependent standing in when none or several match.
-`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, a declared native source that does not exist.
+`nativeSourcePaths` are the native sources as `hotcodepush.json` declares them, relative to the workspace's directory: `..` may reach a sibling workspace, and a path that leaves the lockfile's directory, symbolic links resolved, is refused.
+`refusedProjects` are the projects the recipe refuses: two lockfiles, none, an npm lockfile below version 2, a pnpm lockfile below 9, a locked package that is not installed, a workspace without a readable `package.json`, a workspace the pnpm or berry lockfile does not record, a declared native source that does not exist, a declared native source outside the lockfile's directory.
 
 ## `bounds.json`
 
