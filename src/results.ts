@@ -88,23 +88,29 @@ export interface Release {
   number: number;
 }
 
-/** When a downloaded update runs, in the strategies' vocabulary. */
-export type InstallMoment = ApplyStrategy;
+/** The moments a strategy applies a downloaded update at; `manual` is none, it waits for the app's `applyUpdate()`. */
+export type ApplyMoment = Exclude<ApplyStrategy, 'manual'>;
 
+/**
+ * The outcome of one cycle: `AVAILABLE` when the download is the app's,
+ * `DOWNLOADED` when the apply is scheduled or the app's, `applyAt` saying
+ * which, and `APPLIED` when it happened now, the reload following the result.
+ */
 export type SyncResult =
   | { release: Release | null; status: 'UP_TO_DATE' }
   | {
-      downloadBytes: number | null;
+      downloadSizeBytes: number | null;
       notes: string | null;
       release: Release;
       status: 'AVAILABLE';
     }
   | {
-      installAt: InstallMoment;
+      applyAt: Exclude<ApplyStrategy, 'immediate'>;
       notes: string | null;
       release: Release;
-      status: 'UPDATED';
+      status: 'DOWNLOADED';
     }
+  | { notes: string | null; release: Release; status: 'APPLIED' }
   | {
       condition?: ConditionType;
       reason: SkippedReason;
@@ -118,44 +124,16 @@ export type SyncResult =
       status: 'FAILED';
     };
 
-export type CheckResult =
-  | { release: Release | null; status: 'UP_TO_DATE' }
-  | {
-      downloadBytes: number | null;
-      notes: string | null;
-      release: Release;
-      status: 'AVAILABLE';
-    }
-  | {
-      condition?: ConditionType;
-      reason: SkippedReason;
-      release: Release | null;
-      status: 'SKIPPED';
-    }
-  | {
-      message: string;
-      reason: FailedReason;
-      release: Release | null;
-      status: 'FAILED';
-    };
+/** `sync()` with the download pinned to `manual`: nothing is downloaded or applied. */
+export type CheckForUpdateResult = Exclude<
+  SyncResult,
+  { status: 'APPLIED' | 'DOWNLOADED' }
+>;
 
-export type DownloadResult =
-  | { notes: string | null; release: Release; status: 'DOWNLOADED' }
-  | { release: Release | null; status: 'UP_TO_DATE' }
-  | {
-      condition?: ConditionType;
-      reason: SkippedReason;
-      release: Release | null;
-      status: 'SKIPPED';
-    }
-  | {
-      message: string;
-      reason: FailedReason;
-      release: Release | null;
-      status: 'FAILED';
-    };
+/** `sync()` with the download pinned to `auto`: the cycle never stops at `AVAILABLE`. */
+export type DownloadUpdateResult = Exclude<SyncResult, { status: 'AVAILABLE' }>;
 
-export type ApplyResult =
+export type ApplyUpdateResult =
   | { release: Release; status: 'APPLIED' }
   | { release: Release | null; status: 'NOTHING_TO_APPLY' };
 
@@ -177,7 +155,7 @@ export interface GetStateResult {
   index: { fetchedAt: string; sequence: number } | null;
   lastCheck: {
     at: string;
-    result: CheckResult | SyncResult;
+    result: SyncResult;
     trigger: SyncTrigger;
   } | null;
   /** `reportedAt`, the server time of the last acknowledged report. */
@@ -223,6 +201,9 @@ export interface SyncOptions {
   downloadStrategy?: DownloadStrategy;
   mandatoryApplyStrategy?: MandatoryApplyStrategy;
 }
+
+/** The apply strategies for this call; the download strategy is pinned to `auto`. */
+export type DownloadUpdateOptions = Omit<SyncOptions, 'downloadStrategy'>;
 
 export interface SetRestartAllowedOptions {
   allowed: boolean;

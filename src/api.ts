@@ -1,12 +1,13 @@
 import type {
-  ApplyResult,
-  CheckResult,
-  DownloadResult,
+  ApplyStrategy,
+  ApplyUpdateResult,
+  CheckForUpdateResult,
+  DownloadUpdateOptions,
+  DownloadUpdateResult,
   FailedReason,
   GetChannelResult,
   GetDeviceResult,
   GetStateResult,
-  InstallMoment,
   NotifyReadyResult,
   Release,
   RollbackReason,
@@ -29,15 +30,15 @@ import type {
 
 /** A check found a release the device qualifies for. */
 export interface UpdateAvailableEvent {
-  downloadBytes: number | null;
+  downloadSizeBytes: number | null;
   notes: string | null;
   release: Release;
   trigger: SyncTrigger;
 }
 
-/** The download completed and the update waits for its install. */
+/** The download completed; `applyAt` says when the update is applied, `manual` meaning the app's `applyUpdate()`. */
 export interface UpdateDownloadedEvent {
-  installAt: InstallMoment;
+  applyAt: ApplyStrategy;
   release: Release;
   trigger: SyncTrigger;
 }
@@ -59,7 +60,7 @@ export interface DownloadProgressEvent {
 }
 
 /** At the start that follows a rollback, once, before the readiness gate; `to` is `null` for the embedded bundle. */
-export interface RolledBackEvent {
+export interface UpdateRolledBackEvent {
   from: Release;
   reason: RollbackReason;
   to: Release | null;
@@ -67,20 +68,20 @@ export interface RolledBackEvent {
 
 export interface HotCodePushEvents {
   downloadProgress: DownloadProgressEvent;
-  rolledBack: RolledBackEvent;
   updateAvailable: UpdateAvailableEvent;
   updateDownloaded: UpdateDownloadedEvent;
   updateFailed: UpdateFailedEvent;
+  updateRolledBack: UpdateRolledBackEvent;
 }
 
 export type HotCodePushEventName = keyof HotCodePushEvents;
 
 export const HOT_CODE_PUSH_EVENT_NAMES = [
   'downloadProgress',
-  'rolledBack',
   'updateAvailable',
   'updateDownloaded',
   'updateFailed',
+  'updateRolledBack',
 ] as const satisfies readonly HotCodePushEventName[];
 
 export interface HotCodePushListenerHandle {
@@ -89,24 +90,27 @@ export interface HotCodePushListenerHandle {
 
 export interface HotCodePushApi {
   /**
-   * One full cycle: fetch the index, evaluate it locally, download and verify the
-   * update the device is eligible for per `downloadStrategy`, apply it per the
-   * install strategies, report. A second call while one runs joins the running one.
+   * One cycle under the strategies, the same the SDK runs on its own at start,
+   * resume and interval, stopping at a `manual` gate for the app: fetch the
+   * index, evaluate it locally, download and verify, apply, report. A second
+   * call while one runs joins the running one.
    */
   sync(options?: SyncOptions): Promise<SyncResult>;
-  /** The first stage: fetch and evaluate, download nothing. */
-  checkForUpdate(): Promise<CheckResult>;
-  /** The second stage: download and verify the update the last check found, whatever `downloadStrategy` says. */
-  downloadUpdate(): Promise<DownloadResult>;
-  /** The third stage: apply the downloaded update now and reload the app. */
-  applyUpdate(): Promise<ApplyResult>;
+  /** `sync()` with `downloadStrategy` pinned to `manual`: fetch and evaluate, download nothing. */
+  checkForUpdate(): Promise<CheckForUpdateResult>;
+  /** `sync()` with `downloadStrategy` pinned to `auto`: re-check the index, a conditional GET, download and verify, apply per the apply strategies. */
+  downloadUpdate(
+    options?: DownloadUpdateOptions,
+  ): Promise<DownloadUpdateResult>;
+  /** Applies the downloaded update now, whatever the strategy says, and reloads the app. */
+  applyUpdate(): Promise<ApplyUpdateResult>;
   /** Ends the readiness gate when `readySignal` is `manual`; safe to call at any time on any setting. */
   notifyReady(): Promise<NotifyReadyResult>;
   /** Rolls the running release back now, marks its bundle as failed on this device, reports `APP_REQUESTED`, reloads. */
   rollbackUpdate(options?: RollbackUpdateOptions): Promise<void>;
   /** Clears every downloaded update and the list of failed bundles, keeps the channel and the attributes, reloads. */
   clearUpdates(): Promise<void>;
-  /** Restart gating: `allowed: false` holds the one restart the SDK would perform on its own — after an `immediate` install, a `next-resume` install or a mandatory release alike — until `allowed: true` runs it. A restart the app asks for itself, `applyUpdate()`, `rollbackUpdate()` or `clearUpdates()`, is never held. Not persisted: every start begins allowed. */
+  /** Restart gating: `allowed: false` holds the one restart the SDK would perform on its own — after an `immediate` apply, a `next-resume` apply or a mandatory release alike — until `allowed: true` runs it. A restart the app asks for itself, `applyUpdate()`, `rollbackUpdate()` or `clearUpdates()`, is never held. Not persisted: every start begins allowed. */
   setRestartAllowed(options: SetRestartAllowedOptions): Promise<void>;
   /** The SDK's state, a snapshot. */
   getState(): Promise<GetStateResult>;

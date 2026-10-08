@@ -1,14 +1,16 @@
 import { describe, expectTypeOf, test } from 'vitest';
 
 import type {
-  ApplyResult,
+  ApplyMoment,
   ApplyStrategy,
+  ApplyUpdateResult,
+  CheckForUpdateResult,
   CheckStrategy,
-  DownloadResult,
   DownloadStrategy,
+  DownloadUpdateOptions,
+  DownloadUpdateResult,
   GetChannelResult,
   GetDeviceResult,
-  InstallMoment,
   MandatoryApplyStrategy,
   Platform,
   ReadySignal,
@@ -53,7 +55,12 @@ describe('the strategies', () => {
     expectTypeOf<ApplyStrategy>().toEqualTypeOf<
       'immediate' | 'manual' | 'next-resume' | 'next-start'
     >();
-    expectTypeOf<InstallMoment>().toEqualTypeOf<ApplyStrategy>();
+  });
+
+  test('should keep manual out of the apply moments', () => {
+    expectTypeOf<ApplyMoment>().toEqualTypeOf<
+      'immediate' | 'next-resume' | 'next-start'
+    >();
   });
 
   test('should keep next-start out of the mandatory apply strategies', () => {
@@ -73,6 +80,13 @@ describe('the strategies', () => {
     >();
   });
 
+  test('should let a download call override the apply stage alone', () => {
+    expectTypeOf<DownloadUpdateOptions>().toEqualTypeOf<{
+      applyStrategy?: ApplyStrategy;
+      mandatoryApplyStrategy?: MandatoryApplyStrategy;
+    }>();
+  });
+
   test('should end the readiness gate on render or a manual call', () => {
     expectTypeOf<ReadySignal>().toEqualTypeOf<'manual' | 'render'>();
   });
@@ -85,26 +99,51 @@ describe('the strategies', () => {
 });
 
 describe('the stage results', () => {
-  test('should let a sync resolve AVAILABLE when the download stayed manual', () => {
+  test('should name the six sync statuses', () => {
+    expectTypeOf<SyncResult['status']>().toEqualTypeOf<
+      | 'APPLIED'
+      | 'AVAILABLE'
+      | 'DOWNLOADED'
+      | 'FAILED'
+      | 'SKIPPED'
+      | 'UP_TO_DATE'
+    >();
+  });
+
+  test('should let a sync resolve AVAILABLE with the download size when the download stayed manual', () => {
     expectTypeOf<Extract<SyncResult, { status: 'AVAILABLE' }>>().toEqualTypeOf<{
-      downloadBytes: number | null;
+      downloadSizeBytes: number | null;
       notes: string | null;
       release: Release;
       status: 'AVAILABLE';
     }>();
-    expectTypeOf<SyncResult['status']>().toEqualTypeOf<
-      'AVAILABLE' | 'FAILED' | 'SKIPPED' | 'UPDATED' | 'UP_TO_DATE'
+  });
+
+  test("should let a sync resolve DOWNLOADED with the moment of an apply that is scheduled or the app's", () => {
+    expectTypeOf<
+      Extract<SyncResult, { status: 'DOWNLOADED' }>
+    >().toEqualTypeOf<{
+      applyAt: 'manual' | 'next-resume' | 'next-start';
+      notes: string | null;
+      release: Release;
+      status: 'DOWNLOADED';
+    }>();
+  });
+
+  test('should name the four check statuses, nothing downloaded or applied', () => {
+    expectTypeOf<CheckForUpdateResult['status']>().toEqualTypeOf<
+      'AVAILABLE' | 'FAILED' | 'SKIPPED' | 'UP_TO_DATE'
     >();
   });
 
-  test('should name the four download statuses', () => {
-    expectTypeOf<DownloadResult['status']>().toEqualTypeOf<
-      'DOWNLOADED' | 'FAILED' | 'SKIPPED' | 'UP_TO_DATE'
+  test('should name the five download statuses, never AVAILABLE', () => {
+    expectTypeOf<DownloadUpdateResult['status']>().toEqualTypeOf<
+      'APPLIED' | 'DOWNLOADED' | 'FAILED' | 'SKIPPED' | 'UP_TO_DATE'
     >();
   });
 
   test('should name the two apply statuses', () => {
-    expectTypeOf<ApplyResult['status']>().toEqualTypeOf<
+    expectTypeOf<ApplyUpdateResult['status']>().toEqualTypeOf<
       'APPLIED' | 'NOTHING_TO_APPLY'
     >();
   });
