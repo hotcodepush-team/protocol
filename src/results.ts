@@ -158,9 +158,9 @@ export interface GetStateResult {
     result: SyncResult;
     trigger: SyncTrigger;
   } | null;
-  /** `reportedAt`, the server time of the month's first acknowledged report. */
-  lastReportAt: string | null;
   nextRelease: Release | null;
+  /** The server time of the month's first acknowledged report, kept by `resolveKeptReportedAt`. */
+  reportedAt: string | null;
 }
 
 export type ChannelSource = 'config' | 'runtime';
