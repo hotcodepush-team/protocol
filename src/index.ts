@@ -8,6 +8,7 @@ export * from './evaluation/rollout.js';
 export * from './evaluation/version-range.js';
 export * from './hash/sha256-stream.js';
 export * from './hash/sha256.js';
+export * from './pack/pack-source.js';
 export * from './pack/ustar.js';
 export * from './results.js';
 export * from './signing/index.js';

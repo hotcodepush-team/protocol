@@ -119,8 +119,21 @@ export function isUrlOnConfiguredHost(
   url: string,
   hosts: Pick<Configuration, 'filesBaseUrl' | 'updatesBaseUrl'>,
 ): boolean {
-  return [
-    hosts.filesBaseUrl ?? FILES_BASE_URL_DEFAULT,
-    hosts.updatesBaseUrl ?? UPDATES_BASE_URL_DEFAULT,
-  ].some(baseUrl => url.startsWith(`${baseUrl}/`));
+  return [resolveFilesBaseUrl(hosts), resolveUpdatesBaseUrl(hosts)].some(
+    baseUrl => url.startsWith(`${baseUrl}/`),
+  );
+}
+
+/** The files host the build names, the production one when it names none. */
+export function resolveFilesBaseUrl(
+  hosts: Pick<Configuration, 'filesBaseUrl'>,
+): string {
+  return hosts.filesBaseUrl ?? FILES_BASE_URL_DEFAULT;
+}
+
+/** The updates host the build names, the production one when it names none. */
+export function resolveUpdatesBaseUrl(
+  hosts: Pick<Configuration, 'updatesBaseUrl'>,
+): string {
+  return hosts.updatesBaseUrl ?? UPDATES_BASE_URL_DEFAULT;
 }
