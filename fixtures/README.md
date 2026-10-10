@@ -8,15 +8,17 @@ The files ship in the npm package, so a native core's test suite reads them from
 
 One file per rule of the evaluation, each `{ "description", "cases": [...] }`; a case is:
 
-| Field      | Holds                                                                                                                                                                                                                                         |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`     | the test title, `should …`                                                                                                                                                                                                                    |
-| `index`    | a channel index, valid against `ChannelIndexSchema`                                                                                                                                                                                           |
-| `device`   | the `DeviceInfo` the evaluator takes: `attributes`, `binaryBuild`, `binaryVersion`, `builtAt`, `currentRelease` (`{ id, number }` or `null` for the embedded bundle), `deviceId`, `failedBundleIds`, `fingerprint`, `osVersion`, `reportedAt` |
-| `expected` | the outcome: `status` (`UP_TO_DATE`, `AVAILABLE`, `SKIPPED`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `AVAILABLE`, `reason` and the failing `condition` type on `SKIPPED`                                      |
-| `verdicts` | optional: every release of the index newest first as `{ releaseId, isEligible, reason?, condition? }`; an empty array means the index held nothing for the device                                                                             |
+| Field              | Holds                                                                                                                                                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`             | the test title, `should …`                                                                                                                                                                                                                    |
+| `index`            | a channel index, valid against `ChannelIndexSchema`                                                                                                                                                                                           |
+| `device`           | the `DeviceInfo` the evaluator takes: `attributes`, `binaryBuild`, `binaryVersion`, `builtAt`, `currentRelease` (`{ id, number }` or `null` for the embedded bundle), `deviceId`, `failedBundleIds`, `fingerprint`, `osVersion`, `reportedAt` |
+| `expected`         | the outcome: `status` (`UP_TO_DATE`, `AVAILABLE`, `SKIPPED`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `AVAILABLE`, `reason` and the failing `condition` type on `SKIPPED`                                      |
+| `verdicts`         | optional: every release of the index newest first as `{ releaseId, isEligible, reason?, condition? }`; an empty array means the index held nothing for the device                                                                             |
+| `acknowledgements` | optional: the `202`s the device received, oldest first, each `{ hasReport, reportedAt }`; a runner folds them from `null` with the rule of `device-events.json`'s `acknowledgements` and checks the result is `device.reportedAt`             |
 
 On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resolves to, `null` for the embedded bundle; on every other `SKIPPED` it is the newest release the device will not take.
+The `capped.json` cases with `acknowledgements` pin the cap against the stamp the device keeps: a batch of events alone or a report with a changed fact acknowledged after `cappedAt` leaves a counted device counted; a month's first report acknowledged after `cappedAt` puts the device beyond the cap, even after a batch of events alone was acknowledged before it; and the new month's first report replaces last month's stamp, before the cap or after it.
 
 ## `resource-files.json`
 
@@ -58,6 +60,17 @@ A reader composes an entry's name as the prefix, a `/` and the name when the pre
 
 The two valid patches are fixed inputs in `scripts/pack-entries/`, written once by Colin Percival's bsdiff 4.3; the hostile one, whose control triples seek before the base, is crafted by the generator, `scripts/generate-pack-entries-fixture.ts`, so rebuilding the fixture needs no bsdiff.
 
+## `pack-sources.json`
+
+The pack a download requests and where it turns on each answer.
+`cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, statuses, requests, packKind }`.
+`baseBundleId` is the bundle the device runs, a release's or the embedded bundle's, `null` without a base; the hosts are as in `configured-hosts.json`, `null` for production; `missingFileCount` counts the manifest's files the device holds neither in its file store nor in its embedded bundle.
+`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, maximumBytes, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `DOWNLOAD_FAILED`.
+A device with a base requests a delta pack whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else `{filesBaseUrl}/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's.
+A device without a base requests the full pack.
+A delta pack that answers 404 is not built yet, and the device asks the updates host at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`; whatever else that host answers, its redirect to the full pack above twenty objects included, sends the device to the full pack, since a device follows no redirect.
+Any other answer of a delta pack on the files host, a redirect included, and any error of the full pack fail the download, which the next cycle retries.
+
 ## `wire-rules.json`
 
 The rules every reader enforces before a byte is written, as whole documents in six arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | manifest | envelope }`.
@@ -72,6 +85,10 @@ The endpoint reads the batch whole and its events one by one: a batch whose `dev
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
 The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `MAX_EVENTS_PER_BATCH` whole.
+
+`acknowledgements` are `{ name, reportedAt, acknowledgement, keptReportedAt }`: the stamp the device holds, `null` for none, a `202` as `{ hasReport, reportedAt }`, `hasReport` saying whether the acknowledged batch carried the device report, and the stamp the device keeps after it.
+The device keeps the stamp of the first acknowledged batch of a UTC month that carried its report, the month read from the stamp itself; a later acknowledgement replaces it only when it falls in a later UTC month, and a batch of events alone never moves it.
+The cases pin a report acknowledged again later in the same month after a fact changed, which keeps the stamp, the month read in UTC on both sides of midnight, the turn of the year, and an acknowledgement from an earlier month, which keeps the stamp.
 
 ## `attribute-values.json`
 
