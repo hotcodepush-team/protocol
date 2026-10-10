@@ -3,11 +3,13 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { z } from 'zod';
 
+import type { DeviceEventsAcknowledgement } from './device-events.js';
 import {
   DeviceEventSchema,
   DeviceEventsRequestSchema,
   DeviceEventsResponseSchema,
   MAX_EVENTS_PER_BATCH,
+  resolveKeptReportedAt,
 } from './device-events.js';
 
 interface DeviceEventsFixture {
@@ -15,6 +17,12 @@ interface DeviceEventsFixture {
     batch: { events: unknown[] };
     name: string;
     skippedEventIndexes: number[];
+  }[];
+  acknowledgements: {
+    acknowledgement: DeviceEventsAcknowledgement;
+    keptReportedAt: string | null;
+    name: string;
+    reportedAt: string | null;
   }[];
   refusedBatches: { batch: unknown; name: string }[];
 }
@@ -64,5 +72,23 @@ describe('DeviceEventsResponseSchema', () => {
   test('should parse the acknowledgement', () => {
     const response = { reportedAt: '2026-09-29T10:00:00.000Z' };
     expect(DeviceEventsResponseSchema.parse(response)).toEqual(response);
+  });
+});
+
+describe('resolveKeptReportedAt', () => {
+  test.each(
+    FIXTURE.acknowledgements.map(acknowledged => [
+      acknowledged.name,
+      acknowledged,
+    ]),
+  )('%s', (_name, { acknowledgement, keptReportedAt, reportedAt }) => {
+    expect(
+      DeviceEventsResponseSchema.safeParse({
+        reportedAt: acknowledgement.reportedAt,
+      }).success,
+    ).toBe(true);
+    expect(resolveKeptReportedAt(reportedAt, acknowledgement)).toBe(
+      keptReportedAt,
+    );
   });
 });

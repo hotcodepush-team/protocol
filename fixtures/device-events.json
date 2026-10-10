@@ -1,5 +1,5 @@
 {
-  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused with E_VALIDATION, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch.",
+  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused with E_VALIDATION, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch. The acknowledgements are the reportedAt a device keeps after a 202: the stamp of the first acknowledged batch of a UTC month that carried the report, the month read from the stamp, replaced only by a report acknowledged in a later month and never by a batch of events alone.",
   "acceptedBatches": [
     {
       "name": "should accept checked events with every skipped reason and every condition type",
@@ -1536,6 +1536,98 @@
         "report": null,
         "sdkVersion": "1.2.0"
       }
+    }
+  ],
+  "acknowledgements": [
+    {
+      "name": "should keep the stamp of an acknowledged batch that carried the report when no stamp is held",
+      "reportedAt": null,
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-09-03T08:00:00.000Z"
+      },
+      "keptReportedAt": "2026-09-03T08:00:00.000Z"
+    },
+    {
+      "name": "should keep no stamp when the acknowledged batch carried events alone and no stamp is held",
+      "reportedAt": null,
+      "acknowledgement": {
+        "hasReport": false,
+        "reportedAt": "2026-09-03T08:00:00.000Z"
+      },
+      "keptReportedAt": null
+    },
+    {
+      "name": "should keep the stamp when a batch of events alone is acknowledged later in the month",
+      "reportedAt": "2026-09-03T08:00:00.000Z",
+      "acknowledgement": {
+        "hasReport": false,
+        "reportedAt": "2026-09-20T12:00:00.000Z"
+      },
+      "keptReportedAt": "2026-09-03T08:00:00.000Z"
+    },
+    {
+      "name": "should keep the stamp when a report is acknowledged again later in the month, a fact changed",
+      "reportedAt": "2026-09-03T08:00:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-09-20T12:00:00.000Z"
+      },
+      "keptReportedAt": "2026-09-03T08:00:00.000Z"
+    },
+    {
+      "name": "should take the stamp of the first report acknowledged in a later month",
+      "reportedAt": "2026-08-20T10:00:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-09-01T00:40:00.000Z"
+      },
+      "keptReportedAt": "2026-09-01T00:40:00.000Z"
+    },
+    {
+      "name": "should keep the stamp when a batch of events alone is acknowledged in a later month",
+      "reportedAt": "2026-08-20T10:00:00.000Z",
+      "acknowledgement": {
+        "hasReport": false,
+        "reportedAt": "2026-09-01T00:30:00.000Z"
+      },
+      "keptReportedAt": "2026-08-20T10:00:00.000Z"
+    },
+    {
+      "name": "should take the stamp when the month turns in UTC, a report acknowledged ten minutes after midnight UTC on the first",
+      "reportedAt": "2026-09-30T23:30:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-10-01T00:10:00.000Z"
+      },
+      "keptReportedAt": "2026-10-01T00:10:00.000Z"
+    },
+    {
+      "name": "should keep the stamp when the month has not turned in UTC, a report acknowledged ten minutes before midnight UTC on the last day",
+      "reportedAt": "2026-09-01T00:10:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-09-30T23:50:00.000Z"
+      },
+      "keptReportedAt": "2026-09-01T00:10:00.000Z"
+    },
+    {
+      "name": "should take the stamp of a report acknowledged in January after a stamp of December",
+      "reportedAt": "2026-12-15T10:00:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2027-01-02T09:00:00.000Z"
+      },
+      "keptReportedAt": "2027-01-02T09:00:00.000Z"
+    },
+    {
+      "name": "should keep the stamp when a report is acknowledged in an earlier month",
+      "reportedAt": "2026-10-01T00:05:00.000Z",
+      "acknowledgement": {
+        "hasReport": true,
+        "reportedAt": "2026-09-30T23:59:00.000Z"
+      },
+      "keptReportedAt": "2026-10-01T00:05:00.000Z"
     }
   ]
 }

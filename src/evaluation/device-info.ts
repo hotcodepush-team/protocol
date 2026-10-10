@@ -11,6 +11,6 @@ export interface DeviceInfo {
   failedBundleIds: readonly string[];
   fingerprint: string | null;
   osVersion: string;
-  /** The server time of the last acknowledged report, for the spending cap. */
+  /** The server time of the month's first acknowledged report, kept by `resolveKeptReportedAt`, for the spending cap. */
   reportedAt: string | null;
 }

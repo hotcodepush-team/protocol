@@ -91,8 +91,44 @@ export const DeviceEventsRequestSchema = z.looseObject({
 });
 export type DeviceEventsRequest = z.infer<typeof DeviceEventsRequestSchema>;
 
-/** The `202`: the server time the device stores as `reportedAt`. */
+/** The `202`: the server time the device keeps as `reportedAt` by `resolveKeptReportedAt`. */
 export const DeviceEventsResponseSchema = z.looseObject({
   reportedAt: IsoTimestampSchema,
 });
 export type DeviceEventsResponse = z.infer<typeof DeviceEventsResponseSchema>;
+
+/** A `202` as the device reads it: the server time, and whether the acknowledged batch carried the device report. */
+export interface DeviceEventsAcknowledgement {
+  hasReport: boolean;
+  reportedAt: string;
+}
+
+/**
+ * The `reportedAt` a device keeps after a `202`: the stamp of the first
+ * acknowledged batch of a UTC month that carried the device report, the month
+ * read from the stamp itself. A later acknowledgement replaces it only when it
+ * falls in a later UTC month, and a batch of events alone never moves it, so
+ * the device compares with `cappedAt` the stamp the consumer counted it by.
+ */
+export function resolveKeptReportedAt(
+  reportedAt: string | null,
+  acknowledgement: DeviceEventsAcknowledgement,
+): string | null {
+  if (!acknowledgement.hasReport) {
+    return reportedAt;
+  }
+  if (
+    reportedAt === null ||
+    resolveUtcMonthNumber(acknowledgement.reportedAt) >
+      resolveUtcMonthNumber(reportedAt)
+  ) {
+    return acknowledgement.reportedAt;
+  }
+  return reportedAt;
+}
+
+/** The months since year zero, so a later month compares greater across a year's turn. */
+function resolveUtcMonthNumber(timestamp: string): number {
+  const date = new Date(timestamp);
+  return date.getUTCFullYear() * 12 + date.getUTCMonth();
+}

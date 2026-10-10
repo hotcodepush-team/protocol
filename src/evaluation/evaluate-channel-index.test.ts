@@ -3,6 +3,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import { ChannelIndexSchema } from '../wire/channel-index.js';
+import type { DeviceEventsAcknowledgement } from '../wire/device-events.js';
+import { resolveKeptReportedAt } from '../wire/device-events.js';
 import type { DeviceInfo } from './device-info.js';
 import type {
   ChannelIndexEvaluation,
@@ -26,6 +28,7 @@ interface ExpectedVerdict {
 }
 
 interface FixtureCase {
+  acknowledgements?: DeviceEventsAcknowledgement[];
   device: DeviceInfo;
   expected: ExpectedOutcome;
   index: unknown;
@@ -97,6 +100,15 @@ describe('evaluateChannelIndex', () => {
       expect(parsed.success).toBe(true);
       if (!parsed.success) {
         return;
+      }
+      if (fixtureCase.acknowledgements !== undefined) {
+        expect(
+          fixtureCase.acknowledgements.reduce<string | null>(
+            (reportedAt, acknowledgement) =>
+              resolveKeptReportedAt(reportedAt, acknowledgement),
+            null,
+          ),
+        ).toBe(fixtureCase.device.reportedAt);
       }
       const evaluation = evaluateChannelIndex(parsed.data, fixtureCase.device);
       expect(resolveExpectedOutcome(evaluation.outcome)).toEqual(
