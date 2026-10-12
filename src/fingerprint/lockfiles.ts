@@ -198,7 +198,7 @@ function resolveNpmLockedTree(
   );
   if (!lockfile.success) {
     throw new FingerprintError(
-      'package-lock.json is not a lockfile of version 2 or 3; run npm install with npm 7 or later',
+      'The file package-lock.json is not a lockfile of version 2 or 3. Run "npm install" with npm 7 or later.',
     );
   }
   const { packages } = lockfile.data;
@@ -263,7 +263,7 @@ function resolvePnpmLockedTree(
   );
   if (!lockfile.success) {
     throw new FingerprintError(
-      'pnpm-lock.yaml is not a lockfile of version 9.0; run pnpm install with pnpm 9 or later',
+      'The file pnpm-lock.yaml is not a lockfile of version 9.0. Run "pnpm install" with pnpm 9 or later.',
     );
   }
   const { importers, packages, snapshots } = lockfile.data;
@@ -271,7 +271,7 @@ function resolvePnpmLockedTree(
   const importer = importers[importerPath];
   if (importer === undefined) {
     throw new FingerprintError(
-      `pnpm-lock.yaml holds no importer ${importerPath}; run pnpm install`,
+      `The file pnpm-lock.yaml holds no importer "${importerPath}". Run "pnpm install".`,
     );
   }
   const importedVersions = new Map(
@@ -481,7 +481,7 @@ function resolveBerryWorkspaceDependencies(
   )?.[1];
   if (workspaceKey === undefined) {
     throw new FingerprintError(
-      `yarn.lock holds no workspace ${workspacePath}; run yarn install`,
+      `The file yarn.lock holds no workspace "${workspacePath}". Run "yarn install".`,
     );
   }
   const workspaceRanges =
@@ -500,7 +500,7 @@ function parseYarnLockfileEntry(
   const entry = YarnLockfileEntrySchema.safeParse(value);
   if (!entry.success) {
     throw new FingerprintError(
-      `yarn.lock holds an entry it cannot read, ${key}`,
+      `The entry "${key}" in yarn.lock cannot be read.`,
     );
   }
   return entry.data;
@@ -542,7 +542,7 @@ function parseLockfileText<T>(
   try {
     return parse(text);
   } catch (error) {
-    throw new FingerprintError(`${lockfileName} does not parse`, {
+    throw new FingerprintError(`The file ${lockfileName} does not parse.`, {
       cause: error,
     });
   }

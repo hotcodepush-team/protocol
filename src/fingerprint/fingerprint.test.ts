@@ -169,7 +169,7 @@ describe('readFingerprintContributors', () => {
         reader,
       }),
     ).rejects.toThrow(
-      "the extra fingerprint path native is not inside the lockfile's directory",
+      "The extra fingerprint path native is not inside the lockfile's directory.",
     );
   });
 });

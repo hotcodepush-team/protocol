@@ -153,13 +153,13 @@ async function readLockfile(
   const [lockfile, ...others] = lockfiles;
   if (lockfile === undefined) {
     throw new FingerprintError(
-      `the project has no lockfile; commit one of ${LOCKFILE_NAMES.join(', ')}`,
+      `The project has no lockfile. Commit one of ${LOCKFILE_NAMES.join(', ')}.`,
     );
   }
   // Two lockfiles mean one is stale, and reading the stale one could match a binary it does not describe.
   if (others.length > 0) {
     throw new FingerprintError(
-      `the project has ${lockfiles.map(found => found.name).join(' and ')}; keep the one its package manager writes`,
+      `The project has ${lockfiles.map(found => found.name).join(' and ')}. Keep the one its package manager writes.`,
     );
   }
   return lockfile;
@@ -173,11 +173,11 @@ async function readProjectDependencies(
   const path = resolveProjectFilePath(projectPath, 'package.json');
   const text = await readProjectText(reader, path);
   if (text === null) {
-    throw new FingerprintError(`the project has no ${path}`);
+    throw new FingerprintError(`The project has no ${path}.`);
   }
   const manifest = ProjectManifestSchema.safeParse(parseProjectJson(text));
   if (!manifest.success) {
-    throw new FingerprintError(`${path} does not parse`);
+    throw new FingerprintError(`The file ${path} does not parse.`);
   }
   const { dependencies, devDependencies, optionalDependencies } = manifest.data;
   return [
@@ -222,7 +222,7 @@ async function readInstalledPackages(
       }
       const { name, version } = dependency.package;
       throw new FingerprintError(
-        `the lockfile installs ${name} ${version} and node_modules does not hold it; install the dependencies first`,
+        `The lockfile installs ${name} ${version} but node_modules does not hold it. Install the dependencies first.`,
       );
     }
     installedPackages.set(dependency.key, {
@@ -312,7 +312,7 @@ async function readExtraFingerprintRealPath(
 ): Promise<string> {
   if (!ExtraFingerprintPathSchema.safeParse(declaredPath).success) {
     throw new FingerprintError(
-      `the extra fingerprint path ${JSON.stringify(declaredPath)} is not a relative path without empty or . segments`,
+      `The extra fingerprint path ${JSON.stringify(declaredPath)} is not a relative path without empty or "." segments.`,
     );
   }
   const resolvedPath = resolveParentSegments(
@@ -323,12 +323,12 @@ async function readExtraFingerprintRealPath(
     : resolvedPath;
   if (realPath === null) {
     throw new FingerprintError(
-      `the extra fingerprint path ${declaredPath} does not exist`,
+      `The extra fingerprint path ${declaredPath} does not exist.`,
     );
   }
   if (!isInsideRoot(realPath)) {
     throw new FingerprintError(
-      `the extra fingerprint path ${declaredPath} is not inside the lockfile's directory`,
+      `The extra fingerprint path ${declaredPath} is not inside the lockfile's directory.`,
     );
   }
   return realPath;
@@ -354,7 +354,7 @@ async function collectExtraFingerprintFiles(
   const bytes = await reader.readFile(path);
   if (bytes === null) {
     throw new FingerprintError(
-      `the extra fingerprint path ${path} does not exist`,
+      `The extra fingerprint path ${path} does not exist.`,
     );
   }
   return [{ path, sha256: computeSha256Hex(bytes) }];
