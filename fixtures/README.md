@@ -66,10 +66,10 @@ The pack a download requests and where it turns on each answer.
 `cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, statuses, requests, packKind }`.
 `baseBundleId` is the bundle the device runs, a release's or the embedded bundle's, `null` without a base; the hosts are as in `configured-hosts.json`, `null` for production; `missingFileCount` counts the manifest's files the device holds neither in its file store nor in its embedded bundle.
 `statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, maximumBytes, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `DOWNLOAD_FAILED`.
-A device with a base requests a delta pack whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else `{filesBaseUrl}/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's.
+The envelope's `deltas` are the delta packs that exist, and a device with a base requests a delta pack whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else the streamed pack the updates host assembles at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's, never a URL guessed on the files host.
 A device without a base requests the full pack.
-A delta pack that answers 404 is not built yet, and the device asks the updates host at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`; whatever else that host answers, its redirect to the full pack above twenty objects included, sends the device to the full pack, since a device follows no redirect.
-Any other answer of a delta pack on the files host, a redirect included, and any error of the full pack fail the download, which the next cycle retries.
+Whatever the updates host answers but a 200 or a 206, its redirect to the full pack above twenty objects and a 404 included, sends the device to the full pack, since a device follows no redirect.
+A listed delta that answers anything but a 200 or a 206, a 404 or a redirect included, and any error of the full pack fail the download, which the next cycle retries.
 
 ## `wire-rules.json`
 

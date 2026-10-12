@@ -52,7 +52,7 @@ function resolveDownloadOutcome(
     if (SERVED_STATUSES.includes(status)) {
       return { packKind: source.kind, requests };
     }
-    source = resolveFallbackPackSource(download, source, status);
+    source = resolveFallbackPackSource(download, source);
     if (source === null) {
       return { packKind: null, requests };
     }
