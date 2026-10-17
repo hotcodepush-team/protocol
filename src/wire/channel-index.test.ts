@@ -108,7 +108,7 @@ describe('bounds', () => {
 describe('ConditionSchema', () => {
   test.each([
     { range: '>=2.3.0 <3.0.0', type: 'binary' },
-    { hash: 'fp1:abc', type: 'fingerprint' },
+    { fingerprint: 'fp1:abc', type: 'fingerprint' },
     { range: '>=17', type: 'os' },
     { hashedIds: [HASH], type: 'device' },
     { key: 'userId', type: 'attribute', valueSha256: HASH },

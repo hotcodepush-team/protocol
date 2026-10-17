@@ -63,7 +63,8 @@ function isConditionSatisfied(
       return condition.hashedIds.includes(hashDeviceId(device.deviceId));
     case 'fingerprint':
       return (
-        device.fingerprint !== null && device.fingerprint === condition.hash
+        device.fingerprint !== null &&
+        device.fingerprint === condition.fingerprint
       );
     case 'os': {
       const osVersion = parseVersion(device.osVersion);

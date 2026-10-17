@@ -53,17 +53,17 @@ export interface UpdateFailedEvent {
 
 /** While a pack downloads; `progress` from `0` to `1`. */
 export interface DownloadProgressEvent {
-  downloadedBytes: number;
+  downloadSizeBytes: number;
   progress: number;
+  progressBytes: number;
   releaseId: string;
-  totalBytes: number;
 }
 
-/** At the start that follows a rollback, once, before the readiness gate; `to` is `null` for the embedded bundle. */
+/** At the start that follows a rollback, once, before the readiness gate; `toRelease` is `null` for the embedded bundle. */
 export interface UpdateRolledBackEvent {
-  from: Release;
+  fromRelease: Release;
   reason: RollbackReason;
-  to: Release | null;
+  toRelease: Release | null;
 }
 
 export interface HotCodePushEvents {
@@ -110,7 +110,7 @@ export interface HotCodePushApi {
   rollbackUpdate(options?: RollbackUpdateOptions): Promise<void>;
   /** Clears every downloaded update and the list of failed bundles, keeps the channel and the attributes, reloads. */
   clearUpdates(): Promise<void>;
-  /** Restart gating: `allowed: false` holds the one restart the SDK would perform on its own — after an `immediate` apply, a `next-resume` apply or a mandatory release alike — until `allowed: true` runs it. A restart the app asks for itself, `applyUpdate()`, `rollbackUpdate()` or `clearUpdates()`, is never held. Not persisted: every start begins allowed. */
+  /** Restart gating: `isAllowed: false` holds the one restart the SDK would perform on its own — after an `immediate` apply, a `next-resume` apply or a mandatory release alike — until `isAllowed: true` runs it. A restart the app asks for itself, `applyUpdate()`, `rollbackUpdate()` or `clearUpdates()`, is never held. Not persisted: every start begins allowed. */
   setRestartAllowed(options: SetRestartAllowedOptions): Promise<void>;
   /** The SDK's state, a snapshot. */
   getState(): Promise<GetStateResult>;

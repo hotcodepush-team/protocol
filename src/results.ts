@@ -154,7 +154,7 @@ export interface GetStateResult {
   fallbackRelease: Release | null;
   index: { fetchedAt: string; sequence: number } | null;
   lastCheck: {
-    at: string;
+    checkedAt: string;
     result: SyncResult;
     trigger: SyncTrigger;
   } | null;
@@ -206,5 +206,5 @@ export interface SyncOptions {
 export type DownloadUpdateOptions = Omit<SyncOptions, 'downloadStrategy'>;
 
 export interface SetRestartAllowedOptions {
-  allowed: boolean;
+  isAllowed: boolean;
 }

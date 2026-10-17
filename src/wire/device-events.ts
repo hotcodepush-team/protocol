@@ -44,7 +44,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
   }),
   z.looseObject({
     bundleId: IdentifierSchema,
-    bytes: SizeBytesSchema.max(BUNDLE_MAX_SIZE_BYTES),
+    downloadSizeBytes: SizeBytesSchema.max(BUNDLE_MAX_SIZE_BYTES),
     packKind: z.enum(PACK_KINDS),
     releaseId: IdentifierSchema,
     type: z.literal('downloaded'),

@@ -37,7 +37,7 @@ export const DeviceConditionSchema = z.looseObject({
 });
 
 export const FingerprintConditionSchema = z.looseObject({
-  hash: NonEmptyStringSchema,
+  fingerprint: NonEmptyStringSchema,
   type: z.literal('fingerprint'),
 });
 

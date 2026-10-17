@@ -114,28 +114,28 @@
         "events": [
           {
             "bundleId": "bundle-2",
-            "bytes": 18432,
+            "downloadSizeBytes": 18432,
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-3",
-            "bytes": 2048,
+            "downloadSizeBytes": 2048,
             "packKind": "files",
             "releaseId": "release-3",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-4",
-            "bytes": 812331,
+            "downloadSizeBytes": 812331,
             "packKind": "full",
             "releaseId": "release-4",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-5",
-            "bytes": 40960,
+            "downloadSizeBytes": 40960,
             "packKind": "streamed",
             "releaseId": "release-5",
             "type": "downloaded"
@@ -267,7 +267,7 @@
           },
           {
             "bundleId": "bundle-2",
-            "bytes": 18432,
+            "downloadSizeBytes": 18432,
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
@@ -678,7 +678,7 @@
           },
           {
             "bundleId": "bundle-2",
-            "bytes": 18432,
+            "downloadSizeBytes": 18432,
             "releaseId": "release-2",
             "type": "downloaded"
           }
@@ -795,20 +795,20 @@
       "skippedEventIndexes": [0, 1]
     },
     {
-      "name": "should skip a downloaded event whose bytes are a string or a fraction",
+      "name": "should skip a downloaded event whose downloadSizeBytes is a string or a fraction",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
             "bundleId": "bundle-2",
-            "bytes": "18432",
+            "downloadSizeBytes": "18432",
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-2",
-            "bytes": 18432.5,
+            "downloadSizeBytes": 18432.5,
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
@@ -825,27 +825,27 @@
       "skippedEventIndexes": [0, 1]
     },
     {
-      "name": "should skip a downloaded event whose bytes are above 512000000, the bundle cap and so the largest download, and keep one at the cap",
+      "name": "should skip a downloaded event whose downloadSizeBytes is above 512000000, the bundle cap and so the largest download, and keep one at the cap",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
             "bundleId": "bundle-2",
-            "bytes": 512000000,
+            "downloadSizeBytes": 512000000,
             "packKind": "full",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-2",
-            "bytes": 512000001,
+            "downloadSizeBytes": 512000001,
             "packKind": "full",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
             "bundleId": "bundle-2",
-            "bytes": 9007199254740991,
+            "downloadSizeBytes": 9007199254740991,
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
