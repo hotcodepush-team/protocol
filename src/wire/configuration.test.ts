@@ -54,14 +54,14 @@ describe('ProjectConfigurationSchema', () => {
   test('should apply the defaults to a file with the app id and a channel', () => {
     expect(ProjectConfigurationSchema.parse(PROJECT)).toEqual({
       ...PROJECT,
-      applyOnResumeAfterSeconds: 300,
       applyStrategy: 'next-start',
       checkIntervalSeconds: 900,
       checkStrategy: 'auto',
       downloadStrategy: 'auto',
-      enabledInDebugBuilds: true,
       extraFingerprintPaths: [],
+      isEnabledInDebugBuilds: true,
       mandatoryApplyStrategy: 'immediate',
+      nextResumeMinimumBackgroundSeconds: 300,
       publicKeys: [],
       readySignal: 'render',
       readyTimeoutSeconds: 10,

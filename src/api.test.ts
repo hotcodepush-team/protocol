@@ -51,8 +51,8 @@ describe('HotCodePushApi', () => {
 
   test('should say when a downloaded update is applied, manual included', () => {
     expectTypeOf<
-      HotCodePushEvents['updateDownloaded']['applyAt']
-    >().toEqualTypeOf<ApplyStrategy>();
+      HotCodePushEvents['updateDownloaded']['applyStrategy']
+    >().toEqualTypeOf<Exclude<ApplyStrategy, 'immediate'>>();
   });
 });
 

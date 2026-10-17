@@ -24,17 +24,17 @@ const SecondsSchema = z.number().nonnegative();
 
 /** The SDK options every build carries, each with its default, so a file with the app id alone is complete; the public keys join per file, in the form each is read in. */
 const SDK_OPTIONS_SHAPE = {
-  /** The least time in the background before a `next-resume` apply. */
-  applyOnResumeAfterSeconds: SecondsSchema.default(300),
   applyStrategy: z.enum(APPLY_STRATEGIES).default('next-start'),
   /** At least 60 seconds, the floor, since a zero made the core check in a tight loop; 900 when the project sets none. */
   checkIntervalSeconds: SecondsSchema.min(60).default(900),
   checkStrategy: z.enum(CHECK_STRATEGIES).default('auto'),
   downloadStrategy: z.enum(DOWNLOAD_STRATEGIES).default('auto'),
-  enabledInDebugBuilds: z.boolean().default(true),
+  isEnabledInDebugBuilds: z.boolean().default(true),
   mandatoryApplyStrategy: z
     .enum(MANDATORY_APPLY_STRATEGIES)
     .default('immediate'),
+  /** The least time in the background before a `next-resume` apply. */
+  nextResumeMinimumBackgroundSeconds: SecondsSchema.default(300),
   readySignal: z.enum(READY_SIGNALS).default('render'),
   readyTimeoutSeconds: SecondsSchema.min(1).default(10),
 };

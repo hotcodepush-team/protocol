@@ -36,9 +36,9 @@ export interface UpdateAvailableEvent {
   trigger: SyncTrigger;
 }
 
-/** The download completed; `applyAt` says when the update is applied, `manual` meaning the app's `applyUpdate()`. */
+/** The download completed; `applyStrategy` says when the update is applied, `manual` meaning the app's `applyUpdate()`. */
 export interface UpdateDownloadedEvent {
-  applyAt: ApplyStrategy;
+  applyStrategy: Exclude<ApplyStrategy, 'immediate'>;
   release: Release;
   trigger: SyncTrigger;
 }

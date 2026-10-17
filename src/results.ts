@@ -93,7 +93,7 @@ export type ApplyMoment = Exclude<ApplyStrategy, 'manual'>;
 
 /**
  * The outcome of one cycle: `AVAILABLE` when the download is the app's,
- * `DOWNLOADED` when the apply is scheduled or the app's, `applyAt` saying
+ * `DOWNLOADED` when the apply is scheduled or the app's, `applyStrategy` saying
  * which, and `APPLIED` when it happened now, the reload following the result.
  */
 export type SyncResult =
@@ -105,7 +105,7 @@ export type SyncResult =
       status: 'AVAILABLE';
     }
   | {
-      applyAt: Exclude<ApplyStrategy, 'immediate'>;
+      applyStrategy: Exclude<ApplyStrategy, 'immediate'>;
       notes: string | null;
       release: Release;
       status: 'DOWNLOADED';

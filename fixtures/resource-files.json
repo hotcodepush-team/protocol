@@ -101,7 +101,6 @@
       "name": "should read the hosts and the SDK options of a build against staging",
       "resourceFile": {
         "appId": "a1",
-        "applyOnResumeAfterSeconds": 300,
         "applyStrategy": "next-resume",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
@@ -128,10 +127,11 @@
           "keyId": null,
           "platforms": ["ios"]
         },
-        "enabledInDebugBuilds": false,
         "filesBaseUrl": "https://files.staging.hotcodepush.com",
         "fingerprint": null,
+        "isEnabledInDebugBuilds": false,
         "mandatoryApplyStrategy": "manual",
+        "nextResumeMinimumBackgroundSeconds": 300,
         "publicKeys": [
           {
             "der": "MIICCgKCAgEAg+CkUpcpvOayIrXRnz+mSa3PkHWUFX689CTG44ZTlaaz6AgX0iESUZzC7iVZW4pmOIMmq/ZGh8whcDqJ8s6+B47725531tLzdbezek4ZVjsPjJykKBXmTs8bfYTl4GKv4MB6KnZHt+IalM9HjjyRE0EWLtrqFKyIt3seE9NE/z1DBk39gVY52ukHq9BY4jqEthaDVbu6tIKx2DRgqLPJQvkrlcuD7RhOucClaw2anANr7GEJEh3ISwE2vESfyiedVO0uVIEWbsVmGtM1CuM0n8+rquDqQ0MPAU3vLBVx8x9oOFqbswWTNuXQO3+R5KZHKFj4EQ16nPfbdRiLSN+5gI8qdaBdhxGv2Yr7s8WOYt1tksY0krOUY4o9biYA8JGVXkjRrTUZ4+/VpCoQwctVe7hdDbWweXgfAE0fOeJ1uzuAtSXIeJ4BJIaHGPZl3rdJIVE6RtVEhJUwQGI26dtW1xX7cM7ocCb8yzEIxY+GRTOIlQj+WluhzMBnRz4cf7YVMR6CbXWBtzBVHVkn2+eKO6/oonKhlcTpMQQO0u59OiswJ5QsPiHlozQ6f29hH1g495f3AKQn0BhxZR0VQzqxZeGSSooXBCE3fv7pqHPJJUyGWrbMyMDh0JBgGPACWIz1VfZ6KUF7g/s8sujO5OrYhY4U6/jZyJugkB9yLo7NjqUCAwEAAQ==",
@@ -166,7 +166,6 @@
       "name": "should read a build whose SDK options are spelled out at their defaults",
       "resourceFile": {
         "appId": "a1",
-        "applyOnResumeAfterSeconds": 300,
         "applyStrategy": "next-start",
         "builtAt": "2026-09-29T10:00:00.000Z",
         "channelId": "c1",
@@ -193,9 +192,10 @@
           "keyId": null,
           "platforms": ["ios"]
         },
-        "enabledInDebugBuilds": true,
         "fingerprint": null,
+        "isEnabledInDebugBuilds": true,
         "mandatoryApplyStrategy": "immediate",
+        "nextResumeMinimumBackgroundSeconds": 300,
         "publicKeys": [],
         "readySignal": "render",
         "readyTimeoutSeconds": 10

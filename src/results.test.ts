@@ -123,7 +123,7 @@ describe('the stage results', () => {
     expectTypeOf<
       Extract<SyncResult, { status: 'DOWNLOADED' }>
     >().toEqualTypeOf<{
-      applyAt: 'manual' | 'next-resume' | 'next-start';
+      applyStrategy: 'manual' | 'next-resume' | 'next-start';
       notes: string | null;
       release: Release;
       status: 'DOWNLOADED';
