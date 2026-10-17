@@ -6,13 +6,13 @@ import {
   CHANNEL_INDEX_SCHEMA,
   ChannelIndexSchema,
   ConditionSchema,
-  DEVICE_CONDITION_MAX_HASHED_IDS,
-  RELEASE_MAX_CONDITIONS,
+  DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT,
+  RELEASE_CONDITION_COUNT_LIMIT,
 } from './channel-index.js';
 
 interface BoundsFixture {
-  deviceConditionMaxHashedIds: number;
-  releaseMaxConditions: number;
+  deviceConditionHashedIdCountLimit: number;
+  releaseConditionCountLimit: number;
 }
 
 interface WireRulesFixture {
@@ -98,10 +98,12 @@ describe('the wire rules', () => {
 
 describe('bounds', () => {
   test('should match the constants to the bounds fixture', () => {
-    expect(DEVICE_CONDITION_MAX_HASHED_IDS).toBe(
-      BOUNDS.deviceConditionMaxHashedIds,
+    expect(DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT).toBe(
+      BOUNDS.deviceConditionHashedIdCountLimit,
     );
-    expect(RELEASE_MAX_CONDITIONS).toBe(BOUNDS.releaseMaxConditions);
+    expect(RELEASE_CONDITION_COUNT_LIMIT).toBe(
+      BOUNDS.releaseConditionCountLimit,
+    );
   });
 });
 

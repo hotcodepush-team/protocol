@@ -17,7 +17,7 @@ export interface PackDownload {
 /** A pack a download requests: where, how its bytes arrive, its length when the envelope states one and the most bytes it may hold. */
 export interface PackSource {
   kind: Exclude<PackKind, 'files'>;
-  maximumBytes: number;
+  packBytesLimit: number;
   sizeBytes: number | null;
   url: string;
 }
@@ -46,7 +46,7 @@ export function resolvePackSource(download: PackDownload): PackSource | null {
   }
   return {
     kind: 'delta',
-    maximumBytes: listedDelta.sizeBytes,
+    packBytesLimit: listedDelta.sizeBytes,
     sizeBytes: listedDelta.sizeBytes,
     url: listedDelta.url,
   };
@@ -77,7 +77,7 @@ function resolveFullPackSource(download: PackDownload): PackSource {
   const { pack } = download.envelope;
   return {
     kind: 'full',
-    maximumBytes: pack.sizeBytes,
+    packBytesLimit: pack.sizeBytes,
     sizeBytes: pack.sizeBytes,
     url: pack.url,
   };
@@ -93,7 +93,7 @@ function resolveStreamedPackSource(
 ): PackSource {
   return {
     kind: 'streamed',
-    maximumBytes: download.envelope.pack.sizeBytes,
+    packBytesLimit: download.envelope.pack.sizeBytes,
     sizeBytes: null,
     url: `${resolveUpdatesBaseUrl(download.hosts)}/v1/apps/${download.appId}/bundles/${download.envelope.bundleId}/deltas/${baseBundleId}`,
   };

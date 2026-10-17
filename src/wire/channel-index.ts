@@ -15,10 +15,10 @@ import {
 export const CHANNEL_INDEX_SCHEMA = 1;
 
 /** The most hashed ids a `device` condition carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
-export const DEVICE_CONDITION_MAX_HASHED_IDS = 500;
+export const DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT = 500;
 
 /** The most conditions a release carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
-export const RELEASE_MAX_CONDITIONS = 16;
+export const RELEASE_CONDITION_COUNT_LIMIT = 16;
 
 export const AttributeConditionSchema = z.looseObject({
   key: NonEmptyStringSchema,

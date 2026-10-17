@@ -65,7 +65,7 @@ The two valid patches are fixed inputs in `scripts/pack-entries/`, written once 
 The pack a download requests and where it turns on each answer.
 `cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, statuses, requests, packKind }`.
 `baseBundleId` is the bundle the device runs, a release's or the embedded bundle's, `null` without a base; the hosts are as in `configured-hosts.json`, `null` for production; `missingFileCount` counts the manifest's files the device holds neither in its file store nor in its embedded bundle.
-`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, maximumBytes, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `DOWNLOAD_FAILED`.
+`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, packBytesLimit, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `DOWNLOAD_FAILED`.
 The envelope's `deltas` are the delta packs that exist, and a device with a base requests a delta pack whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else the streamed pack the updates host assembles at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's, never a URL guessed on the files host.
 A device without a base requests the full pack.
 Whatever the updates host answers but a 200 or a 206, its redirect to the full pack above twenty objects and a 404 included, sends the device to the full pack, since a device follows no redirect.
@@ -84,7 +84,7 @@ The batches the events endpoint, `POST /v1/apps/{appId}/events`, accepts and ref
 The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused with `E_VALIDATION`, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
-The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `MAX_EVENTS_PER_BATCH` whole.
+The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `BATCH_EVENT_COUNT_LIMIT` whole.
 
 `acknowledgements` are `{ name, reportedAt, acknowledgement, keptReportedAt }`: the stamp the device holds, `null` for none, a `202` as `{ hasReport, reportedAt }`, `hasReport` saying whether the acknowledged batch carried the device report, and the stamp the device keeps after it.
 The device keeps the stamp of the first acknowledged batch of a UTC month that carried its report, the month read from the stamp itself; a later acknowledgement replaces it only when it falls in a later UTC month, and a batch of events alone never moves it.
@@ -123,4 +123,4 @@ An aliased package (`npm:` in its specifier) contributes the aliased package's v
 
 ## `bounds.json`
 
-The writer-side bounds, `deviceConditionMaxHashedIds` and `releaseMaxConditions`, tied to the package's exported constants by a test; a writer refuses a release above them, a reader parses any count, so raising a number later stays additive.
+The writer-side bounds, `deviceConditionHashedIdCountLimit` and `releaseConditionCountLimit`, tied to the package's exported constants by a test; a writer refuses a release above them, a reader parses any count, so raising a number later stays additive.

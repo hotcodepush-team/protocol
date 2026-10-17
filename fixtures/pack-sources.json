@@ -24,7 +24,7 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -54,7 +54,7 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -107,13 +107,13 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         },
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -143,13 +143,13 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         },
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -179,13 +179,13 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         },
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -215,13 +215,13 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         },
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -257,7 +257,7 @@
       "requests": [
         {
           "kind": "delta",
-          "maximumBytes": 1024,
+          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -293,7 +293,7 @@
       "requests": [
         {
           "kind": "delta",
-          "maximumBytes": 1024,
+          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -323,7 +323,7 @@
       "requests": [
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -353,7 +353,7 @@
       "requests": [
         {
           "kind": "full",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
@@ -394,7 +394,7 @@
       "requests": [
         {
           "kind": "delta",
-          "maximumBytes": 1024,
+          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -430,7 +430,7 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -466,7 +466,7 @@
       "requests": [
         {
           "kind": "delta",
-          "maximumBytes": 1024,
+          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -496,7 +496,7 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.staging.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
@@ -526,7 +526,7 @@
       "requests": [
         {
           "kind": "streamed",
-          "maximumBytes": 2048,
+          "packBytesLimit": 2048,
           "sizeBytes": null,
           "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/embedded-bundle-1"
         }

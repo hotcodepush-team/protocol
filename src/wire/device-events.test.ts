@@ -5,10 +5,10 @@ import { z } from 'zod';
 
 import type { DeviceEventsAcknowledgement } from './device-events.js';
 import {
+  BATCH_EVENT_COUNT_LIMIT,
   DeviceEventSchema,
   DeviceEventsRequestSchema,
   DeviceEventsResponseSchema,
-  MAX_EVENTS_PER_BATCH,
   resolveKeptReportedAt,
 } from './device-events.js';
 
@@ -36,7 +36,7 @@ const FIXTURE = JSON.parse(
 
 /** The endpoint's reading: the batch whole, its events one by one, an unreadable one skipped. */
 const DeviceBatchSchema = DeviceEventsRequestSchema.extend({
-  events: z.array(z.unknown()).max(MAX_EVENTS_PER_BATCH),
+  events: z.array(z.unknown()).max(BATCH_EVENT_COUNT_LIMIT),
 });
 
 describe('the events endpoint', () => {

@@ -7,7 +7,7 @@ import {
   SKIPPED_REASONS,
 } from '../results.js';
 import {
-  BUNDLE_MAX_SIZE_BYTES,
+  BUNDLE_BYTES_LIMIT,
   IdentifierSchema,
   IsoTimestampSchema,
   PlatformSchema,
@@ -44,7 +44,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
   }),
   z.looseObject({
     bundleId: IdentifierSchema,
-    downloadSizeBytes: SizeBytesSchema.max(BUNDLE_MAX_SIZE_BYTES),
+    downloadSizeBytes: SizeBytesSchema.max(BUNDLE_BYTES_LIMIT),
     packKind: z.enum(PACK_KINDS),
     releaseId: IdentifierSchema,
     type: z.literal('downloaded'),
@@ -79,12 +79,12 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
 export type DeviceEvent = z.infer<typeof DeviceEventSchema>;
 
 /** The outbox's cap and so the largest batch a device sends; the events endpoint refuses a larger one. */
-export const MAX_EVENTS_PER_BATCH = 200;
+export const BATCH_EVENT_COUNT_LIMIT = 200;
 
 /** One batch to `POST /v1/apps/{appId}/events`. */
 export const DeviceEventsRequestSchema = z.looseObject({
   deviceId: PrintableStringSchema,
-  events: z.array(DeviceEventSchema).max(MAX_EVENTS_PER_BATCH),
+  events: z.array(DeviceEventSchema).max(BATCH_EVENT_COUNT_LIMIT),
   platform: PlatformSchema,
   report: DeviceReportSchema.nullable(),
   sdkVersion: PrintableStringSchema,
