@@ -21,7 +21,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],
@@ -67,7 +67,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -81,7 +81,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],
@@ -132,7 +132,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -146,7 +146,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],
@@ -209,7 +209,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -223,7 +223,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],
@@ -279,7 +279,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -293,7 +293,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],
@@ -342,7 +342,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-1/manifest.json",
             "notes": null,
             "number": 1,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -356,7 +356,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           },
           {
@@ -370,7 +370,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app/bundles/bundle-3/manifest.json",
             "notes": null,
             "number": 3,
-            "rollout": 100,
+            "rolloutPercentage": 100,
             "sizeBytes": 1000
           }
         ],

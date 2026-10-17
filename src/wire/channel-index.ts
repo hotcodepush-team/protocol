@@ -80,7 +80,7 @@ export const IndexReleaseSchema = z.looseObject({
   manifestUrl: HttpUrlSchema,
   notes: z.string().nullable(),
   number: z.int().positive(),
-  rollout: z.int().min(0).max(100),
+  rolloutPercentage: z.int().min(0).max(100),
   sizeBytes: SizeBytesSchema,
 });
 export type IndexRelease = z.infer<typeof IndexReleaseSchema>;

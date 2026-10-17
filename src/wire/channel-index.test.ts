@@ -44,7 +44,7 @@ const RELEASE = {
   manifestUrl: 'https://files.hotcodepush.com/apps/a1/bundles/b1/manifest.json',
   notes: null,
   number: 42,
-  rollout: 100,
+  rolloutPercentage: 100,
   sizeBytes: 10485760,
 };
 

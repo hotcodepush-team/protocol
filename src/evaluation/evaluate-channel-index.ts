@@ -233,7 +233,10 @@ function resolveSkippedReason(
   if (failed !== undefined) {
     return resolveConditionReason(failed.type);
   }
-  if (resolveRolloutBucket(device.deviceId, release.id) >= release.rollout) {
+  if (
+    resolveRolloutBucket(device.deviceId, release.id) >=
+    release.rolloutPercentage
+  ) {
     return { reason: 'DEVICE_NOT_IN_ROLLOUT' };
   }
   return null;
