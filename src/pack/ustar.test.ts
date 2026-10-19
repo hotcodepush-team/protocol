@@ -154,18 +154,7 @@ function entryOf(bytes: Uint8Array, chunkSize?: number): PackFileEntry {
 async function collect(
   stream: ReadableStream<Uint8Array>,
 ): Promise<Uint8Array> {
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const joined = new Uint8Array(
-    chunks.reduce((length, chunk) => length + chunk.length, 0),
-  );
-  chunks.reduce((offset, chunk) => {
-    joined.set(chunk, offset);
-    return offset + chunk.length;
-  }, 0);
-  return joined;
+  return new Uint8Array(await new Response(stream).arrayBuffer());
 }
 
 async function readContents(
