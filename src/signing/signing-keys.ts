@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { encodeBase64 } from '../base64.js';
 import { computeSha256Hex } from '../hash/sha256.js';
+import { Base64Schema } from '../wire/primitives.js';
 
 /**
  * The pinned allow-list, one scheme: RSASSA-PKCS1-v1_5 with SHA-256, which
@@ -29,9 +30,6 @@ export interface SelfDescribingBytes {
   bytes: Uint8Array<ArrayBuffer>;
   scheme: SigningScheme;
 }
-
-const CANONICAL_BASE64_PATTERN =
-  /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)$/;
 
 const GENERATED_SIGNING_KEY_BITS = 4096;
 
@@ -182,14 +180,10 @@ function assertSigningKeySize(key: CryptoKey): CryptoKey {
 }
 
 function decodeCanonicalBase64(base64: string): Uint8Array<ArrayBuffer> | null {
-  if (!CANONICAL_BASE64_PATTERN.test(base64)) {
+  if (!Base64Schema.safeParse(base64).success) {
     return null;
   }
-  const bytes = Uint8Array.from(atob(base64), character =>
-    character.charCodeAt(0),
-  );
-  // Unused bits in the last character decode the same bytes as zero bits would.
-  return encodeBase64(bytes) === base64 ? bytes : null;
+  return Uint8Array.from(atob(base64), character => character.charCodeAt(0));
 }
 
 function isSigningScheme(scheme: string): scheme is SigningScheme {
