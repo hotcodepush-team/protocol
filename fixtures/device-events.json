@@ -1298,7 +1298,7 @@
             "type": "applied"
           }
         ],
-        "platform": "web",
+        "platform": "windows",
         "report": null,
         "sdkVersion": "1.2.0"
       }

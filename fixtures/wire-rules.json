@@ -1125,7 +1125,7 @@
         "cappedAt": null,
         "channelId": "channel-1",
         "isPaused": false,
-        "platform": "web",
+        "platform": "windows",
         "releases": [
           {
             "bundleId": "bundle-2",

@@ -183,8 +183,7 @@ export interface GetDeviceResult {
   fingerprint: string | null;
   id: string;
   osVersion: string;
-  /** `web` from the SDK's web no-op; the index and the events serve `ios` and `android` only. */
-  platform: Platform | 'web';
+  platform: Platform;
   sdkVersion: string;
 }
 

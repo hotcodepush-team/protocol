@@ -32,16 +32,10 @@ describe('GetDeviceResult', () => {
       string | null
     >();
   });
-
-  test('should report the web platform', () => {
-    expectTypeOf<GetDeviceResult['platform']>().toEqualTypeOf<
-      'android' | 'ios' | 'web'
-    >();
-  });
 });
 
 describe('Platform', () => {
-  test('should keep the web platform out of the index and the events', () => {
+  test('should name the two platforms', () => {
     expectTypeOf<Platform>().toEqualTypeOf<'android' | 'ios'>();
   });
 });
