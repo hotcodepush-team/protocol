@@ -20,6 +20,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
+import { encodeBase64 } from '../src/base64.ts';
 import type { PackEntry } from '../src/pack/ustar.ts';
 import { buildPack, buildPackPatchHeader } from '../src/pack/ustar.ts';
 
@@ -339,10 +340,6 @@ function computeSha256Hex(bytes: Uint8Array): string {
 
 function concatenate(parts: Uint8Array[]): Uint8Array {
   return new Uint8Array(Buffer.concat(parts));
-}
-
-function encodeBase64(bytes: Uint8Array): string {
-  return Buffer.from(bytes).toString('base64');
 }
 
 function resolvePadding(sizeBytes: number): number {
