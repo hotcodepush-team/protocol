@@ -60,11 +60,3 @@ export interface HotCodePushEvents {
 }
 
 export type HotCodePushEventName = keyof HotCodePushEvents;
-
-export const HOT_CODE_PUSH_EVENT_NAMES = [
-  'downloadProgress',
-  'updateAvailable',
-  'updateDownloaded',
-  'updateFailed',
-  'updateRolledBack',
-] as const satisfies readonly HotCodePushEventName[];
