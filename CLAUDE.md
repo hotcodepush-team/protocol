@@ -6,7 +6,7 @@ The monorepo, the SDKs and the CLI consume it from pkg.pr.new until its publish 
 Stack: TypeScript compiled by `tsc` into ESM in `dist/`, ESLint, Prettier, Vitest, Node 24.
 
 The plan is the private `handbook` repo, checked out beside this one: `../handbook/docs/`.
-Its `sdk-api.md` (the SDK surface, types, statuses and reasons) and `architecture.md` (_The device protocol_, _Evolving the wire format_, _Testing_) are binding here.
+Its `sdk-api.md` (the types, statuses, reasons and events) and `architecture.md` (_The device protocol_, _Evolving the wire format_, _Testing_) are binding here.
 When code and plan disagree, stop and surface it; never improvise.
 
 ## Layout

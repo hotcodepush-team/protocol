@@ -1,46 +1,16 @@
 import { describe, expect, expectTypeOf, test } from 'vitest';
 
 import type {
-  HotCodePushApi,
   HotCodePushEventName,
   HotCodePushEvents,
   UpdateFailedEvent,
   UpdateRolledBackEvent,
-} from './api.js';
-import { HOT_CODE_PUSH_EVENT_NAMES } from './api.js';
+} from './events.js';
+import { HOT_CODE_PUSH_EVENT_NAMES } from './events.js';
 import type { ApplyStrategy } from './results.js';
 
-type MethodName = {
-  [Key in keyof HotCodePushApi]: HotCodePushApi[Key] extends (
-    ...args: never[]
-  ) => unknown
-    ? Key
-    : never;
-}[keyof HotCodePushApi];
-
-describe('HotCodePushApi', () => {
-  test('should expose exactly the methods sdk-api.md names', () => {
-    expectTypeOf<MethodName>().toEqualTypeOf<
-      | 'addListener'
-      | 'applyUpdate'
-      | 'checkForUpdate'
-      | 'clearUpdates'
-      | 'downloadUpdate'
-      | 'getChannel'
-      | 'getDevice'
-      | 'getState'
-      | 'notifyReady'
-      | 'removeAllListeners'
-      | 'rollbackUpdate'
-      | 'setAttributes'
-      | 'setChannel'
-      | 'setRestartAllowed'
-      | 'showDebugScreen'
-      | 'sync'
-    >();
-  });
-
-  test('should type a listener by its event name', () => {
+describe('HotCodePushEvents', () => {
+  test('should map an event name to its payload', () => {
     expectTypeOf<
       HotCodePushEvents['updateFailed']
     >().toEqualTypeOf<UpdateFailedEvent>();

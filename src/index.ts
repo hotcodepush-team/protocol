@@ -1,4 +1,3 @@
-export * from './api.js';
 export * from './attributes.js';
 export * from './canonical-json.js';
 export * from './evaluation/conditions.js';
@@ -6,6 +5,7 @@ export * from './evaluation/device-info.js';
 export * from './evaluation/evaluate-channel-index.js';
 export * from './evaluation/rollout.js';
 export * from './evaluation/version-range.js';
+export * from './events.js';
 export * from './hash/sha256-stream.js';
 export * from './hash/sha256.js';
 export * from './pack/pack-source.js';
