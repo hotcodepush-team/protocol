@@ -23,7 +23,8 @@
     "./fingerprint": {
       "types": "./dist/fingerprint/index.d.ts",
       "default": "./dist/fingerprint/index.js"
-    }
+    },
+    "./fixtures/*": "./fixtures/*"
   },
   "files": [
     "dist",
