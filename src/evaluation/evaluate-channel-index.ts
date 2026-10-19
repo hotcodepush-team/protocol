@@ -82,33 +82,7 @@ export function evaluateChannelIndex(
   const olderEligibleVerdict = eligibleVerdicts.find(
     verdict => verdict.release.number < currentNumber,
   );
-  if (index.isPaused) {
-    if (isCurrentRevoked) {
-      return {
-        outcome: {
-          reason: 'RELEASE_REVOKED',
-          release: olderEligibleVerdict?.release ?? null,
-          status: 'SKIPPED',
-        },
-        verdicts,
-      };
-    }
-    if (newerVerdict !== undefined) {
-      return {
-        outcome: {
-          reason: 'CHANNEL_PAUSED',
-          release: newerVerdict.release,
-          status: 'SKIPPED',
-        },
-        verdicts,
-      };
-    }
-    return {
-      outcome: { release: currentIndexRelease, status: 'UP_TO_DATE' },
-      verdicts,
-    };
-  }
-  if (newerEligibleVerdict !== undefined) {
+  if (!index.isPaused && newerEligibleVerdict !== undefined) {
     const target = newerEligibleVerdict.release;
     return {
       outcome: {
@@ -128,6 +102,16 @@ export function evaluateChannelIndex(
       outcome: {
         reason: 'RELEASE_REVOKED',
         release: olderEligibleVerdict?.release ?? null,
+        status: 'SKIPPED',
+      },
+      verdicts,
+    };
+  }
+  if (index.isPaused && newerVerdict !== undefined) {
+    return {
+      outcome: {
+        reason: 'CHANNEL_PAUSED',
+        release: newerVerdict.release,
         status: 'SKIPPED',
       },
       verdicts,
