@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
 import { AttributesSchema, AttributeValueSchema } from '../attributes.js';
+import type {
+  DeviceEventType,
+  FailedReason,
+  RollbackReason,
+  SyncStatus,
+} from '../results.js';
 import {
+  CHANNEL_SOURCES,
   CONDITION_TYPES,
+  PACK_KINDS,
   ROLLBACK_REASONS,
   SKIPPED_REASONS,
 } from '../results.js';
@@ -15,7 +23,7 @@ import {
   SizeBytesSchema,
 } from './primitives.js';
 
-export const ChannelSourceSchema = z.enum(['config', 'runtime']);
+export const ChannelSourceSchema = z.enum(CHANNEL_SOURCES);
 
 /** The facts a device has, sent when they differ from the acknowledged ones or the month began. */
 export const DeviceReportSchema = z.looseObject({
@@ -31,49 +39,53 @@ export const DeviceReportSchema = z.looseObject({
 });
 export type DeviceReport = z.infer<typeof DeviceReportSchema>;
 
-export const PACK_KINDS = ['delta', 'files', 'full', 'streamed'] as const;
-export type PackKind = (typeof PACK_KINDS)[number];
+const CHECKED_EVENT_STATUSES = [
+  'available',
+  'skipped',
+] as const satisfies readonly SyncStatus[];
+
+const FAILED_EVENT_REASONS = [
+  ...ROLLBACK_REASONS,
+  'content_mismatched',
+  'download_failed',
+  'manifest_invalid',
+  'signature_invalid',
+] as const satisfies readonly (FailedReason | RollbackReason)[];
 
 export const DeviceEventSchema = z.discriminatedUnion('type', [
   z.looseObject({
     condition: z.enum(CONDITION_TYPES).optional(),
     reason: z.enum(SKIPPED_REASONS).optional(),
     releaseId: IdentifierSchema,
-    status: z.enum(['AVAILABLE', 'SKIPPED']),
-    type: z.literal('checked'),
+    status: z.enum(CHECKED_EVENT_STATUSES),
+    type: z.literal('checked' satisfies DeviceEventType),
   }),
   z.looseObject({
     bundleId: IdentifierSchema,
     downloadSizeBytes: SizeBytesSchema.max(BUNDLE_BYTES_LIMIT),
     packKind: z.enum(PACK_KINDS),
     releaseId: IdentifierSchema,
-    type: z.literal('downloaded'),
+    type: z.literal('downloaded' satisfies DeviceEventType),
   }),
   z.looseObject({
     releaseId: IdentifierSchema,
-    type: z.literal('applied'),
+    type: z.literal('applied' satisfies DeviceEventType),
   }),
   z.looseObject({
     releaseId: IdentifierSchema,
-    type: z.literal('confirmed'),
+    type: z.literal('confirmed' satisfies DeviceEventType),
   }),
   z.looseObject({
-    /** The app's `rollbackUpdate({ reason })` on `APP_REQUESTED`, under the attribute-value rule. */
+    /** The app's `rollbackUpdate({ reason })` on `app_requested`, under the attribute-value rule. */
     detail: AttributeValueSchema.optional(),
-    reason: z.enum([
-      ...ROLLBACK_REASONS,
-      'CONTENT_MISMATCHED',
-      'DOWNLOAD_FAILED',
-      'MANIFEST_INVALID',
-      'SIGNATURE_INVALID',
-    ]),
+    reason: z.enum(FAILED_EVENT_REASONS),
     releaseId: IdentifierSchema,
-    type: z.literal('failed'),
+    type: z.literal('failed' satisfies DeviceEventType),
   }),
   z.looseObject({
     fromReleaseId: IdentifierSchema,
     toReleaseId: IdentifierSchema.nullable(),
-    type: z.literal('rolledBack'),
+    type: z.literal('rolled_back' satisfies DeviceEventType),
   }),
 ]);
 export type DeviceEvent = z.infer<typeof DeviceEventSchema>;

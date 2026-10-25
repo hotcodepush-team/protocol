@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, test } from 'vitest';
 
+import type { PackKind } from '../results.js';
 import { ManifestEnvelopeSchema } from '../wire/bundle-manifest.js';
 import { isUrlOnConfiguredHost } from '../wire/configuration.js';
-import type { PackKind } from '../wire/device-events.js';
 import type { PackDownload, PackSource } from './pack-source.js';
 import { resolveFallbackPackSource, resolvePackSource } from './pack-source.js';
 

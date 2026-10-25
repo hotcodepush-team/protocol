@@ -1,7 +1,7 @@
+import type { PackKind } from '../results.js';
 import type { ManifestEnvelope } from '../wire/bundle-manifest.js';
 import type { Configuration } from '../wire/configuration.js';
 import { resolveUpdatesBaseUrl } from '../wire/configuration.js';
-import type { PackKind } from '../wire/device-events.js';
 
 /** What a download knows when it picks the pack to request. */
 export interface PackDownload {

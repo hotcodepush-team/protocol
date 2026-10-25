@@ -13,19 +13,19 @@ One file per rule of the evaluation, each `{ "description", "cases": [...] }`; a
 | `name`             | the test title, `should …`                                                                                                                                                                                                                    |
 | `index`            | a channel index, valid against `ChannelIndexSchema`                                                                                                                                                                                           |
 | `device`           | the `DeviceInfo` the evaluator takes: `attributes`, `binaryBuild`, `binaryVersion`, `builtAt`, `currentRelease` (`{ id, number }` or `null` for the embedded bundle), `deviceId`, `failedBundleIds`, `fingerprint`, `osVersion`, `reportedAt` |
-| `expected`         | the outcome: `status` (`UP_TO_DATE`, `AVAILABLE`, `SKIPPED`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `AVAILABLE`, `reason` and the failing `condition` type on `SKIPPED`                                      |
+| `expected`         | the outcome: `status` (`up_to_date`, `available`, `skipped`), `releaseId` (`null` for none or the embedded bundle), `isMandatory` on `available`, `reason` and the failing `condition` type on `skipped`                                      |
 | `verdicts`         | optional: every release of the index newest first as `{ releaseId, isEligible, reason?, condition? }`; an empty array means the index held nothing for the device                                                                             |
 | `acknowledgements` | optional: the `202`s the device received, oldest first, each `{ hasReport, reportedAt }`; a runner folds them from `null` with the rule of `device-events.json`'s `acknowledgements` and checks the result is `device.reportedAt`             |
 
-On `SKIPPED` with `RELEASE_REVOKED`, `releaseId` is the release the device resolves to, `null` for the embedded bundle; on every other `SKIPPED` it is the newest release the device will not take.
+On `skipped` with `release_revoked`, `releaseId` is the release the device resolves to, `null` for the embedded bundle; on every other `skipped` it is the newest release the device will not take.
 The `capped.json` cases with `acknowledgements` pin the cap against the stamp the device keeps: a batch of events alone or a report with a changed fact acknowledged after `cappedAt` leaves a counted device counted; a month's first report acknowledged after `cappedAt` puts the device beyond the cap, even after a batch of events alone was acknowledged before it; and the new month's first report replaces last month's stamp, before the cap or after it.
 
 ## `resource-files.json`
 
 `{ name, resourceFile, embeddedBundleManifest }`: a resource file as the build step writes it, valid against `ConfigurationSchema`, and its embedded bundle's manifest as a reader reads it — the bundle manifest, the same shape whether the build step registered the bundle or not, `embeddedBundleId` null when it did not.
-`embeddedBundleManifest` is `null` in a build that bundled no JavaScript, a React Native or Expo debug build the development server serves: a reader takes the file, and every check answers `SKIPPED` with `BUILD_DEBUG`.
+`embeddedBundleManifest` is `null` in a build that bundled no JavaScript, a React Native or Expo debug build the development server serves: a reader takes the file, and every check answers `skipped` with `build_debug`.
 The file carries `channelId`, the id the build step resolved from the project's `channel` name, the SDK options with their defaults where the project left them out, and `filesBaseUrl` and `updatesBaseUrl` in a build against staging or the local stack alone; a reader applies the defaults the schema names. The file carries no CLI key: `extraFingerprintPaths` is left out and nothing names a build directory; one case spells out every SDK option at its default.
-`channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `FAILED` with `CHANNEL_UNKNOWN`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
+`channelId` is `null` in a build whose build step ran without a token or offline and could not resolve the name: a reader takes the file, an explicit check answers `failed` with `channel_unknown`, the automatic ones stay silent, and the device requests nothing and reports nothing until a channel is set at runtime.
 `publicKeys` are the project's public keys as the build step re-encoded them for the platform the file is written for, `{ der, keyId }` each: `der` the base64 of the key's PKCS #1 DER in an iOS build and of its SPKI DER in an Android build, so the platform's own API imports it with no ASN.1 handled on the device, `keyId` the fingerprint over the SPKI bytes; one case per platform carries them.
 `refusedResourceFiles` are `{ name, resourceFile }` a reader refuses: a `checkIntervalSeconds` below 60, the floor, since a zero made the core check in a tight loop.
 
@@ -65,7 +65,7 @@ The two valid patches are fixed inputs in `scripts/pack-entries/`, written once 
 The pack a download requests and where it turns on each answer.
 `cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, statuses, requests, packKind }`.
 `baseBundleId` is the bundle the device runs, a release's or the embedded bundle's, `null` without a base; the hosts are as in `configured-hosts.json`, `null` for production; `missingFileCount` counts the manifest's files the device holds neither in its file store nor in its embedded bundle.
-`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, packBytesLimit, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `DOWNLOAD_FAILED`.
+`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, packBytesLimit, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `download_failed`.
 The envelope's `deltas` are the delta packs that exist, and a device with a base requests a delta pack whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else the streamed pack the updates host assembles at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's, never a URL guessed on the files host.
 A device without a base requests the full pack.
 Whatever the updates host answers but a 200 or a 206, its redirect to the full pack above twenty objects and a 404 included, sends the device to the full pack, since a device follows no redirect.
@@ -81,7 +81,7 @@ A manifest or an envelope stored while bundles carried `patches` is accepted and
 ## `device-events.json`
 
 The batches the events endpoint, `POST /v1/apps/{appId}/events`, accepts and refuses, as `acceptedBatches` and `refusedBatches`, each case `{ name, batch }`, so a core tests its encoder against the endpoint's reading instead of a batch of its own.
-The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused with `E_VALIDATION`, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
+The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused as a validation error, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, `toReleaseId` on a rollback to the embedded bundle, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `condition` or `detail`, is left out, never `null`.
 The accepted batches hold every event type with every skipped reason, condition type, pack kind and failure reason, a report with every fact and one with its nullable facts `null`, the empty batch the uptime check sends, and 200 events, the outbox's cap and so the largest batch a device sends; the refused batches end with one of 201, since the endpoint refuses anything above `BATCH_EVENT_COUNT_LIMIT` whole.
@@ -97,11 +97,11 @@ The cases pin the three counts apart: 256 emoji are accepted, 257 code points of
 
 ## `configured-hosts.json`
 
-`cases` are `{ name, filesBaseUrl, updatesBaseUrl, url, isOnConfiguredHost }`, a base of `null` meaning the production host: a manifest, pack or delta URL is on a configured host when it starts with that base followed by a `/`; off it, the download is `MANIFEST_INVALID` before a byte is written.
+`cases` are `{ name, filesBaseUrl, updatesBaseUrl, url, isOnConfiguredHost }`, a base of `null` meaning the production host: a manifest, pack or delta URL is on a configured host when it starts with that base followed by a `/`; off it, the download is `manifest_invalid` before a byte is written.
 
 ## `manifest-identity.json`
 
-`cases` are `{ name, appId, platform, manifest, isForDevice }`: a manifest is for the device when its `appId` is the app's id from the resource file and its `platforms` list the device's platform, signed or not; another app's manifest or a platform not listed is `MANIFEST_INVALID`, so an index pointing at another app's bundle serves nothing.
+`cases` are `{ name, appId, platform, manifest, isForDevice }`: a manifest is for the device when its `appId` is the app's id from the resource file and its `platforms` list the device's platform, signed or not; another app's manifest or a platform not listed is `manifest_invalid`, so an index pointing at another app's bundle serves nothing.
 
 ## `signatures.json`
 

@@ -12,23 +12,25 @@ When code and plan disagree, stop and surface it; never improvise.
 ## Layout
 
 ```
-src/        the package source; index.ts is the root entry point and fingerprint/index.ts the one code subpath entry, so a Worker that never fingerprints carries none of it
-fixtures/   the fixture suite, shipped in the package: one JSON case per rule of the device protocol
-scripts/    the fixture generators and the pack-entries one's two input patches; each runs with `node` on a developer's machine with nothing installed, the signatures one after `npm run build`, and CI reads the committed fixtures
-dist/       the build output, never committed
+src/          the package source; index.ts is the root entry point and fingerprint/index.ts the one code subpath entry, so a Worker that never fingerprints carries none of it
+fixtures/     the fixture suite, shipped in the package: one JSON case per rule of the device protocol
+catalog.json  every value of the catalog in src/results.ts, shipped in the package for readers outside TypeScript
+scripts/      the fixture and catalog generators and the pack-entries one's two input patches; each runs with `node` on a developer's machine with nothing installed, the signatures one after `npm run build`, and CI reads the committed files
+dist/         the build output, never committed
 ```
 
 Tests live beside the code they test, `*.test.ts` next to the file.
 
 ## Commands
 
-| Command             | Does                                                          |
-| ------------------- | ------------------------------------------------------------- |
-| `npm run build`     | compile `src/` into `dist/` with declarations and source maps |
-| `npm run fmt`       | format with Prettier                                          |
-| `npm run lint`      | ESLint                                                        |
-| `npm test`          | Vitest                                                        |
-| `npm run typecheck` | `tsc --noEmit`                                                |
+| Command             | Does                                                                      |
+| ------------------- | ------------------------------------------------------------------------- |
+| `npm run build`     | compile `src/` into `dist/` with declarations and source maps             |
+| `npm run catalog`   | write `catalog.json` from `src/results.ts`; a test fails when it is stale |
+| `npm run fmt`       | format with Prettier                                                      |
+| `npm run lint`      | ESLint                                                                    |
+| `npm test`          | Vitest                                                                    |
+| `npm run typecheck` | `tsc --noEmit`                                                            |
 
 Run `npm run fmt` before every commit; lint, typecheck, test and build must pass, as `ci.yml` checks on every push and pull request.
 `ci.yml`'s `preview` job publishes every push to `main` and every pull request to pkg.pr.new through its GitHub App, no secret involved; a consumer's install runs no script of ours, and a commit a lockfile pins stays installable.
@@ -42,6 +44,7 @@ The channel index and the bundle manifest are parsed by native code compiled int
   The rule binds from the first customer; the reshaping of 2026-10-02 — the manifest signing the client-known content alone, the directive gone — happened before anything shipped, on the owner's decision, as did the signing of 2026-10-04: `rsa-v1_5-sha256` the one scheme, and the resource file's public keys in the encoding each platform's own API imports, and the renaming of 2026-10-07, every reason naming the thing at fault first and the verification bag split in two.
   So did the delivery change of the same day: `patches` left the manifest, the envelope and the signed content, and the pack gained the patch entry `patches/{from}/{to}`, a BSDIFF40 patch between two files named by their content hashes.
   A manifest or an envelope stored with `patches` still parses, the field ignored, and a pack reader skips an entry of any other name with its body, so a later entry kind is additive.
+  So did the renaming of 2026-10-25: every value of the catalog lowercase snake_case, `SIGNATURE_INVALID` now `signature_invalid`, `next-start` now `next_start` and the device event `rolledBack` now `rolled_back`; from there the catalog is additive only again.
 - A change that cannot be additive is a new schema major with its own path, `v2`, and a handbook decision first — never an edit.
 - `CHANNEL_INDEX_SCHEMA` is the format major and equals the `v1` in the path; a reader refuses an index whose `schema` is not the one it asked for.
 - Conditions are frozen once shipped: a new meaning is a new type, and an unknown type fails closed; the index carries no directive, revocation being the plain revoked list every SDK understands.
@@ -57,7 +60,7 @@ The channel index and the bundle manifest are parsed by native code compiled int
 - Alphabetical ordering within a scope.
 - One thing per function, its name saying which; never a function that both decides something and phrases the message about it.
 - Booleans carry `is` or `has`; a state with a moment is a timestamp such as `pausedAt`, never a boolean.
-- Error codes are `E_` plus SCREAMING_SNAKE; a reason on the wire is `SUBJECT_STATE` in SCREAMING_SNAKE, the thing at fault first, `SIGNATURE_INVALID`, `CHANNEL_PAUSED`.
+- Every value is lowercase snake_case with no prefix, error codes included; a reason names the thing at fault first, `signature_invalid`, `channel_paused`; a name a platform owns keeps that platform's form: environment variables, HTTP headers, MCP tool names, CLI flags and each language's identifiers.
 - Never the non-null assertion; nullish coalescing or a real check.
 - Test titles read `should <verb> …`, lowercase, conditions starting with `when`.
 - Fixtures and examples carry invented data only.

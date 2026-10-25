@@ -24,7 +24,7 @@ const SecondsSchema = z.number().nonnegative();
 
 /** The SDK options every build carries, each with its default, so a file with the app id alone is complete; the public keys join per file, in the form each is read in. */
 const SDK_OPTIONS_SHAPE = {
-  applyStrategy: z.enum(APPLY_STRATEGIES).default('next-start'),
+  applyStrategy: z.enum(APPLY_STRATEGIES).default('next_start'),
   /** At least 60 seconds, the floor, since a zero made the core check in a tight loop; 900 when the project sets none. */
   checkIntervalSeconds: SecondsSchema.min(60).default(900),
   checkStrategy: z.enum(CHECK_STRATEGIES).default('auto'),
@@ -33,7 +33,7 @@ const SDK_OPTIONS_SHAPE = {
   mandatoryApplyStrategy: z
     .enum(MANDATORY_APPLY_STRATEGIES)
     .default('immediate'),
-  /** The least time in the background before a `next-resume` apply. */
+  /** The least time in the background before a `next_resume` apply. */
   nextResumeMinimumBackgroundSeconds: SecondsSchema.default(300),
   readySignal: z.enum(READY_SIGNALS).default('render'),
   readyTimeoutSeconds: SecondsSchema.min(1).default(10),
@@ -80,15 +80,15 @@ export const ConfigurationSchema = z.looseObject({
   builtAt: IsoTimestampSchema,
   /**
    * Null in a build whose embed step ran without a token or offline and could
-   * not resolve the channel's name: such a build answers `FAILED` with
-   * `CHANNEL_UNKNOWN`, requests nothing and reports nothing.
+   * not resolve the channel's name: such a build answers `failed` with
+   * `channel_unknown`, requests nothing and reports nothing.
    */
   channelId: NonEmptyStringSchema.nullable(),
   embeddedBundleId: IdentifierSchema.nullable(),
   /**
    * Null in a build that bundled no JavaScript, a React Native or Expo debug
    * build: its build step registers no binary and asks the API nothing, and
-   * the SDK answers `SKIPPED` with `BUILD_DEBUG`.
+   * the SDK answers `skipped` with `build_debug`.
    */
   embeddedBundleManifest: BundleManifestSchema.nullable(),
   filesBaseUrl: HttpUrlSchema.optional(),
@@ -112,7 +112,7 @@ const UPDATES_BASE_URL_DEFAULT = 'https://updates.hotcodepush.com';
  * Whether a manifest, pack or delta URL lies under the configured files or
  * updates host, the production hosts when the build names none: it starts
  * with the base URL and a `/`, so another scheme, userinfo, a look-alike
- * host, another port or another path is off the host, `MANIFEST_INVALID`
+ * host, another port or another path is off the host, `manifest_invalid`
  * before a byte is written.
  */
 export function isUrlOnConfiguredHost(

@@ -1,0 +1,52 @@
+{
+  "applyStrategies": ["immediate", "manual", "next_resume", "next_start"],
+  "applyUpdateStatuses": ["applied", "nothing_to_apply"],
+  "channelSources": ["config", "runtime"],
+  "checkStrategies": ["auto", "manual"],
+  "conditionTypes": ["attribute", "binary", "device", "fingerprint", "os"],
+  "deviceEventTypes": [
+    "applied",
+    "checked",
+    "confirmed",
+    "downloaded",
+    "failed",
+    "rolled_back"
+  ],
+  "downloadStrategies": ["auto", "manual", "unmetered"],
+  "failedReasons": [
+    "channel_unknown",
+    "content_mismatched",
+    "device_offline",
+    "download_failed",
+    "index_invalid",
+    "manifest_invalid",
+    "signature_invalid"
+  ],
+  "mandatoryApplyStrategies": ["immediate", "manual"],
+  "packKinds": ["delta", "files", "full", "streamed"],
+  "platforms": ["android", "ios"],
+  "readySignals": ["manual", "render"],
+  "rollbackReasons": ["app_crashed", "app_requested", "readiness_timed_out"],
+  "skippedReasons": [
+    "build_debug",
+    "bundle_failed_before",
+    "channel_paused",
+    "condition_unsupported",
+    "connection_metered",
+    "device_incompatible",
+    "device_not_in_rollout",
+    "device_not_targeted",
+    "release_older_than_binary",
+    "release_revoked",
+    "spending_cap_reached"
+  ],
+  "syncStatuses": [
+    "applied",
+    "available",
+    "downloaded",
+    "failed",
+    "skipped",
+    "up_to_date"
+  ],
+  "syncTriggers": ["interval", "manual", "resume", "start"]
+}

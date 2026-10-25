@@ -20,6 +20,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./catalog.json": "./catalog.json",
     "./fingerprint": {
       "types": "./dist/fingerprint/index.d.ts",
       "default": "./dist/fingerprint/index.js"
@@ -27,11 +28,13 @@
     "./fixtures/*": "./fixtures/*"
   },
   "files": [
+    "catalog.json",
     "dist",
     "fixtures"
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
+    "catalog": "node scripts/generate-catalog.ts",
     "fmt": "prettier --write .",
     "lint": "eslint .",
     "test": "vitest run",

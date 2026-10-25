@@ -42,9 +42,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_OLDER_THAN_BINARY",
+        "reason": "release_older_than_binary",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -90,7 +90,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -150,7 +150,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-2",
-        "status": "AVAILABLE"
+        "status": "available"
       },
       "verdicts": [
         {
@@ -159,7 +159,7 @@
         },
         {
           "isEligible": false,
-          "reason": "RELEASE_OLDER_THAN_BINARY",
+          "reason": "release_older_than_binary",
           "releaseId": "release-1"
         }
       ]

@@ -1,9 +1,13 @@
 import { readFileSync } from 'node:fs';
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, expectTypeOf, test } from 'vitest';
 import { z } from 'zod';
 
-import type { DeviceEventsAcknowledgement } from './device-events.js';
+import type { DeviceEventType } from '../results.js';
+import type {
+  DeviceEvent,
+  DeviceEventsAcknowledgement,
+} from './device-events.js';
 import {
   BATCH_EVENT_COUNT_LIMIT,
   DeviceEventSchema,
@@ -66,6 +70,12 @@ describe('the events endpoint', () => {
       expect(DeviceBatchSchema.safeParse(refused.batch).success).toBe(false);
     },
   );
+});
+
+describe('DeviceEventSchema', () => {
+  test('should read every device event type of the catalog, and no other', () => {
+    expectTypeOf<DeviceEvent['type']>().toEqualTypeOf<DeviceEventType>();
+  });
 });
 
 describe('DeviceEventsResponseSchema', () => {

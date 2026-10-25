@@ -43,12 +43,12 @@
       },
       "expected": {
         "releaseId": null,
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-1"
         }
       ]
@@ -94,14 +94,14 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_OLDER_THAN_BINARY",
+        "reason": "release_older_than_binary",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "RELEASE_OLDER_THAN_BINARY",
+          "reason": "release_older_than_binary",
           "releaseId": "release-1"
         }
       ]
@@ -152,9 +152,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "BUNDLE_FAILED_BEFORE",
+        "reason": "bundle_failed_before",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -204,9 +204,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -270,20 +270,20 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-2",
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": [
         {
           "condition": "binary",
           "isEligible": false,
-          "reason": "DEVICE_INCOMPATIBLE",
+          "reason": "device_incompatible",
           "releaseId": "release-2"
         },
         {
           "isEligible": false,
-          "reason": "DEVICE_NOT_IN_ROLLOUT",
+          "reason": "device_not_in_rollout",
           "releaseId": "release-1"
         }
       ]

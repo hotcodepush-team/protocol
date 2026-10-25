@@ -58,7 +58,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-2",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -118,12 +118,12 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "DEVICE_NOT_IN_ROLLOUT",
+          "reason": "device_not_in_rollout",
           "releaseId": "release-2"
         },
         {
@@ -192,7 +192,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-2",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -266,7 +266,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-3",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     }
   ]

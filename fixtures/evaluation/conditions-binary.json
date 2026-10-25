@@ -49,7 +49,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -99,9 +99,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -152,7 +152,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -203,7 +203,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -254,7 +254,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -304,9 +304,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -357,7 +357,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -407,9 +407,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -459,9 +459,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -512,7 +512,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -563,7 +563,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -614,7 +614,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -664,9 +664,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -717,7 +717,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -768,7 +768,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -819,7 +819,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -869,9 +869,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -922,7 +922,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -973,7 +973,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1023,9 +1023,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1075,9 +1075,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1127,9 +1127,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1180,7 +1180,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1230,9 +1230,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1283,7 +1283,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1334,7 +1334,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1385,7 +1385,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1435,9 +1435,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1488,7 +1488,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1539,7 +1539,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1590,7 +1590,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1640,9 +1640,9 @@
       },
       "expected": {
         "condition": "binary",
-        "reason": "DEVICE_INCOMPATIBLE",
+        "reason": "device_incompatible",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -1693,7 +1693,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1744,7 +1744,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -1795,7 +1795,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused with E_VALIDATION, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch. The acknowledgements are the reportedAt a device keeps after a 202: the stamp of the first acknowledged batch of a UTC month that carried the report, the month read from the stamp, replaced only by a report acknowledged in a later month and never by a batch of events alone.",
+  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused as a validation error, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch. The acknowledgements are the reportedAt a device keeps after a 202: the stamp of the first acknowledged batch of a UTC month that carried the report, the month read from the stamp, replaced only by a report acknowledged in a later month and never by a batch of events alone.",
   "acceptedBatches": [
     {
       "name": "should accept checked events with every skipped reason and every condition type",
@@ -8,96 +8,96 @@
         "events": [
           {
             "releaseId": "release-2",
-            "status": "AVAILABLE",
+            "status": "available",
             "type": "checked"
           },
           {
-            "reason": "BUILD_DEBUG",
+            "reason": "build_debug",
             "releaseId": "release-3",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "BUNDLE_FAILED_BEFORE",
+            "reason": "bundle_failed_before",
             "releaseId": "release-4",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "CHANNEL_PAUSED",
+            "reason": "channel_paused",
             "releaseId": "release-5",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "CONDITION_UNSUPPORTED",
+            "reason": "condition_unsupported",
             "releaseId": "release-6",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "CONNECTION_METERED",
+            "reason": "connection_metered",
             "releaseId": "release-7",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
             "condition": "binary",
-            "reason": "DEVICE_INCOMPATIBLE",
+            "reason": "device_incompatible",
             "releaseId": "release-8",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
             "condition": "fingerprint",
-            "reason": "DEVICE_INCOMPATIBLE",
+            "reason": "device_incompatible",
             "releaseId": "release-9",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
             "condition": "os",
-            "reason": "DEVICE_INCOMPATIBLE",
+            "reason": "device_incompatible",
             "releaseId": "release-10",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "DEVICE_NOT_IN_ROLLOUT",
+            "reason": "device_not_in_rollout",
             "releaseId": "release-11",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
             "condition": "attribute",
-            "reason": "DEVICE_NOT_TARGETED",
+            "reason": "device_not_targeted",
             "releaseId": "release-12",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
             "condition": "device",
-            "reason": "DEVICE_NOT_TARGETED",
+            "reason": "device_not_targeted",
             "releaseId": "release-13",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "RELEASE_OLDER_THAN_BINARY",
+            "reason": "release_older_than_binary",
             "releaseId": "release-14",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "RELEASE_REVOKED",
+            "reason": "release_revoked",
             "releaseId": "release-15",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "SPENDING_CAP_REACHED",
+            "reason": "spending_cap_reached",
             "releaseId": "release-16",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           }
         ],
@@ -180,49 +180,49 @@
       "skippedEventIndexes": []
     },
     {
-      "name": "should accept failed events with every reason, a detail on APP_REQUESTED and one of 256 characters",
+      "name": "should accept failed events with every reason, a detail on app_requested and one of 256 characters",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "reason": "APP_CRASHED",
+            "reason": "app_crashed",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "APP_REQUESTED",
+            "reason": "app_requested",
             "releaseId": "release-2",
             "type": "failed",
             "detail": "checkout crashed on launch"
           },
           {
-            "reason": "CONTENT_MISMATCHED",
+            "reason": "content_mismatched",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "DOWNLOAD_FAILED",
+            "reason": "download_failed",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "MANIFEST_INVALID",
+            "reason": "manifest_invalid",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "READINESS_TIMED_OUT",
+            "reason": "readiness_timed_out",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "SIGNATURE_INVALID",
+            "reason": "signature_invalid",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
             "detail": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-            "reason": "APP_REQUESTED",
+            "reason": "app_requested",
             "releaseId": "release-2",
             "type": "failed"
           }
@@ -234,19 +234,19 @@
       "skippedEventIndexes": []
     },
     {
-      "name": "should accept rolledBack events, to an earlier release and to the embedded bundle with a null toReleaseId",
+      "name": "should accept rolled_back events, to an earlier release and to the embedded bundle with a null toReleaseId",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
             "fromReleaseId": "release-3",
             "toReleaseId": "release-2",
-            "type": "rolledBack"
+            "type": "rolled_back"
           },
           {
             "fromReleaseId": "release-2",
             "toReleaseId": null,
-            "type": "rolledBack"
+            "type": "rolled_back"
           }
         ],
         "platform": "ios",
@@ -262,7 +262,7 @@
         "events": [
           {
             "releaseId": "release-2",
-            "status": "AVAILABLE",
+            "status": "available",
             "type": "checked"
           },
           {
@@ -611,7 +611,7 @@
           },
           {
             "fromReleaseId": "release-2",
-            "type": "rolledBack"
+            "type": "rolled_back"
           },
           {
             "releaseId": "release-2",
@@ -632,7 +632,7 @@
           {
             "reason": null,
             "releaseId": "release-2",
-            "status": "AVAILABLE",
+            "status": "available",
             "type": "checked"
           },
           {
@@ -641,9 +641,9 @@
           },
           {
             "condition": null,
-            "reason": "DEVICE_NOT_IN_ROLLOUT",
+            "reason": "device_not_in_rollout",
             "releaseId": "release-3",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
@@ -652,7 +652,7 @@
           },
           {
             "detail": null,
-            "reason": "APP_CRASHED",
+            "reason": "app_crashed",
             "releaseId": "release-2",
             "type": "failed"
           }
@@ -710,24 +710,24 @@
       "skippedEventIndexes": [0]
     },
     {
-      "name": "should skip a reason outside the set: a name from before the rename, and a failed reason no event carries",
+      "name": "should skip a reason outside the set: reasons no catalog ever held, and a failed reason no event carries",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
             "condition": "binary",
-            "reason": "INCOMPATIBLE",
+            "reason": "incompatible",
             "releaseId": "release-3",
-            "status": "SKIPPED",
+            "status": "skipped",
             "type": "checked"
           },
           {
-            "reason": "VERIFICATION_FAILED",
+            "reason": "verification_failed",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
-            "reason": "DEVICE_OFFLINE",
+            "reason": "device_offline",
             "releaseId": "release-2",
             "type": "failed"
           },
@@ -741,6 +741,43 @@
         "sdkVersion": "1.2.0"
       },
       "skippedEventIndexes": [0, 1, 2]
+    },
+    {
+      "name": "should skip a value spelled as before the snake_case rename: an uppercase status or reason, and the rolledBack type",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "releaseId": "release-2",
+            "status": "AVAILABLE",
+            "type": "checked"
+          },
+          {
+            "reason": "DEVICE_NOT_IN_ROLLOUT",
+            "releaseId": "release-3",
+            "status": "skipped",
+            "type": "checked"
+          },
+          {
+            "reason": "APP_CRASHED",
+            "releaseId": "release-2",
+            "type": "failed"
+          },
+          {
+            "fromReleaseId": "release-2",
+            "toReleaseId": null,
+            "type": "rolledBack"
+          },
+          {
+            "releaseId": "release-2",
+            "type": "applied"
+          }
+        ],
+        "platform": "ios",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": [0, 1, 2, 3]
     },
     {
       "name": "should skip an event whose release id breaks the identifier rule",
@@ -773,13 +810,13 @@
         "events": [
           {
             "detail": "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-            "reason": "APP_REQUESTED",
+            "reason": "app_requested",
             "releaseId": "release-2",
             "type": "failed"
           },
           {
             "detail": "checkout\ncrashed",
-            "reason": "APP_REQUESTED",
+            "reason": "app_requested",
             "releaseId": "release-2",
             "type": "failed"
           },

@@ -59,9 +59,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "CHANNEL_PAUSED",
+        "reason": "channel_paused",
         "releaseId": "release-2",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -109,7 +109,7 @@
       },
       "expected": {
         "releaseId": "release-1",
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     },
     {
@@ -153,9 +153,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "CHANNEL_PAUSED",
+        "reason": "channel_paused",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -216,9 +216,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -293,9 +293,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -357,7 +357,7 @@
       },
       "expected": {
         "releaseId": "release-1",
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     }
   ]

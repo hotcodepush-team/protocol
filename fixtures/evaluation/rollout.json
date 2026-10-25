@@ -44,7 +44,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -88,9 +88,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "DEVICE_NOT_IN_ROLLOUT",
+        "reason": "device_not_in_rollout",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -134,9 +134,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "DEVICE_NOT_IN_ROLLOUT",
+        "reason": "device_not_in_rollout",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -182,7 +182,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -230,7 +230,7 @@
       },
       "expected": {
         "releaseId": "release-1",
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     }
   ]

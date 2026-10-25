@@ -7,7 +7,7 @@ import { resolveRolloutBucket } from './rollout.js';
 
 /** The per-release verdict, the explanation behind the outcome and the probe's output. */
 export interface ReleaseVerdict {
-  /** The type of the condition that failed, for `DEVICE_INCOMPATIBLE` and `DEVICE_NOT_TARGETED`. */
+  /** The type of the condition that failed, for `device_incompatible` and `device_not_targeted`. */
   condition?: ConditionType;
   conditions: ConditionVerdict[];
   isEligible: boolean;
@@ -17,25 +17,25 @@ export interface ReleaseVerdict {
 }
 
 /**
- * The outcome for the device. On `SKIPPED` with `RELEASE_REVOKED`, `release`
+ * The outcome for the device. On `skipped` with `release_revoked`, `release`
  * is the release the device resolves to — `null` for the embedded bundle —
- * since its running release is dead; on every other `SKIPPED`, `release` is
- * the newest release the device will not take. On `UP_TO_DATE`, `release` is
+ * since its running release is dead; on every other `skipped`, `release` is
+ * the newest release the device will not take. On `up_to_date`, `release` is
  * the running release as the index carries it, `null` when it does not.
  */
 export type EvaluationOutcome =
-  | { release: IndexRelease | null; status: 'UP_TO_DATE' }
-  | { isMandatory: boolean; release: IndexRelease; status: 'AVAILABLE' }
+  | { release: IndexRelease | null; status: 'up_to_date' }
+  | { isMandatory: boolean; release: IndexRelease; status: 'available' }
   | {
       condition?: ConditionType;
       reason: SkippedReason;
       release: IndexRelease | null;
-      status: 'SKIPPED';
+      status: 'skipped';
     };
 
 export interface ChannelIndexEvaluation {
   outcome: EvaluationOutcome;
-  /** Every release of the index, newest first; empty when the index holds nothing for the device. A revoked release is never the newer release a `SKIPPED` names: it is not on offer. */
+  /** Every release of the index, newest first; empty when the index holds nothing for the device. A revoked release is never the newer release a `skipped` names: it is not on offer. */
   verdicts: ReleaseVerdict[];
 }
 
@@ -55,9 +55,9 @@ export function evaluateChannelIndex(
   if (isDeviceBeyondCap(index, device)) {
     return {
       outcome: {
-        reason: 'SPENDING_CAP_REACHED',
+        reason: 'spending_cap_reached',
         release: null,
-        status: 'SKIPPED',
+        status: 'skipped',
       },
       verdicts: [],
     };
@@ -74,7 +74,7 @@ export function evaluateChannelIndex(
   const newerVerdict = verdicts.find(
     verdict =>
       verdict.release.number > currentNumber &&
-      verdict.reason !== 'RELEASE_REVOKED',
+      verdict.reason !== 'release_revoked',
   );
   const newerEligibleVerdict = eligibleVerdicts.find(
     verdict => verdict.release.number > currentNumber,
@@ -92,7 +92,7 @@ export function evaluateChannelIndex(
           eligibleVerdicts,
         ),
         release: target,
-        status: 'AVAILABLE',
+        status: 'available',
       },
       verdicts,
     };
@@ -100,9 +100,9 @@ export function evaluateChannelIndex(
   if (isCurrentRevoked) {
     return {
       outcome: {
-        reason: 'RELEASE_REVOKED',
+        reason: 'release_revoked',
         release: olderEligibleVerdict?.release ?? null,
-        status: 'SKIPPED',
+        status: 'skipped',
       },
       verdicts,
     };
@@ -110,9 +110,9 @@ export function evaluateChannelIndex(
   if (index.isPaused && newerVerdict !== undefined) {
     return {
       outcome: {
-        reason: 'CHANNEL_PAUSED',
+        reason: 'channel_paused',
         release: newerVerdict.release,
-        status: 'SKIPPED',
+        status: 'skipped',
       },
       verdicts,
     };
@@ -125,13 +125,13 @@ export function evaluateChannelIndex(
           : { condition: newerVerdict.condition }),
         reason: newerVerdict.reason,
         release: newerVerdict.release,
-        status: 'SKIPPED',
+        status: 'skipped',
       },
       verdicts,
     };
   }
   return {
-    outcome: { release: currentIndexRelease, status: 'UP_TO_DATE' },
+    outcome: { release: currentIndexRelease, status: 'up_to_date' },
     verdicts,
   };
 }
@@ -205,13 +205,13 @@ function resolveSkippedReason(
   device: DeviceInfo,
 ): { condition?: ConditionType; reason: SkippedReason } | null {
   if (isReleaseRevoked(release, index)) {
-    return { reason: 'RELEASE_REVOKED' };
+    return { reason: 'release_revoked' };
   }
   if (Date.parse(release.createdAt) < Date.parse(device.builtAt)) {
-    return { reason: 'RELEASE_OLDER_THAN_BINARY' };
+    return { reason: 'release_older_than_binary' };
   }
   if (device.failedBundleIds.includes(release.bundleId)) {
-    return { reason: 'BUNDLE_FAILED_BEFORE' };
+    return { reason: 'bundle_failed_before' };
   }
   const failed = conditions.find(condition => !condition.isSatisfied);
   if (failed !== undefined) {
@@ -221,7 +221,7 @@ function resolveSkippedReason(
     resolveRolloutBucket(device.deviceId, release.id) >=
     release.rolloutPercentage
   ) {
-    return { reason: 'DEVICE_NOT_IN_ROLLOUT' };
+    return { reason: 'device_not_in_rollout' };
   }
   return null;
 }
@@ -231,15 +231,15 @@ function resolveConditionReason(type: string): {
   reason: SkippedReason;
 } {
   if (!isKnownConditionType(type)) {
-    return { reason: 'CONDITION_UNSUPPORTED' };
+    return { reason: 'condition_unsupported' };
   }
   switch (type) {
     case 'attribute':
     case 'device':
-      return { condition: type, reason: 'DEVICE_NOT_TARGETED' };
+      return { condition: type, reason: 'device_not_targeted' };
     case 'binary':
     case 'fingerprint':
     case 'os':
-      return { condition: type, reason: 'DEVICE_INCOMPATIBLE' };
+      return { condition: type, reason: 'device_incompatible' };
   }
 }

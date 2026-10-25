@@ -58,13 +58,13 @@ function readFixtureFiles(): [string, FixtureFile][] {
 function resolveExpectedOutcome(outcome: EvaluationOutcome): ExpectedOutcome {
   const releaseId = outcome.release?.id ?? null;
   switch (outcome.status) {
-    case 'AVAILABLE':
+    case 'available':
       return {
         isMandatory: outcome.isMandatory,
         releaseId,
         status: outcome.status,
       };
-    case 'SKIPPED':
+    case 'skipped':
       return {
         ...(outcome.condition === undefined
           ? {}
@@ -73,7 +73,7 @@ function resolveExpectedOutcome(outcome: EvaluationOutcome): ExpectedOutcome {
         releaseId,
         status: outcome.status,
       };
-    case 'UP_TO_DATE':
+    case 'up_to_date':
       return { releaseId, status: outcome.status };
   }
 }

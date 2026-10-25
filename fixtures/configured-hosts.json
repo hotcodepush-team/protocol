@@ -1,5 +1,5 @@
 {
-  "description": "The configured-host rule: a manifest, pack or delta URL starts with the files or the updates base URL the resource file names, the production hosts https://files.hotcodepush.com and https://updates.hotcodepush.com when it names none (null here), followed by a /. A URL off the configured hosts is MANIFEST_INVALID before a byte is written, so the device fetches from our hosts and nowhere else, and http only from a local stack the build names.",
+  "description": "The configured-host rule: a manifest, pack or delta URL starts with the files or the updates base URL the resource file names, the production hosts https://files.hotcodepush.com and https://updates.hotcodepush.com when it names none (null here), followed by a /. A URL off the configured hosts is manifest_invalid before a byte is written, so the device fetches from our hosts and nowhere else, and http only from a local stack the build names.",
   "cases": [
     {
       "name": "should accept a URL on the files host of a production build, which names no host",

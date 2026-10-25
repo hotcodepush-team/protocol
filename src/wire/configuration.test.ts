@@ -54,7 +54,7 @@ describe('ProjectConfigurationSchema', () => {
   test('should apply the defaults to a file with the app id and a channel', () => {
     expect(ProjectConfigurationSchema.parse(PROJECT)).toEqual({
       ...PROJECT,
-      applyStrategy: 'next-start',
+      applyStrategy: 'next_start',
       checkIntervalSeconds: 900,
       checkStrategy: 'auto',
       downloadStrategy: 'auto',
@@ -89,11 +89,11 @@ describe('ProjectConfigurationSchema', () => {
     ).toBe(false);
   });
 
-  test('should reject a mandatory apply strategy of next-start', () => {
+  test('should reject a mandatory apply strategy of next_start', () => {
     expect(
       ProjectConfigurationSchema.safeParse({
         ...PROJECT,
-        mandatoryApplyStrategy: 'next-start',
+        mandatoryApplyStrategy: 'next_start',
       }).success,
     ).toBe(false);
   });

@@ -58,12 +58,12 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-2"
         },
         {
@@ -128,7 +128,7 @@
       },
       "expected": {
         "releaseId": null,
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     },
     {
@@ -203,9 +203,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": "release-2",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -280,9 +280,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -329,9 +329,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -406,24 +406,24 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-3"
         },
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-2"
         },
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-1"
         }
       ]
@@ -502,7 +502,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-3",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -577,19 +577,19 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "RELEASE_REVOKED",
+        "reason": "release_revoked",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "DEVICE_NOT_IN_ROLLOUT",
+          "reason": "device_not_in_rollout",
           "releaseId": "release-3"
         },
         {
           "isEligible": false,
-          "reason": "RELEASE_REVOKED",
+          "reason": "release_revoked",
           "releaseId": "release-2"
         },
         {

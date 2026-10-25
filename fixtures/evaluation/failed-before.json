@@ -42,9 +42,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "BUNDLE_FAILED_BEFORE",
+        "reason": "bundle_failed_before",
         "releaseId": "release-1",
-        "status": "SKIPPED"
+        "status": "skipped"
       }
     },
     {
@@ -102,19 +102,19 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "BUNDLE_FAILED_BEFORE",
+        "reason": "bundle_failed_before",
         "releaseId": "release-2",
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": [
         {
           "isEligible": false,
-          "reason": "BUNDLE_FAILED_BEFORE",
+          "reason": "bundle_failed_before",
           "releaseId": "release-2"
         },
         {
           "isEligible": false,
-          "reason": "BUNDLE_FAILED_BEFORE",
+          "reason": "bundle_failed_before",
           "releaseId": "release-1"
         }
       ]
@@ -176,7 +176,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     }
   ]

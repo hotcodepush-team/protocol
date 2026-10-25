@@ -28,7 +28,7 @@
       },
       "expected": {
         "releaseId": null,
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     },
     {
@@ -90,7 +90,7 @@
       },
       "expected": {
         "releaseId": "release-2",
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     },
     {
@@ -138,7 +138,7 @@
       },
       "expected": {
         "releaseId": null,
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       }
     },
     {
@@ -200,7 +200,7 @@
       },
       "expected": {
         "releaseId": "release-2",
-        "status": "UP_TO_DATE"
+        "status": "up_to_date"
       },
       "verdicts": [
         {

@@ -42,9 +42,9 @@
         "reportedAt": "2026-09-16T00:00:00.000Z"
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     },
@@ -89,9 +89,9 @@
         "reportedAt": "2026-09-15T00:00:00.000Z"
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     },
@@ -136,9 +136,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     },
@@ -185,7 +185,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -231,7 +231,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -278,9 +278,9 @@
         "reportedAt": null
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     },
@@ -337,7 +337,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -393,7 +393,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -447,9 +447,9 @@
         "reportedAt": "2026-09-16T08:00:00.000Z"
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     },
@@ -514,7 +514,7 @@
       "expected": {
         "isMandatory": false,
         "releaseId": "release-1",
-        "status": "AVAILABLE"
+        "status": "available"
       }
     },
     {
@@ -568,9 +568,9 @@
         "reportedAt": "2026-09-16T08:00:00.000Z"
       },
       "expected": {
-        "reason": "SPENDING_CAP_REACHED",
+        "reason": "spending_cap_reached",
         "releaseId": null,
-        "status": "SKIPPED"
+        "status": "skipped"
       },
       "verdicts": []
     }

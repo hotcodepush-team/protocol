@@ -23,6 +23,8 @@ const { outcome, verdicts } = evaluateChannelIndex(index, deviceInfo);
 // outcome: the release to take, or the reason not to; verdicts: every release explained
 ```
 
+`@hotcodepush/protocol/catalog.json` holds every value of the catalog, the statuses, reasons and strategies, for a reader outside TypeScript.
+
 The package is the foundation of the HotCodePush SDKs, not their supported API: an app uses the SDK for its framework.
 
 ## Documentation
@@ -41,6 +43,7 @@ npm run build
 ```
 
 `npm run fmt` formats the code with Prettier.
+`npm run catalog` writes `catalog.json` from `src/results.ts`; a test fails when the committed file is stale.
 
 ## License
 
