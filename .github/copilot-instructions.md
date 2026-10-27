@@ -5,7 +5,7 @@ Report a finding only where a criterion is missed; say nothing about what is fin
 
 | Criterion                 | What to check                                                                                                                                                                                                    |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linked issue              | The body links an issue with `Closes #`, `Fixes #` or `Resolves #`, and the diff implements that issue.                                                                                                          |
+| Linked issue              | For an author without write access: the body links an issue with `Closes #`, `Fixes #` or `Resolves #`, and the diff implements that issue. Bots and maintainers are exempt, as in the contributions workflow. |
 | Conventional-commit title | `<type>(<scope>)!: <subject>`, the type one of `feat`, `fix`, `docs`, `perf`, `refactor`, `test`, `build`, `ci`, `chore`. The title becomes the squash commit release-please reads.                              |
 | Tests                     | Behavior that changed has a test that would fail without the change; a rule of the device protocol has its case in `fixtures/`. A test that asserts nothing is worse than no test.                               |
 | Wire format               | A field of the channel index or the bundle manifest is never removed, renamed or retyped, and a new field is optional. A shipped condition type or directive never changes meaning; a new meaning is a new type. |
