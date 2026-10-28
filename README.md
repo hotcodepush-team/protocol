@@ -4,7 +4,7 @@ The HotCodePush update-protocol client for JavaScript: the wire types, the evalu
 
 ## Installation
 
-The package is not on npm yet; every commit is published to pkg.pr.new by CI, and a consumer pins one commit and bumps it deliberately, never a branch:
+The package is not on npm yet. Every commit is published to pkg.pr.new by CI, so install one by its commit SHA and bump it deliberately, never a branch:
 
 ```sh
 npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>
@@ -26,6 +26,7 @@ const { outcome, verdicts } = evaluateChannelIndex(index, deviceInfo);
 `@hotcodepush/protocol/catalog.json` holds every value of the catalog, the statuses, reasons and strategies, for a reader outside TypeScript.
 
 The package is the foundation of the HotCodePush SDKs, not their supported API: an app uses the SDK for its framework.
+The Swift package `HotCodePushCore` and the Android library `com.hotcodepush:core-android` implement the same protocol, proven equal by this repo's fixtures.
 
 ## Documentation
 
@@ -36,14 +37,14 @@ See [hotcodepush.com/docs](https://hotcodepush.com/docs).
 ```sh
 nvm use
 npm ci
-npm run lint
-npm run typecheck
+npm run build        # compiles src/ into dist/
 npm test
-npm run build
+npm run lint && npm run typecheck
+npm run fmt          # Prettier, run before every commit
 ```
 
-`npm run fmt` formats the code with Prettier.
 `npm run catalog` writes `catalog.json` from `src/results.ts`; a test fails when the committed file is stale.
+`CLAUDE.md` holds the layout and the rules.
 
 ## License
 
