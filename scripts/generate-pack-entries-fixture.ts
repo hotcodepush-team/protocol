@@ -1,5 +1,5 @@
 /**
- * Writes `fixtures/pack-entries.json`: a delta pack of a file entry and a
+ * Writes `fixtures/pack-entries.json`: a delta of a file entry and a
  * patch entry, a pack with an entry a reader skips, and the device's outcome
  * per patch entry. The two valid patches are fixed inputs in `pack-entries/`
  * beside this script, written once by Colin Percival's bsdiff 4.3 from the
@@ -45,7 +45,7 @@ const WORK_DIRECTORY = mkdtempSync(join(tmpdir(), 'hotcodepush-pack-entries-'));
 
 const ASSET = buildFixtureFile(
   'asset',
-  '{"title":"Release 2","subtitle":"Delivered as a delta pack"}\n',
+  '{"title":"Release 2","subtitle":"Delivered as a delta"}\n',
 );
 const BASE = buildFixtureFile(
   'base',
@@ -73,7 +73,7 @@ const FILE_ENTRY_BODY = gzipSync(ASSET.bytes);
 const SKIPPED_ENTRY_BODY = new Uint8Array(600).map((_, index) => index % 251);
 const SKIPPED_ENTRY_PREFIX = `future/${BASE.sha256}`;
 
-const deltaPack = await collect(
+const delta = await collect(
   buildPack([buildFileEntry(), buildPatchEntry()]),
 );
 const fileEntryPack = await collect(buildPack([buildFileEntry()]));
@@ -107,16 +107,16 @@ const entries = [
 
 const fixture = {
   description:
-    "The entry kinds of a pack and what a device does with a patch entry. A file entry is a file's stored object, the gzip the bucket serves, named by the content hash. A patch entry is named patches/{from}/{to} — patches/{from} in the ustar prefix field, {to} in the name field, the ustar magic and version set — and its body is a BSDIFF40 patch that turns the bytes of the file from into those of the file to. A reader composes prefix/name when the prefix is not empty and skips, with its body, an entry named neither by a content hash nor patches/{hash}/{hash}. files are the contents the cases name by sha256. deltaPack is a pack of a file entry and a patch entry as the writer produces it. skippedEntryPack holds a file entry, an entry named skippedName, and a patch entry; a reader yields the two entries. patchCases are a patch entry, the files the device holds (its file store and embedded bundle) and the files of the signed manifest it downloads, with the outcome: applied, the patched bytes hashing to toSha256; fallback, the device fetching the file toSha256 as it fetches any file the pack did not bring; ignored, when toSha256 is not a file of the manifest.",
+    "The entry kinds of a pack and what a device does with a patch entry. A file entry is a file's stored object, the gzip the bucket serves, named by the content hash. A patch entry is named patches/{from}/{to} — patches/{from} in the ustar prefix field, {to} in the name field, the ustar magic and version set — and its body is a BSDIFF40 patch that turns the bytes of the file from into those of the file to. A reader composes prefix/name when the prefix is not empty and skips, with its body, an entry named neither by a content hash nor patches/{hash}/{hash}. files are the contents the cases name by sha256. delta is a pack of a file entry and a patch entry as the writer produces it. skippedEntryPack holds a file entry, an entry named skippedName, and a patch entry; a reader yields the two entries. patchCases are a patch entry, the files the device holds (its file store and embedded bundle) and the files of the signed manifest it downloads, with the outcome: applied, the patched bytes hashing to toSha256; fallback, the device fetching the file toSha256 as it fetches any file the pack did not bring; ignored, when toSha256 is not a file of the manifest.",
   files: [ASSET, BASE, OTHER, TARGET].map(file => ({
     contentBase64: encodeBase64(file.bytes),
     name: file.name,
     sha256: file.sha256,
   })),
-  deltaPack: {
+  delta: {
     entries,
-    packBase64: encodeBase64(deltaPack),
-    packSha256: computeSha256Hex(deltaPack),
+    packBase64: encodeBase64(delta),
+    packSha256: computeSha256Hex(delta),
   },
   skippedEntryPack: {
     entries,

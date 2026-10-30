@@ -27,7 +27,7 @@ type FixtureEntry =
   | { bodyBase64: string; fromSha256: string; toSha256: string; type: 'patch' };
 
 interface PackEntriesFixture {
-  deltaPack: {
+  delta: {
     entries: FixtureEntry[];
     packBase64: string;
     packSha256: string;
@@ -270,14 +270,14 @@ describe('buildPack', () => {
     ]);
   });
 
-  test('should reproduce the pinned delta pack byte for byte', async () => {
+  test('should reproduce the pinned delta byte for byte', async () => {
     const pack = await collect(
-      buildPack(ENTRIES_FIXTURE.deltaPack.entries.map(entryOfFixture)),
+      buildPack(ENTRIES_FIXTURE.delta.entries.map(entryOfFixture)),
     );
     expect(Buffer.from(pack).toString('base64')).toBe(
-      ENTRIES_FIXTURE.deltaPack.packBase64,
+      ENTRIES_FIXTURE.delta.packBase64,
     );
-    expect(computeSha256Hex(pack)).toBe(ENTRIES_FIXTURE.deltaPack.packSha256);
+    expect(computeSha256Hex(pack)).toBe(ENTRIES_FIXTURE.delta.packSha256);
   });
 
   test('should refuse a patch entry whose body is longer than its size', async () => {
@@ -288,14 +288,14 @@ describe('buildPack', () => {
   });
 
   test.runIf(IS_TAR_AVAILABLE)(
-    'should list the pinned delta pack with tar, the patch entry under its full name',
+    'should list the pinned delta with tar, the patch entry under its full name',
     () => {
       const path = writeTemporaryPack(
-        decodeBase64(ENTRIES_FIXTURE.deltaPack.packBase64),
+        decodeBase64(ENTRIES_FIXTURE.delta.packBase64),
       );
       const listing = execFileSync('tar', ['-tf', path], { encoding: 'utf8' });
       expect(listing.trim().split('\n')).toEqual(
-        ENTRIES_FIXTURE.deltaPack.entries.map(resolveEntryName),
+        ENTRIES_FIXTURE.delta.entries.map(resolveEntryName),
       );
     },
   );
@@ -476,8 +476,8 @@ describe('readPack', () => {
     expect(await readNames(streamOf(await collect(buildPack([]))))).toEqual([]);
   });
 
-  test('should read the pinned delta pack', async () => {
-    const pack = decodeBase64(ENTRIES_FIXTURE.deltaPack.packBase64);
+  test('should read the pinned delta', async () => {
+    const pack = decodeBase64(ENTRIES_FIXTURE.delta.packBase64);
     const read: { bodyBase64: string; name: string }[] = [];
     for await (const entry of readPack(streamOf(pack, 33))) {
       read.push({
@@ -486,7 +486,7 @@ describe('readPack', () => {
       });
     }
     expect(read).toEqual(
-      ENTRIES_FIXTURE.deltaPack.entries.map(entry => ({
+      ENTRIES_FIXTURE.delta.entries.map(entry => ({
         bodyBase64: entry.bodyBase64,
         name: resolveEntryName(entry),
       })),
