@@ -45,7 +45,7 @@ const WORK_DIRECTORY = mkdtempSync(join(tmpdir(), 'hotcodepush-pack-entries-'));
 
 const ASSET = buildFixtureFile(
   'asset',
-  '{"title":"Release 2","subtitle":"Delivered as a delta"}\n',
+  '{"title":"Release 2","subtitle":"Delivered as a delta pack"}\n',
 );
 const BASE = buildFixtureFile(
   'base',
