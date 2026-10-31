@@ -208,7 +208,7 @@ export interface GetStateResult {
     trigger: SyncTrigger;
   } | null;
   nextRelease: Release | null;
-  /** The server time of the first acknowledged report this month, kept by `resolveKeptReportedAt`. */
+  /** The server time of the first acknowledged report in the latest UTC month that has one, kept by `resolveKeptReportedAt`. */
   reportedAt: string | null;
 }
 

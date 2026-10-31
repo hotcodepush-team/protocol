@@ -118,12 +118,14 @@ export function isUrlOnConfiguredHost(
   );
 }
 
+/** The files host, or the production one when the configuration names none. */
 export function resolveFilesBaseUrl(
   hosts: Pick<Configuration, 'filesBaseUrl'>,
 ): string {
   return hosts.filesBaseUrl ?? FILES_BASE_URL_DEFAULT;
 }
 
+/** The updates host, or the production one when the configuration names none. */
 export function resolveUpdatesBaseUrl(
   hosts: Pick<Configuration, 'updatesBaseUrl'>,
 ): string {

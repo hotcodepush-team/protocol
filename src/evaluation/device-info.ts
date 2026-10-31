@@ -12,7 +12,7 @@ export interface DeviceInfo {
   fingerprint: string | null;
   osVersion: string;
   /**
-   * The server time of the first acknowledged report this month, for the spending cap.
+   * The server time of the first acknowledged report in the latest UTC month that has one, for the spending cap.
    * Kept by `resolveKeptReportedAt`.
    */
   reportedAt: string | null;
