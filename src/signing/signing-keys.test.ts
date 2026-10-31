@@ -13,7 +13,7 @@ import {
 interface SignaturesFixture {
   keys: {
     bits: number;
-    fingerprint: string;
+    keyId: string;
     name: string;
     publicKey: string;
   }[];
@@ -29,8 +29,8 @@ const FIXTURE = JSON.parse(
 describe('resolveSigningKeyId', () => {
   test.each(FIXTURE.keys)(
     'should resolve the key id of $name',
-    ({ fingerprint, publicKey }) => {
-      expect(resolveSigningKeyId(publicKey)).toBe(fingerprint);
+    ({ keyId, publicKey }) => {
+      expect(resolveSigningKeyId(publicKey)).toBe(keyId);
     },
   );
 
