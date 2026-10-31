@@ -1,7 +1,7 @@
 export {
   generateSigningKeyPair,
   isAcceptedSigningPublicKey,
-  resolveSigningKeyFingerprint,
+  resolveSigningKeyId,
   SIGNING_KEY_BITS_MINIMUM,
   SIGNING_SCHEMES,
   SigningPublicKeySchema,

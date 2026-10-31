@@ -21,6 +21,7 @@ import {
   PlatformSchema,
   PrintableStringSchema,
   SizeBytesSchema,
+  UuidSchema,
 } from './primitives.js';
 
 export const ChannelSourceSchema = z.enum(CHANNEL_SOURCES);
@@ -89,7 +90,7 @@ export const BATCH_EVENT_COUNT_LIMIT = 200;
 
 /** One batch to `POST /v1/apps/{appId}/events`. */
 export const DeviceEventsRequestSchema = z.looseObject({
-  deviceId: PrintableStringSchema,
+  deviceId: UuidSchema,
   events: z.array(DeviceEventSchema).max(BATCH_EVENT_COUNT_LIMIT),
   platform: PlatformSchema,
   report: DeviceReportSchema.nullable(),

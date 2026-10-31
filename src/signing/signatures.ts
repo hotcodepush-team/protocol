@@ -10,10 +10,10 @@ import {
   importSigningPrivateKey,
   importSigningPublicKey,
   parseSelfDescribingBytes,
-  resolveSigningKeyFingerprint,
+  resolveSigningKeyId,
 } from './signing-keys.js';
 
-/** The manifest the CLI built, without `keyId`. Signing sets `keyId` to the fingerprint of the signing key. */
+/** The manifest the CLI built, without `keyId`. Signing sets `keyId` to the key id of the signing key. */
 export type ManifestToSign = Pick<
   BundleManifest,
   'appId' | 'bundleVersion' | 'files' | 'fingerprint' | 'platforms'
@@ -28,7 +28,7 @@ export interface SignedManifest {
 
 interface SigningKey {
   cryptoKey: CryptoKey;
-  // The fingerprint of the public key.
+  // The key id of the public key.
   keyId: string;
 }
 
@@ -36,7 +36,7 @@ const SIGNATURE_ALGORITHM = 'RSASSA-PKCS1-v1_5';
 
 /**
  * Signs the bundle manifest.
- * It sets `keyId` to the fingerprint of the signing key and signs the canonical JSON of the result.
+ * It sets `keyId` to the key id of the signing key and signs the canonical JSON of the result.
  */
 export async function signManifest(
   manifest: ManifestToSign,
@@ -81,9 +81,7 @@ async function resolveSigningKey(privateKey: string): Promise<SigningKey> {
   const cryptoKey = await importSigningPrivateKey(privateKey);
   return {
     cryptoKey,
-    keyId: resolveSigningKeyFingerprint(
-      await resolvePublicKeyOfCryptoKey(cryptoKey),
-    ),
+    keyId: resolveSigningKeyId(await resolvePublicKeyOfCryptoKey(cryptoKey)),
   };
 }
 
@@ -112,7 +110,7 @@ async function verifyMessage(
   const publicKey = publicKeys.find(
     candidate =>
       parseSelfDescribingBytes(candidate) !== null &&
-      resolveSigningKeyFingerprint(candidate) === signature.keyId,
+      resolveSigningKeyId(candidate) === signature.keyId,
   );
   if (parsedValue === null || publicKey === undefined) {
     return false;
