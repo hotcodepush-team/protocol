@@ -73,14 +73,17 @@ A listed delta that answers anything but a 200 or a 206, a 404 or a redirect inc
 
 ## `wire-rules.json`
 
-The rules every reader enforces before a byte is written, as whole documents in six arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | manifest | envelope }`.
+The rules every reader enforces before a byte is written, as whole documents in eight arrays — `acceptedIndexes`, `refusedIndexes`, `acceptedChannelsIndexes`, `refusedChannelsIndexes`, `acceptedManifests`, `refusedManifests`, `acceptedEnvelopes`, `refusedEnvelopes` — each case `{ name, index | channelsIndex | manifest | envelope }`.
 A wire URL is `http` or `https` with a host, nothing else, so `javascript:`, `file:`, `data:` and `ftp:` are refused where they stand; ids are `[A-Za-z0-9_-]{1,64}`, a hash is 64 lowercase hex, a manifest path is relative and `/`-separated with no empty, `.` or `..` segment, no backslash and no NUL, timestamps are UTC with a `Z`, and every field of a shape is present, a nullable one as `null`, never absent.
+A `device` condition's `hashedIds` are hashes too, so one entry in uppercase hex refuses the index.
+A channel id in the channels index is a UUID, the form the API gives it, and a channels index with one bad entry is refused whole, as the channel index is.
 The refused cases pin where the three readers once diverged — a default for an absent field, a lenient type, an offset timestamp, a `..` segment hidden behind a combining mark — so a refusal is the same refusal on every platform.
 A manifest or an envelope stored while bundles carried `patches` is accepted and the field ignored, as any field a reader does not know is; one accepted envelope carries it on itself and in its manifest.
 
 ## `device-events.json`
 
 The batches the events endpoint, `POST /v1/apps/{appId}/events`, accepts and refuses, as `acceptedBatches` and `refusedBatches`, each case `{ name, batch }`, so a core tests its encoder against the endpoint's reading instead of a batch of its own.
+`deviceId` is a UUID, the form the event consumer stores it in, so a batch with any other id is refused.
 The endpoint reads the batch whole and its events one by one: a batch whose `deviceId`, `sdkVersion`, `platform`, `events` or `report` breaks the shape is refused as a validation error, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, the `202` answering as for any batch.
 An accepted case carries `skippedEventIndexes`, the positions of the events the endpoint skips, empty when it reads them all.
 Every key of a shape is present, a nullable one as `null` — `report`, the report's `embeddedBundleId`, `fingerprint` and `releaseId` — and an optional one, `reason`, `conditionType` or `detail`, is left out, never `null`.

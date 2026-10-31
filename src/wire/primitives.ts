@@ -63,6 +63,9 @@ export const SignatureValueSchema = z
 
 export const SizeBytesSchema = z.int().nonnegative();
 
+/** A UUID, the form the API gives a channel id and the device id. */
+export const UuidSchema = z.uuid();
+
 /** A signature as the index and the manifest envelope carry it. */
 export const SignatureSchema = z.looseObject({
   keyId: NonEmptyStringSchema,

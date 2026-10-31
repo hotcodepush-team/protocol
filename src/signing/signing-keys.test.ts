@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import {
   generateSigningKeyPair,
   isAcceptedSigningPublicKey,
-  resolveSigningKeyFingerprint,
+  resolveSigningKeyId,
   SIGNING_KEY_BITS_MINIMUM,
   SigningPublicKeySchema,
 } from './signing-keys.js';
@@ -26,18 +26,16 @@ const FIXTURE = JSON.parse(
   ),
 ) as SignaturesFixture;
 
-describe('resolveSigningKeyFingerprint', () => {
+describe('resolveSigningKeyId', () => {
   test.each(FIXTURE.keys)(
-    'should resolve the fingerprint of $name',
+    'should resolve the key id of $name',
     ({ fingerprint, publicKey }) => {
-      expect(resolveSigningKeyFingerprint(publicKey)).toBe(fingerprint);
+      expect(resolveSigningKeyId(publicKey)).toBe(fingerprint);
     },
   );
 
   test('should refuse a key that does not parse', () => {
-    expect(() => resolveSigningKeyFingerprint('rsa-v1_5-sha256:')).toThrow(
-      TypeError,
-    );
+    expect(() => resolveSigningKeyId('rsa-v1_5-sha256:')).toThrow(TypeError);
   });
 });
 

@@ -82,10 +82,10 @@ export async function isAcceptedSigningPublicKey(
 }
 
 /**
- * Resolves the key fingerprint: `sha256:` and the hex SHA-256 of the SPKI bytes.
+ * Resolves the key id: `sha256:` and the hex SHA-256 of the SPKI bytes.
  * It is the `keyId` of a signature and selects the key that verifies it.
  */
-export function resolveSigningKeyFingerprint(publicKey: string): string {
+export function resolveSigningKeyId(publicKey: string): string {
   const parsedKey = parseSelfDescribingBytes(publicKey);
   if (parsedKey === null) {
     throw new TypeError('The public key is not a self-describing signing key.');
