@@ -1,5 +1,5 @@
 {
-  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused as a validation error, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, condition and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch. The acknowledgements are the reportedAt a device keeps after a 202: the stamp of the first acknowledged batch of a UTC month that carried the report, the month read from the stamp, replaced only by a report acknowledged in a later month and never by a batch of events alone.",
+  "description": "The batches the events endpoint, POST /v1/apps/{appId}/events, accepts and refuses, so every core tests its encoder against the endpoint's reading. The endpoint reads the batch whole and its events one by one: a batch whose deviceId, sdkVersion, platform, events or report breaks the shape is refused as a validation error, and the device drops the events it carried and keeps the report for the next sync; an event it cannot read is skipped and the rest kept, answered 202 as any batch, skippedEventIndexes naming the positions skipped. Every key of a shape is present, a nullable one as null, never absent; an optional one, reason, conditionType and detail, is left out, never null. A reader ignores a field it does not know. A device sends at most 200 events in a batch, the outbox's cap, and the endpoint refuses a larger batch. The acknowledgements are the reportedAt a device keeps after a 202: the stamp of the first acknowledged batch of a UTC month that carried the report, the month read from the stamp, replaced only by a report acknowledged in a later month and never by a batch of events alone.",
   "acceptedBatches": [
     {
       "name": "should accept checked events with every skipped reason and every condition type",
@@ -42,21 +42,21 @@
             "type": "checked"
           },
           {
-            "condition": "binary",
+            "conditionType": "binary",
             "reason": "device_incompatible",
             "releaseId": "release-8",
             "status": "skipped",
             "type": "checked"
           },
           {
-            "condition": "fingerprint",
+            "conditionType": "fingerprint",
             "reason": "device_incompatible",
             "releaseId": "release-9",
             "status": "skipped",
             "type": "checked"
           },
           {
-            "condition": "os",
+            "conditionType": "os",
             "reason": "device_incompatible",
             "releaseId": "release-10",
             "status": "skipped",
@@ -69,14 +69,14 @@
             "type": "checked"
           },
           {
-            "condition": "attribute",
+            "conditionType": "attribute",
             "reason": "device_not_targeted",
             "releaseId": "release-12",
             "status": "skipped",
             "type": "checked"
           },
           {
-            "condition": "device",
+            "conditionType": "device",
             "reason": "device_not_targeted",
             "releaseId": "release-13",
             "status": "skipped",
@@ -113,28 +113,24 @@
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 18432,
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-3",
             "downloadSizeBytes": 2048,
             "packKind": "files",
             "releaseId": "release-3",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-4",
             "downloadSizeBytes": 812331,
             "packKind": "full",
             "releaseId": "release-4",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-5",
             "downloadSizeBytes": 40960,
             "packKind": "streamed",
             "releaseId": "release-5",
@@ -142,6 +138,25 @@
           }
         ],
         "platform": "android",
+        "report": null,
+        "sdkVersion": "1.2.0"
+      },
+      "skippedEventIndexes": []
+    },
+    {
+      "name": "should accept a downloaded event that still carries bundleId, dropped on 2026-10-31, and ignore it",
+      "batch": {
+        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
+        "events": [
+          {
+            "bundleId": "bundle-2",
+            "downloadSizeBytes": 18432,
+            "packKind": "delta",
+            "releaseId": "release-2",
+            "type": "downloaded"
+          }
+        ],
+        "platform": "ios",
         "report": null,
         "sdkVersion": "1.2.0"
       },
@@ -234,28 +249,6 @@
       "skippedEventIndexes": []
     },
     {
-      "name": "should accept rolled_back events, to an earlier release and to the embedded bundle with a null toReleaseId",
-      "batch": {
-        "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
-        "events": [
-          {
-            "fromReleaseId": "release-3",
-            "toReleaseId": "release-2",
-            "type": "rolled_back"
-          },
-          {
-            "fromReleaseId": "release-2",
-            "toReleaseId": null,
-            "type": "rolled_back"
-          }
-        ],
-        "platform": "ios",
-        "report": null,
-        "sdkVersion": "1.2.0"
-      },
-      "skippedEventIndexes": []
-    },
-    {
       "name": "should accept a report with every fact and an update's events",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
@@ -266,7 +259,6 @@
             "type": "checked"
           },
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 18432,
             "packKind": "delta",
             "releaseId": "release-2",
@@ -601,13 +593,19 @@
       "skippedEventIndexes": []
     },
     {
-      "name": "should skip a rollback without toReleaseId, which is null for the embedded bundle, and keep the events around it",
+      "name": "should skip a rolled_back event, a type retired on 2026-10-31 and now unknown, whole or without toReleaseId, and keep the events around it",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "releaseId": "release-2",
-            "type": "applied"
+            "reason": "app_crashed",
+            "releaseId": "release-3",
+            "type": "failed"
+          },
+          {
+            "fromReleaseId": "release-3",
+            "toReleaseId": "release-2",
+            "type": "rolled_back"
           },
           {
             "fromReleaseId": "release-2",
@@ -622,10 +620,10 @@
         "report": null,
         "sdkVersion": "1.2.0"
       },
-      "skippedEventIndexes": [1]
+      "skippedEventIndexes": [1, 2]
     },
     {
-      "name": "should skip an event whose optional reason, condition or detail is null instead of left out",
+      "name": "should skip an event whose optional reason, conditionType or detail is null instead of left out",
       "batch": {
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
@@ -640,7 +638,7 @@
             "type": "applied"
           },
           {
-            "condition": null,
+            "conditionType": null,
             "reason": "device_not_in_rollout",
             "releaseId": "release-3",
             "status": "skipped",
@@ -677,7 +675,6 @@
             "type": "applied"
           },
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 18432,
             "releaseId": "release-2",
             "type": "downloaded"
@@ -715,7 +712,7 @@
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "condition": "binary",
+            "conditionType": "binary",
             "reason": "incompatible",
             "releaseId": "release-3",
             "status": "skipped",
@@ -837,14 +834,12 @@
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": "18432",
             "packKind": "delta",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 18432.5,
             "packKind": "delta",
             "releaseId": "release-2",
@@ -867,21 +862,18 @@
         "deviceId": "7c1f2b0e-2a4b-4d7c-9b7e-3f1a2c4d5e6f",
         "events": [
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 512000000,
             "packKind": "full",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 512000001,
             "packKind": "full",
             "releaseId": "release-2",
             "type": "downloaded"
           },
           {
-            "bundleId": "bundle-2",
             "downloadSizeBytes": 9007199254740991,
             "packKind": "delta",
             "releaseId": "release-2",

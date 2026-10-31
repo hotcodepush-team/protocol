@@ -13,7 +13,7 @@ import type {
 import { evaluateChannelIndex } from './evaluate-channel-index.js';
 
 interface ExpectedOutcome {
-  condition?: string;
+  conditionType?: string;
   isMandatory?: boolean;
   reason?: string;
   releaseId: string | null;
@@ -21,7 +21,7 @@ interface ExpectedOutcome {
 }
 
 interface ExpectedVerdict {
-  condition?: string;
+  conditionType?: string;
   isEligible: boolean;
   reason?: string;
   releaseId: string;
@@ -66,9 +66,9 @@ function resolveExpectedOutcome(outcome: EvaluationOutcome): ExpectedOutcome {
       };
     case 'skipped':
       return {
-        ...(outcome.condition === undefined
+        ...(outcome.conditionType === undefined
           ? {}
-          : { condition: outcome.condition }),
+          : { conditionType: outcome.conditionType }),
         reason: outcome.reason,
         releaseId,
         status: outcome.status,
@@ -82,9 +82,9 @@ function resolveExpectedVerdicts(
   evaluation: ChannelIndexEvaluation,
 ): ExpectedVerdict[] {
   return evaluation.verdicts.map(verdict => ({
-    ...(verdict.condition === undefined
+    ...(verdict.conditionType === undefined
       ? {}
-      : { condition: verdict.condition }),
+      : { conditionType: verdict.conditionType }),
     isEligible: verdict.isEligible,
     ...(verdict.reason === undefined ? {} : { reason: verdict.reason }),
     releaseId: verdict.release.id,

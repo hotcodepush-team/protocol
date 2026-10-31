@@ -44,7 +44,7 @@ const RELEASE = {
   manifestUrl: 'https://files.hotcodepush.com/apps/a1/bundles/b1/manifest.json',
   notes: null,
   number: 42,
-  rolloutPercentage: 100,
+  rolloutPercent: 100,
   sizeBytes: 10485760,
 };
 
@@ -52,7 +52,7 @@ const INDEX = {
   appId: 'a1',
   cappedAt: null,
   channelId: 'c1',
-  isPaused: false,
+  pausedAt: null,
   platform: 'ios',
   releases: [RELEASE],
   revokedReleaseIds: [],

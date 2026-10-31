@@ -8,7 +8,7 @@ import { resolveRolloutBucket } from './rollout.js';
 /** The verdict on one release. It explains the outcome and is what the probe prints. */
 export interface ReleaseVerdict {
   /** The type of the failed condition, for `device_incompatible` and `device_not_targeted`. */
-  condition?: ConditionType;
+  conditionType?: ConditionType;
   conditions: ConditionVerdict[];
   isEligible: boolean;
   /** Why the device will not take the release, when it is not eligible. */
@@ -26,7 +26,7 @@ export type EvaluationOutcome =
   | { release: IndexRelease | null; status: 'up_to_date' }
   | { isMandatory: boolean; release: IndexRelease; status: 'available' }
   | {
-      condition?: ConditionType;
+      conditionType?: ConditionType;
       reason: SkippedReason;
       release: IndexRelease | null;
       status: 'skipped';
@@ -82,7 +82,7 @@ export function evaluateChannelIndex(
   const olderEligibleVerdict = eligibleVerdicts.find(
     verdict => verdict.release.number < currentNumber,
   );
-  if (!index.isPaused && newerEligibleVerdict !== undefined) {
+  if (index.pausedAt === null && newerEligibleVerdict !== undefined) {
     const target = newerEligibleVerdict.release;
     return {
       outcome: {
@@ -107,7 +107,7 @@ export function evaluateChannelIndex(
       verdicts,
     };
   }
-  if (index.isPaused && newerVerdict !== undefined) {
+  if (index.pausedAt !== null && newerVerdict !== undefined) {
     return {
       outcome: {
         reason: 'channel_paused',
@@ -120,9 +120,9 @@ export function evaluateChannelIndex(
   if (newerVerdict !== undefined && newerVerdict.reason !== undefined) {
     return {
       outcome: {
-        ...(newerVerdict.condition === undefined
+        ...(newerVerdict.conditionType === undefined
           ? {}
-          : { condition: newerVerdict.condition }),
+          : { conditionType: newerVerdict.conditionType }),
         reason: newerVerdict.reason,
         release: newerVerdict.release,
         status: 'skipped',
@@ -199,7 +199,7 @@ function resolveSkippedReason(
   conditions: readonly ConditionVerdict[],
   index: ChannelIndex,
   device: DeviceInfo,
-): { condition?: ConditionType; reason: SkippedReason } | null {
+): { conditionType?: ConditionType; reason: SkippedReason } | null {
   if (isReleaseRevoked(release, index)) {
     return { reason: 'release_revoked' };
   }
@@ -214,8 +214,7 @@ function resolveSkippedReason(
     return resolveConditionReason(failed.type);
   }
   if (
-    resolveRolloutBucket(device.deviceId, release.id) >=
-    release.rolloutPercentage
+    resolveRolloutBucket(device.deviceId, release.id) >= release.rolloutPercent
   ) {
     return { reason: 'device_not_in_rollout' };
   }
@@ -223,7 +222,7 @@ function resolveSkippedReason(
 }
 
 function resolveConditionReason(type: string): {
-  condition?: ConditionType;
+  conditionType?: ConditionType;
   reason: SkippedReason;
 } {
   if (!isKnownConditionType(type)) {
@@ -232,10 +231,10 @@ function resolveConditionReason(type: string): {
   switch (type) {
     case 'attribute':
     case 'device':
-      return { condition: type, reason: 'device_not_targeted' };
+      return { conditionType: type, reason: 'device_not_targeted' };
     case 'binary':
     case 'fingerprint':
     case 'os':
-      return { condition: type, reason: 'device_incompatible' };
+      return { conditionType: type, reason: 'device_incompatible' };
   }
 }
