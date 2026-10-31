@@ -13,11 +13,9 @@ export const LOCKFILE_NAMES = [
 export type LockfileName = (typeof LOCKFILE_NAMES)[number];
 
 /**
- * A package the lockfile installs, under the name it is installed by, with
- * the lockfile's record of its bytes: the integrity hash, or the resolved
- * URL where the lockfile keeps no hash, or null where it keeps neither. So
- * a package built again under the same version, from a git URL, a tarball
- * or pkg.pr.new, differs, while a published version never does.
+ * A package the lockfile installs, under the name it is installed by.
+ * `integrity` is the lockfile hash, else the resolved URL, else null.
+ * So a rebuild under the same version, from git, a tarball or pkg.pr.new, still differs.
  */
 export interface LockedPackage {
   integrity: string | null;
@@ -25,47 +23,32 @@ export interface LockedPackage {
   version: string;
 }
 
-/**
- * A dependency as the lockfile resolved it: the lockfile's own key of the
- * installed copy, its package, and whether it is optional, which a platform
- * the package does not support never installs.
- */
+// `key` is the lockfile's own key for the installed copy.
 export interface LockedDependency {
   isOptional: boolean;
   key: string;
   package: LockedPackage;
 }
 
-/**
- * The lockfile read as the project's dependency tree: the project's own
- * dependencies and each locked package's, as the lockfile resolved them, and
- * where each is installed. Workspace packages and links are the app's own
- * code, never a dependency, and bundled packages ride inside their parent, so
- * the tree holds neither; a dependency the lockfile does not install is not
- * in it either.
- */
+// Workspace packages and links are the app's own code, and bundled packages ride inside their parent.
+// So the tree holds neither, and no dependency the lockfile does not install.
 export interface LockedTree {
   projectDependencies: LockedDependency[];
   resolveDependencies(dependency: LockedDependency): LockedDependency[];
-  /**
-   * Where the dependency may be installed, relative to the lockfile's
-   * directory, the first that exists holding it: the directory the lockfile
-   * implies, else the nearest `node_modules` from the directory of the
-   * project or package depending on it, as Node resolves it.
-   */
+  // The first existing path wins: the one the lockfile implies, then each `node_modules` Node would search.
   resolveInstallDirectories(
     dependency: LockedDependency,
     dependentDirectory: string,
   ): string[];
 }
 
-/** The project the tree starts from: its directory relative to the lockfile's, empty when they are one, and its package.json's dependencies. */
+// `path` is relative to the lockfile directory, empty when both are the same.
 export interface LockedProject {
   dependencies: DeclaredDependency[];
   path: string;
 }
 
-/** A dependency as a package.json or a lockfile entry declares it: the name, the range or the version a lockfile pinned, and whether it is optional. */
+// `range` is a package.json range or the version a lockfile pinned.
 export interface DeclaredDependency {
   isOptional: boolean;
   name: string;
@@ -133,11 +116,11 @@ const PnpmLockfileSchema = z.looseObject({
     .default({}),
 });
 
-/** An entry of either yarn format: classic records `integrity` and `resolved`, berry `checksum` and `resolution`. */
+// Yarn classic records `integrity` and `resolved`, berry records `checksum` and `resolution`.
 const YarnLockfileEntrySchema = z.looseObject({
   checksum: z.string().optional(),
   dependencies: DependencyRangesSchema,
-  /** Berry's: an optional dependency sits among the dependencies, marked here; parseSyml reads every scalar as a string. */
+  // Berry marks optional dependencies here. parseSyml reads every scalar as a string.
   dependenciesMeta: z
     .record(z.string(), z.looseObject({ optional: z.string().optional() }))
     .optional(),
@@ -151,23 +134,20 @@ const YarnLockfileEntrySchema = z.looseObject({
 type YarnLockfileEntry = z.infer<typeof YarnLockfileEntrySchema>;
 
 const NODE_MODULES_SEGMENT = 'node_modules/';
-/** An aliased dependency's version is the aliased package's own key, `real-name@1.2.3`, scoped or not; no other version starts with a name and an `@`. */
+// Matches an alias version, which is the aliased package's key such as `real-name@1.2.3`, scoped or not.
+// No other version starts with a name and an `@`.
 const PNPM_ALIAS_VERSION_PATTERN = /^(?:@[^@/]+\/)?[^@:(/]+@/;
 const PNPM_LINK_PREFIX = 'link:';
 const PNPM_ROOT_IMPORTER = '.';
 const PNPM_VIRTUAL_STORE_DIRECTORY = 'node_modules/.pnpm';
-/** The hash ending a virtual-store name pnpm shortened: 26 base32 characters up to pnpm 9, 32 hex characters from pnpm 10. */
+// Matches the hash pnpm puts at the end of a shortened store name.
+// That is 26 base32 characters up to pnpm 9 and 32 hex characters from pnpm 10.
 const PNPM_VIRTUAL_STORE_HASH_PATTERN = /^(?:[a-z2-7]{26}|[0-9a-f]{32})$/;
 const YARN_METADATA_KEY = '__metadata';
 const YARN_ROOT_WORKSPACE = '.';
 
-/**
- * The project's dependency tree as the lockfile resolved it, so a monorepo's
- * root lockfile yields the packages this workspace installs and never a
- * sibling's. A lockfile format this recipe was not written against is
- * refused rather than misread. pnpm's virtual store is read for the names it
- * shortened, which the lockfile alone cannot tell.
- */
+// From a monorepo root lockfile, only this workspace's packages count, never a sibling's.
+// An unknown lockfile format is refused rather than misread.
 export async function readLockedTree(
   lockfileName: LockfileName,
   text: string,
@@ -188,7 +168,7 @@ export async function readLockedTree(
   }
 }
 
-/** npm keys every installed copy by its path, so a dependency resolves as Node resolves it, from the nearest `node_modules` up, and is installed at its key. */
+// npm keys each installed copy by its path, so a dependency resolves as in Node, from the nearest `node_modules` up.
 function resolveNpmLockedTree(
   text: string,
   project: LockedProject,
@@ -244,15 +224,8 @@ function resolveNpmLockedTree(
   };
 }
 
-/**
- * pnpm resolves the project's dependencies in its importer and every
- * package's in its snapshot, whose version carries the peers it resolved,
- * and installs each snapshot in a virtual store directory named after it.
- * An aliased dependency's version names the aliased package's snapshot; it
- * contributes that package's version and integrity under the name the
- * project declared, as an alias does from every lockfile, and is linked
- * under that name beside its dependent.
- */
+// pnpm installs each snapshot in a virtual store directory named after it.
+// An alias contributes the aliased package's version and integrity under the declared name, as in every lockfile.
 function resolvePnpmLockedTree(
   text: string,
   project: LockedProject,
@@ -293,7 +266,7 @@ function resolvePnpmLockedTree(
     if (declared.range.startsWith(PNPM_LINK_PREFIX) || !(key in snapshots)) {
       return [];
     }
-    // The snapshot's version carries the resolved peers in parentheses; the package's does not.
+    // A snapshot key adds the resolved peers in parentheses. A package key does not.
     const packageKey = key.split('(')[0] ?? key;
     const resolution = packages[packageKey]?.resolution;
     return [
@@ -341,7 +314,7 @@ function resolvePnpmLockedTree(
   };
 }
 
-/** The directories of pnpm's virtual store, one per snapshot; none when the project was installed another way. */
+// Empty when another package manager installed the project.
 async function readPnpmVirtualStoreNames(
   reader: ProjectReader,
 ): Promise<ReadonlySet<string>> {
@@ -351,27 +324,18 @@ async function readPnpmVirtualStoreNames(
   );
 }
 
-/** The snapshot a dependency's version names: an alias's version is the aliased package's own key, any other the dependency's version. */
 function resolvePnpmSnapshotKey(declared: DeclaredDependency): string {
   return PNPM_ALIAS_VERSION_PATTERN.test(declared.range)
     ? declared.range
     : `${declared.name}@${declared.range}`;
 }
 
-/** The package a snapshot key names, everything before the `@` its version starts with. */
 function resolvePnpmPackageName(snapshotKey: string): string {
   return snapshotKey.slice(0, snapshotKey.indexOf('@', 1));
 }
 
-/**
- * The directory of a snapshot in pnpm's virtual store, null when the store
- * holds none, so the package is found as Node finds it instead. pnpm names
- * it after the key, the characters a file name cannot hold replaced by `+`
- * and the peers' parentheses by `_`; a name too long or with capitals it
- * shortens to a prefix, an `_` and a hash, whose length and algorithm its
- * major and the platform choose, so such a snapshot's directory is the one
- * store entry whose prefix the unshortened name begins with.
- */
+// pnpm replaces characters a file name cannot hold with `+` and the peer parentheses with `_`.
+// It shortens a long or capitalized name to a prefix, `_` and a hash that depends on version and platform, so match by prefix.
 function resolvePnpmVirtualStoreName(
   snapshotKey: string,
   virtualStoreNames: ReadonlySet<string>,
@@ -398,12 +362,8 @@ function isShortenedVirtualStoreName(storeName: string, name: string): boolean {
   );
 }
 
-/**
- * yarn keys every entry by the descriptors it satisfies, `name@range`. Berry
- * records each workspace with its dependencies' descriptors, its own
- * protocols added; classic records no workspace, so the project's ranges
- * come from its package.json. Neither records where an entry is installed.
- */
+// yarn keys each entry by the `name@range` descriptors it satisfies, and records no install location.
+// Classic records no workspace, so the project's ranges come from its package.json.
 function resolveYarnLockedTree(
   text: string,
   project: LockedProject,
@@ -422,7 +382,7 @@ function resolveYarnLockedTree(
       return [];
     }
     const entry = parseYarnLockfileEntry(key, lockfile[key]);
-    // A soft link is a workspace, a link or a portal: the app's own code.
+    // A soft link is a workspace, link or portal, so it is the app's own code.
     if (entry.linkType === 'soft') {
       return [];
     }
@@ -468,7 +428,7 @@ function resolveYarnLockedTree(
   };
 }
 
-/** The project's dependencies under the descriptors berry recorded on the project's workspace entry. */
+// Berry records the workspace's descriptors with its own protocols added, so they replace the package.json ranges.
 function resolveBerryWorkspaceDependencies(
   lockfile: Record<string, unknown>,
   entryKeysByDescriptor: Map<string, string>,
@@ -506,7 +466,6 @@ function parseYarnLockfileEntry(
   return entry.data;
 }
 
-/** The dependencies of a `{ name: range }` record, every one optional or none. */
 export function resolveDeclaredDependencies(
   ranges: Record<string, string> | undefined,
   isOptional: boolean,
@@ -518,12 +477,7 @@ export function resolveDeclaredDependencies(
   }));
 }
 
-/**
- * The paths Node consults for a package from a directory, nearest first,
- * relative to the lockfile's directory: in the directory's own
- * `node_modules`, then in every ancestor's that is not itself a
- * `node_modules`.
- */
+// Node searches the directory's own `node_modules` first, then each ancestor that is not itself a `node_modules`.
 function resolveNodeModulesPaths(directory: string, name: string): string[] {
   const segments = directory === '' ? [] : directory.split('/');
   return segments

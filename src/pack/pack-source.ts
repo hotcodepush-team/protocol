@@ -6,15 +6,21 @@ import { resolveUpdatesBaseUrl } from '../wire/configuration.js';
 /** What a download knows when it picks the pack to request. */
 export interface PackDownload {
   appId: string;
-  /** The bundle the device runs: the current release's, or the embedded bundle's id; `null` for an embedded bundle the build step did not register. */
+  /**
+   * The bundle the device runs, from the current release or the embedded bundle.
+   * `null` for an embedded bundle the build step did not register.
+   */
   baseBundleId: string | null;
   envelope: Pick<ManifestEnvelope, 'bundleId' | 'deltas' | 'pack'>;
   hosts: Pick<Configuration, 'updatesBaseUrl'>;
-  /** The manifest's files the device holds neither in its file store nor in its embedded bundle. */
+  /** How many manifest files the device has neither in its file store nor in its embedded bundle. */
   missingFileCount: number;
 }
 
-/** A pack a download requests: where, how its bytes arrive, its length when the envelope states one and the most bytes it may hold. */
+/**
+ * A pack a download requests. `sizeBytes` is null when the envelope states no length.
+ * `packBytesLimit` is the most bytes the pack may hold.
+ */
 export interface PackSource {
   kind: Exclude<PackKind, 'files'>;
   packBytesLimit: number;
@@ -23,12 +29,9 @@ export interface PackSource {
 }
 
 /**
- * The pack a download requests first, `null` when no file is missing. A
- * device with a base takes a delta for one missing file as for ten, so
- * the one file a patch exists for, the main bundle, arrives as a patch. The
- * envelope's deltas are the deltas that exist: the one it lists for the
- * device's base, else the streamed pack the updates host assembles, never a
- * URL guessed on the files host. A device without a base takes the full pack.
+ * Resolves the pack a download requests first, or `null` when no file is missing.
+ * A device without a base takes the full pack. A device with a base takes a delta even for one missing file,
+ * so the main bundle arrives as a patch. That is the delta the envelope lists for the base, else the streamed pack.
  */
 export function resolvePackSource(download: PackDownload): PackSource | null {
   if (download.missingFileCount === 0) {
@@ -53,12 +56,9 @@ export function resolvePackSource(download: PackDownload): PackSource | null {
 }
 
 /**
- * The pack a download requests after `source` answered anything but a 200 or
- * a 206, `null` when the download fails and waits for the next cycle. Only the
- * streamed pack gives way: whatever the updates host answers, its redirect to
- * the full pack above twenty objects included, reads as the full pack, since a
- * device follows no redirect. A listed delta that does not answer fails like
- * the full pack, its 404 included.
+ * Resolves the pack to request after `source` answered anything but 200 or 206.
+ * Returns `null` when the download fails and waits for the next cycle, as for a full pack or a listed delta.
+ * A streamed pack falls back to the full pack whatever the answer, since a device follows no redirect.
  */
 export function resolveFallbackPackSource(
   download: PackDownload,
@@ -83,10 +83,8 @@ function resolveFullPackSource(download: PackDownload): PackSource {
   };
 }
 
-/**
- * The delta the updates host assembles on request, of a length known only
- * as it arrives, never larger than the full pack whose entries it shares.
- */
+// The updates host assembles this delta on request, so its length is unknown up front.
+// It shares its entries with the full pack, so it is never larger.
 function resolveStreamedPackSource(
   download: PackDownload,
   baseBundleId: string,

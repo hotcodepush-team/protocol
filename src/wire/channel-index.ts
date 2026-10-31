@@ -11,13 +11,11 @@ import {
   SizeBytesSchema,
 } from './primitives.js';
 
-/** The channel index's format major, equal to the `v1` in the index path. */
+/** The format major of the channel index, equal to the `v1` in the index path. */
 export const CHANNEL_INDEX_SCHEMA = 1;
 
-/** The most hashed ids a `device` condition carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
+// A writer refuses more than these limits, but a reader parses any count, so raising one stays additive.
 export const DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT = 500;
-
-/** The most conditions a release carries: a writer refuses more, a reader parses any count, so raising it stays additive. */
 export const RELEASE_CONDITION_COUNT_LIMIT = 16;
 
 export const AttributeConditionSchema = z.looseObject({
@@ -46,7 +44,7 @@ export const OsConditionSchema = z.looseObject({
   type: z.literal('os'),
 });
 
-/** A condition type this implementation does not know: it parses, and it fails closed. */
+/** A condition type this implementation does not know. It parses, and it fails closed. */
 export const UnknownConditionSchema = z.looseObject({
   type: z
     .string()
@@ -85,7 +83,7 @@ export const IndexReleaseSchema = z.looseObject({
 });
 export type IndexRelease = z.infer<typeof IndexReleaseSchema>;
 
-/** The channel's index for a platform, one object per app, channel and platform. */
+/** The channel index for one app, channel and platform. */
 export const ChannelIndexSchema = z.looseObject({
   appId: NonEmptyStringSchema,
   cappedAt: IsoTimestampSchema.nullable(),

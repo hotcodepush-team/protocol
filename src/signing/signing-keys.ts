@@ -5,10 +5,8 @@ import { computeSha256Hex } from '../hash/sha256.js';
 import { Base64Schema } from '../wire/primitives.js';
 
 /**
- * The pinned allow-list, one scheme: RSASSA-PKCS1-v1_5 with SHA-256, which
- * both platforms' own APIs verify. A value's prefix selects within the list
- * and never extends it, so the algorithm is never the signer's choice; a value
- * under any other prefix names an unknown scheme.
+ * The pinned allow-list: RSASSA-PKCS1-v1_5 with SHA-256, which the native APIs of both platforms verify.
+ * The prefix of a value selects from this list and never extends it, so the signer never picks the algorithm.
  */
 export const SIGNING_SCHEMES = ['rsa-v1_5-sha256'] as const;
 export type SigningScheme = (typeof SIGNING_SCHEMES)[number];
@@ -17,9 +15,8 @@ export type SigningScheme = (typeof SIGNING_SCHEMES)[number];
 export const SIGNING_KEY_BITS_MINIMUM = 2048;
 
 /**
- * A key pair: the public key self-describing, `rsa-v1_5-sha256:` and the
- * base64 of its SPKI DER, as `hotcodepush.json` lists it; the private key the
- * base64 of its PKCS #8 DER, one line, the secret a CI holds.
+ * A key pair. `publicKey` is `rsa-v1_5-sha256:` and the base64 of the SPKI DER, as `hotcodepush.json` lists it.
+ * `privateKey` is the base64 of the PKCS #8 DER on one line: the secret a CI holds.
  */
 export interface SigningKeyPair {
   privateKey: string;
@@ -41,9 +38,8 @@ const SIGNING_ALGORITHM: RsaHashedImportParams = {
 const SIGNING_SCHEME: SigningScheme = 'rsa-v1_5-sha256';
 
 /**
- * A public key in the form the verifier selects by: the scheme of the
- * allow-list and canonical base64. The schema reads no key bytes; whether Web
- * Crypto takes the key, and at what size, is `isAcceptedSigningPublicKey`.
+ * A public key in self-describing form: an allow-listed scheme and canonical base64.
+ * It does not read the key bytes. `isAcceptedSigningPublicKey` checks that Web Crypto imports the key.
  */
 export const SigningPublicKeySchema = z
   .string()
@@ -52,7 +48,7 @@ export const SigningPublicKeySchema = z
     'must be `rsa-v1_5-sha256:<base64>`',
   );
 
-/** The pair Web Crypto generates: RSA of 4096 bits. */
+/** Generates a 4096-bit RSA key pair with Web Crypto. */
 export async function generateSigningKeyPair(): Promise<SigningKeyPair> {
   const keyPair = await crypto.subtle.generateKey(
     {
@@ -73,10 +69,7 @@ export async function generateSigningKeyPair(): Promise<SigningKeyPair> {
   };
 }
 
-/**
- * Whether the public key is one a signature may be verified with: Web Crypto
- * imports it as an RSA key of at least the minimum size.
- */
+/** Whether Web Crypto imports the public key as an RSA key of at least the minimum size. */
 export async function isAcceptedSigningPublicKey(
   publicKey: string,
 ): Promise<boolean> {
@@ -89,8 +82,8 @@ export async function isAcceptedSigningPublicKey(
 }
 
 /**
- * The key's fingerprint, `sha256:` and the SHA-256 of its SPKI bytes in hex: a
- * signature's `keyId`, which selects the key it is verified with.
+ * Resolves the key fingerprint: `sha256:` and the hex SHA-256 of the SPKI bytes.
+ * It is the `keyId` of a signature and selects the key that verifies it.
  */
 export function resolveSigningKeyFingerprint(publicKey: string): string {
   const parsedKey = parseSelfDescribingBytes(publicKey);
@@ -100,7 +93,6 @@ export function resolveSigningKeyFingerprint(publicKey: string): string {
   return `sha256:${computeSha256Hex(parsedKey.bytes)}`;
 }
 
-/** The public key as `<scheme>:<base64 of its SPKI DER>`. */
 export async function exportSigningPublicKey(
   publicKey: CryptoKey,
 ): Promise<string> {
@@ -109,7 +101,6 @@ export async function exportSigningPublicKey(
   );
 }
 
-/** The private key of a signer, from the base64 of its PKCS #8 DER. */
 export async function importSigningPrivateKey(
   privateKey: string,
 ): Promise<CryptoKey> {
@@ -128,7 +119,6 @@ export async function importSigningPrivateKey(
   );
 }
 
-/** The public key of a verifier, from its self-describing form. */
 export async function importSigningPublicKey(
   publicKey: string,
 ): Promise<CryptoKey> {
@@ -147,10 +137,7 @@ export async function importSigningPublicKey(
   );
 }
 
-/**
- * Splits `<scheme>:<base64>`; null for a scheme outside the allow-list or
- * base64 that is not canonical, so one value has exactly one spelling.
- */
+// Refuses base64 that is not canonical, so each value has exactly one spelling.
 export function parseSelfDescribingBytes(
   value: string,
 ): SelfDescribingBytes | null {
@@ -168,7 +155,7 @@ export function formatSelfDescribingBytes(
   return `${SIGNING_SCHEME}:${encodeBase64(new Uint8Array(bytes))}`;
 }
 
-/** The size comes from the key Web Crypto imported, never from its bytes. */
+// Reads the size from the key Web Crypto imported, never from the raw bytes.
 function assertSigningKeySize(key: CryptoKey): CryptoKey {
   const { modulusLength } = key.algorithm as RsaHashedKeyAlgorithm;
   if (modulusLength < SIGNING_KEY_BITS_MINIMUM) {

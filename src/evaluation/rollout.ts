@@ -2,8 +2,8 @@ const FNV_OFFSET_BASIS = 0x811c9dc5;
 const FNV_PRIME = 0x01000193;
 
 /**
- * The rollout bucket of a device for a release: FNV-1a over the UTF-8 bytes of
- * the device id followed by the release id, 32 bits, into a hundred buckets.
+ * Resolves the rollout bucket, 0 to 99, of a device for a release.
+ * It is 32-bit FNV-1a over the UTF-8 of the device id followed by the release id.
  * A device takes a release when its bucket is below the rollout percentage.
  */
 export function resolveRolloutBucket(

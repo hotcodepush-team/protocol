@@ -7,13 +7,6 @@ const PackageJsonSchema = z.looseObject({
   capacitor: z.record(z.string(), z.unknown()).optional(),
 });
 
-/**
- * Whether the package in the directory ships native code, by its own markers:
- * a Capacitor plugin's `capacitor` field with an `ios` or an `android` entry,
- * a Cordova plugin's `plugin.xml`, a React Native module's `ios` directory
- * with a podspec beside or inside it, or its `android` directory with a
- * Gradle build file.
- */
 export async function hasNativeMarkers(
   reader: ProjectReader,
   directory: string,
@@ -30,7 +23,7 @@ export async function hasNativeMarkers(
   );
 }
 
-/** A package.json that does not parse, or carries no object there, is no Capacitor plugin; its other markers still count. */
+// A package.json that does not parse is no Capacitor plugin, but the other markers still count.
 async function isCapacitorPlugin(
   reader: ProjectReader,
   directory: string,

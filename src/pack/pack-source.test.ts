@@ -37,7 +37,7 @@ const PACK_SOURCE_CASES = (
 
 const SERVED_STATUSES = [200, 206];
 
-/** The requests a download makes against the answers in order, and the kind of the pack that served it. */
+// Answers the requests of a download with the statuses in order.
 function resolveDownloadOutcome(
   download: PackDownload,
   statuses: readonly number[],

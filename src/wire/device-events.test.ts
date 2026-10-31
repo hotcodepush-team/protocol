@@ -38,7 +38,7 @@ const FIXTURE = JSON.parse(
   ),
 ) as DeviceEventsFixture;
 
-/** The endpoint's reading: the batch whole, its events one by one, an unreadable one skipped. */
+// Reads like the endpoint: the batch as a whole, then each event, skipping an unreadable one.
 const DeviceBatchSchema = DeviceEventsRequestSchema.extend({
   events: z.array(z.unknown()).max(BATCH_EVENT_COUNT_LIMIT),
 });

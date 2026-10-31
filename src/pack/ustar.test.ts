@@ -60,7 +60,7 @@ function decodeBase64(base64: string): Uint8Array {
   return new Uint8Array(Buffer.from(base64, 'base64'));
 }
 
-/** The name `tar` lists for an entry. */
+// The name `tar` lists for an entry.
 function resolveEntryName(entry: FixtureEntry | PackEntry): string {
   return entry.type === 'file'
     ? entry.sha256
@@ -123,7 +123,7 @@ function streamOfChunks(chunks: Uint8Array[]): ReadableStream<Uint8Array> {
   });
 }
 
-/** A stream that stays open after its bytes, recording whether it was cancelled. */
+// Stays open after its bytes, so a test can check whether the reader cancels it.
 function openStreamOf(bytes: Uint8Array): {
   isCancelled: boolean;
   stream: ReadableStream<Uint8Array>;

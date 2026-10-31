@@ -1,11 +1,5 @@
-/**
- * Writes `fixtures/signatures.json` from the four test keys it already holds:
- * the keys stay, and every case is rebuilt and signed by the built package's
- * `signManifest`. RSASSA-PKCS1-v1_5 signs deterministically, so an unchanged
- * manifest yields the same file.
- *
- *     npm run build && node scripts/generate-signatures-fixture.ts
- */
+// Run with `npm run build && node scripts/generate-signatures-fixture.ts`.
+// It keeps the test keys in the fixture and re-signs every case. RSASSA-PKCS1-v1_5 is deterministic, so the output is stable.
 import { createPublicKey } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -28,7 +22,7 @@ const FIXTURE_URL = new URL('../fixtures/signatures.json', import.meta.url);
 const PUBLIC_KEY_PREFIX = 'rsa-v1_5-sha256:';
 const SIGNATURE_ALGORITHM = { hash: 'SHA-256', name: 'RSASSA-PKCS1-v1_5' };
 
-// The built package, since Node runs this file but not the sources' `.js` imports.
+// Node can run this file but not the `.js` imports inside src/, so it loads the build.
 const { signManifest, stringifyCanonicalJson } = (await import(
   new URL('../dist/index.js', import.meta.url).href
 )) as typeof Protocol;
@@ -218,7 +212,7 @@ function flipFirstSignatureCharacter(value: string): string {
   return `${PUBLIC_KEY_PREFIX}${signature.startsWith('A') ? 'B' : 'A'}${signature.slice(1)}`;
 }
 
-/** A signature `signManifest` refuses to make: by a key under the minimum size, or under another key's id. */
+// Makes the signatures that signManifest refuses: a key below the minimum size, or a foreign key id.
 async function signWithoutChecks(
   key: FixtureKey,
   keyId: string,

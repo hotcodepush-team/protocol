@@ -5,9 +5,9 @@ import { isKnownConditionType, resolveConditionVerdict } from './conditions.js';
 import type { DeviceInfo } from './device-info.js';
 import { resolveRolloutBucket } from './rollout.js';
 
-/** The per-release verdict, the explanation behind the outcome and the probe's output. */
+/** The verdict on one release. It explains the outcome and is what the probe prints. */
 export interface ReleaseVerdict {
-  /** The type of the condition that failed, for `device_incompatible` and `device_not_targeted`. */
+  /** The type of the failed condition, for `device_incompatible` and `device_not_targeted`. */
   condition?: ConditionType;
   conditions: ConditionVerdict[];
   isEligible: boolean;
@@ -17,11 +17,10 @@ export interface ReleaseVerdict {
 }
 
 /**
- * The outcome for the device. On `skipped` with `release_revoked`, `release`
- * is the release the device resolves to — `null` for the embedded bundle —
- * since its running release is dead; on every other `skipped`, `release` is
- * the newest release the device will not take. On `up_to_date`, `release` is
- * the running release as the index carries it, `null` when it does not.
+ * The outcome for the device.
+ * On `up_to_date`, `release` is the running release from the index, or `null` when the index lacks it.
+ * On `skipped` with `release_revoked`, `release` is the release the device falls back to, `null` for the embedded bundle.
+ * On any other `skipped`, `release` is the newest release the device will not take.
  */
 export type EvaluationOutcome =
   | { release: IndexRelease | null; status: 'up_to_date' }
@@ -35,17 +34,18 @@ export type EvaluationOutcome =
 
 export interface ChannelIndexEvaluation {
   outcome: EvaluationOutcome;
-  /** Every release of the index, newest first; empty when the index holds nothing for the device. A revoked release is never the newer release a `skipped` names: it is not on offer. */
+  /**
+   * Every release of the index, newest first. Empty when the index holds nothing for the device.
+   * A revoked release is not on offer, so a `skipped` outcome never names it as the newer release.
+   */
   verdicts: ReleaseVerdict[];
 }
 
 const EMBEDDED_RELEASE_NUMBER = 0;
 
 /**
- * The device protocol's evaluation: the release the device takes, or the
- * reason it does not, from the index and what the device knows. One function
- * decides and explains, and the fixture suite pins every rule for the Swift
- * and Kotlin evaluators.
+ * Evaluates the channel index for the device: the release it takes, or why it takes none.
+ * The fixture suite pins every rule for the Swift and Kotlin evaluators.
  */
 export function evaluateChannelIndex(
   index: ChannelIndex,
@@ -146,12 +146,8 @@ function isDeviceBeyondCap(index: ChannelIndex, device: DeviceInfo): boolean {
   );
 }
 
-/**
- * A release is mandatory for the device when it or any release it skips over
- * is, counting only the releases the device could take: one a condition, the
- * floor, a revocation, an earlier failure or the rollout keeps from it never
- * makes the move mandatory.
- */
+// The move is mandatory when the target or a release it skips is mandatory.
+// Only releases the device could take count.
 function isMandatoryTransitively(
   target: IndexRelease,
   currentNumber: number,

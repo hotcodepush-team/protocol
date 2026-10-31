@@ -1,17 +1,7 @@
-/**
- * Writes `fixtures/pack-entries.json`: a delta of a file entry and a
- * patch entry, a pack with an entry a reader skips, and the device's outcome
- * per patch entry. The two valid patches are fixed inputs in `pack-entries/`
- * beside this script, written once by Colin Percival's bsdiff 4.3 from the
- * base to the target and to the other contents below; should those contents
- * change, new inputs come from that bsdiff, `bsdiff base target
- * base-to-target.bsdiff`, run once on a machine that has it. Each input is
- * checked with macOS's `/usr/bin/bspatch` where that exists. The hostile patch
- * is crafted here without a diff tool, its blocks compressed by the system's
- * `bzip2`. CI reads the committed fixture.
- *
- *     node scripts/generate-pack-entries-fixture.ts
- */
+// Writes fixtures/pack-entries.json. Run with `node scripts/generate-pack-entries-fixture.ts`.
+// The two valid patches in pack-entries/ were made once with Colin Percival's bsdiff 4.3.
+// When the contents below change, make new ones with `bsdiff base target base-to-target.bsdiff`.
+// The hostile patch is crafted here, so it needs no diff tool.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
@@ -33,7 +23,7 @@ interface FixtureFile {
 const CHECKSUM_FIELD_LENGTH = 8;
 const CHECKSUM_FIELD_OFFSET = 148;
 const END_BLOCKS_LENGTH = 1024;
-/** Two control triples: the first reads 100 bytes of the base and seeks 100000000 bytes back, the second reads 100 bytes there, before the base's start. */
+// The first triple seeks 100000000 bytes back, so the second reads before the start of the base.
 const HOSTILE_CONTROL_TRIPLES = [
   [100, 0, -100_000_000],
   [100, 0, 0],
@@ -73,9 +63,7 @@ const FILE_ENTRY_BODY = gzipSync(ASSET.bytes);
 const SKIPPED_ENTRY_BODY = new Uint8Array(600).map((_, index) => index % 251);
 const SKIPPED_ENTRY_PREFIX = `future/${BASE.sha256}`;
 
-const delta = await collect(
-  buildPack([buildFileEntry(), buildPatchEntry()]),
-);
+const delta = await collect(buildPack([buildFileEntry(), buildPatchEntry()]));
 const fileEntryPack = await collect(buildPack([buildFileEntry()]));
 const skippedEntryPack = concatenate([
   fileEntryPack.subarray(0, fileEntryPack.length - END_BLOCKS_LENGTH),
@@ -214,7 +202,7 @@ function buildPatchEntry(): PackEntry {
   };
 }
 
-/** A patch entry's header under another kind's prefix, the checksum recomputed: what a later entry kind could look like. */
+// Stands in for an entry kind a later version may add.
 function buildSkippedEntryHeader(sizeBytes: number): Uint8Array {
   const header = buildPackPatchHeader(BASE.sha256, TARGET.sha256, sizeBytes);
   header.fill(
@@ -239,12 +227,8 @@ function buildSkippedEntryHeader(sizeBytes: number): Uint8Array {
   return header;
 }
 
-/**
- * A BSDIFF40 patch whose control triples seek before the base: the header
- * `BSDIFF40` and three lengths — the compressed control and diff blocks and
- * the new file's size — then the control, diff and extra blocks, each a bzip2
- * stream. A bspatch that trusts the seek reads out of bounds.
- */
+// A bspatch that trusts the seek in this patch reads out of bounds.
+// Layout: `BSDIFF40`, the control and diff block lengths, the new size, then three bzip2 blocks.
 function buildHostilePatch(): Uint8Array {
   const newSizeBytes = HOSTILE_CONTROL_TRIPLES.reduce(
     (sum, [diffLength = 0, extraLength = 0]) => sum + diffLength + extraLength,
@@ -275,7 +259,7 @@ function compressWithBzip2(bytes: Uint8Array): Uint8Array {
   );
 }
 
-/** bsdiff's integer: the magnitude little-endian in 8 bytes, the sign in the top bit. */
+// bsdiff stores the magnitude little-endian in 8 bytes and the sign in the top bit.
 function encodeSignMagnitude(value: number): Uint8Array {
   const bytes = new Uint8Array(8);
   const signBit = value < 0 ? 1n << 63n : 0n;
@@ -287,7 +271,6 @@ function encodeSignMagnitude(value: number): Uint8Array {
   return bytes;
 }
 
-/** The input patch from `from` to `to`, refused unless it is BSDIFF40 and, where it exists, `/usr/bin/bspatch` turns `from` into `to` with it. */
 function readVerifiedPatch(from: FixtureFile, to: FixtureFile): Uint8Array {
   const patchPath = fileURLToPath(
     new URL(`pack-entries/${from.name}-to-${to.name}.bsdiff`, import.meta.url),

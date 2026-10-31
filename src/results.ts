@@ -1,10 +1,5 @@
-/**
- * The catalog, every value list of the SDK's results and the device events,
- * defined once here and implemented by every SDK, as sdk-api.md's Types,
- * Statuses and reasons sections write it.
- * Every value is lowercase snake_case. Additive only: a value is added, never
- * removed, renamed or retyped.
- */
+// The catalog: every value list of the SDK results and the device events, as sdk-api.md defines them.
+// Additive only: a value is never removed, renamed or retyped.
 
 /** When a downloaded update is applied. */
 export const APPLY_STRATEGIES = [
@@ -21,7 +16,10 @@ export type ApplyUpdateStatus = (typeof APPLY_UPDATE_STATUSES)[number];
 export const CHANNEL_SOURCES = ['config', 'runtime'] as const;
 export type ChannelSource = (typeof CHANNEL_SOURCES)[number];
 
-/** Whether the SDK checks on its own, at start, on resume and at the interval; `manual` leaves every cycle to the app's `sync()`. */
+/**
+ * Whether the SDK checks on its own: at start, on resume and at the interval.
+ * `manual` leaves every cycle to the app's `sync()`.
+ */
 export const CHECK_STRATEGIES = ['auto', 'manual'] as const;
 export type CheckStrategy = (typeof CHECK_STRATEGIES)[number];
 
@@ -44,7 +42,7 @@ export const DEVICE_EVENT_TYPES = [
 ] as const;
 export type DeviceEventType = (typeof DEVICE_EVENT_TYPES)[number];
 
-/** When an update the check found is downloaded; `manual` stops the cycle after the check. */
+/** When an update the check found is downloaded. `manual` stops the cycle after the check. */
 export const DOWNLOAD_STRATEGIES = ['auto', 'manual', 'unmetered'] as const;
 export type DownloadStrategy = (typeof DOWNLOAD_STRATEGIES)[number];
 
@@ -59,12 +57,12 @@ export const FAILED_REASONS = [
 ] as const;
 export type FailedReason = (typeof FAILED_REASONS)[number];
 
-/** When a mandatory update is applied; `next_start` is excluded, since it would make the flag mean nothing. */
+/** When a mandatory update is applied. `next_start` is left out, since it would make the flag meaningless. */
 export const MANDATORY_APPLY_STRATEGIES = ['immediate', 'manual'] as const;
 export type MandatoryApplyStrategy =
   (typeof MANDATORY_APPLY_STRATEGIES)[number];
 
-/** The `downloaded` device event's `packKind`: the pack that served the download, or `files` when no pack was requested. */
+/** The pack that served a download, sent as `packKind` in the `downloaded` device event. `files` means no pack. */
 export const PACK_KINDS = ['delta', 'files', 'full', 'streamed'] as const;
 export type PackKind = (typeof PACK_KINDS)[number];
 
@@ -111,7 +109,7 @@ export type SyncStatus = (typeof SYNC_STATUSES)[number];
 export const SYNC_TRIGGERS = ['interval', 'manual', 'resume', 'start'] as const;
 export type SyncTrigger = (typeof SYNC_TRIGGERS)[number];
 
-/** Every value array above by its camelCase name, as `catalog.json` carries it for readers outside TypeScript; `npm run catalog` writes the file. */
+/** Every value list above by its camelCase name, as `catalog.json` carries it for readers outside TypeScript. */
 export const CATALOG = {
   applyStrategies: APPLY_STRATEGIES,
   applyUpdateStatuses: APPLY_UPDATE_STATUSES,
@@ -131,7 +129,7 @@ export const CATALOG = {
   syncTriggers: SYNC_TRIGGERS,
 } as const;
 
-/** The SDK's own release type: five fields mapped from an index entry. */
+/** The release type of the SDK: five fields mapped from an index entry. */
 export interface Release {
   bundleId: string;
   bundleVersion: string;
@@ -140,13 +138,12 @@ export interface Release {
   number: number;
 }
 
-/** The moments a strategy applies a downloaded update at; `manual` is none, it waits for the app's `applyUpdate()`. */
+/** The moments a strategy applies a downloaded update. `manual` is not one, since it waits for `applyUpdate()`. */
 export type ApplyMoment = Exclude<ApplyStrategy, 'manual'>;
 
 /**
- * The outcome of one cycle: `available` when the download is the app's,
- * `downloaded` when the apply is scheduled or the app's, `applyStrategy` saying
- * which, and `applied` when it happened now, the reload following the result.
+ * The outcome of one cycle. On `available`, the download is left to the app.
+ * On `downloaded`, `applyStrategy` says when the update is applied. On `applied`, the reload follows the result.
  */
 export type SyncResult =
   | { release: Release | null; status: 'up_to_date' }
@@ -176,13 +173,13 @@ export type SyncResult =
       status: 'failed';
     };
 
-/** `sync()` with the download pinned to `manual`: nothing is downloaded or applied. */
+/** The result of `sync()` with the download pinned to `manual`, so nothing is downloaded or applied. */
 export type CheckForUpdateResult = Exclude<
   SyncResult,
   { status: 'applied' | 'downloaded' }
 >;
 
-/** `sync()` with the download pinned to `auto`: the cycle never stops at `available`. */
+/** The result of `sync()` with the download pinned to `auto`, so the cycle never stops at `available`. */
 export type DownloadUpdateResult = Exclude<SyncResult, { status: 'available' }>;
 
 export type ApplyUpdateResult =
@@ -197,7 +194,7 @@ export interface NotifyReadyResult {
   rollbackReason?: RollbackReason;
 }
 
-/** The SDK's state, a snapshot: everything the debug screen shows. */
+/** A snapshot of the SDK state: everything the debug screen shows. */
 export interface GetStateResult {
   currentRelease: Release | null;
   /** From the resource file; `null` in a build the embed step did not register. */
@@ -211,7 +208,7 @@ export interface GetStateResult {
     trigger: SyncTrigger;
   } | null;
   nextRelease: Release | null;
-  /** The server time of the month's first acknowledged report, kept by `resolveKeptReportedAt`. */
+  /** The server time of the first acknowledged report in the latest UTC month that has one, kept by `resolveKeptReportedAt`. */
   reportedAt: string | null;
 }
 
@@ -240,18 +237,18 @@ export interface GetDeviceResult {
 export type SetAttributesOptions = Record<string, string | null>;
 
 export interface RollbackUpdateOptions {
-  /** The app-side cause, carried as the `failed` event's `detail`: printable, at most 256 characters. */
+  /** The cause in the app, sent as `detail` in the `failed` event. Printable, at most 256 characters. */
   reason?: string;
 }
 
-/** Each stage's strategy for this call, overriding the configuration. */
+/** Strategies for this call that override the configuration. */
 export interface SyncOptions {
   applyStrategy?: ApplyStrategy;
   downloadStrategy?: DownloadStrategy;
   mandatoryApplyStrategy?: MandatoryApplyStrategy;
 }
 
-/** The apply strategies for this call; the download strategy is pinned to `auto`. */
+/** The apply strategies for this call. The download strategy is pinned to `auto`. */
 export type DownloadUpdateOptions = Omit<SyncOptions, 'downloadStrategy'>;
 
 export interface SetRestartAllowedOptions {

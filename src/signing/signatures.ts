@@ -13,30 +13,30 @@ import {
   resolveSigningKeyFingerprint,
 } from './signing-keys.js';
 
-/** The manifest the CLI built: every field but `keyId`, which signing sets to the signing key's fingerprint. */
+/** The manifest the CLI built, without `keyId`. Signing sets `keyId` to the fingerprint of the signing key. */
 export type ManifestToSign = Pick<
   BundleManifest,
   'appId' | 'bundleVersion' | 'files' | 'fingerprint' | 'platforms'
 >;
 
-/** The envelope's signed half, what the CLI sends with the bundle. */
+/** The signed half of the envelope, which the CLI sends with the bundle. */
 export interface SignedManifest {
-  /** The canonical JSON of the bundle manifest, the signed bytes. */
+  /** The canonical JSON of the bundle manifest: the bytes the signature covers. */
   manifest: string;
   signature: Signature;
 }
 
 interface SigningKey {
   cryptoKey: CryptoKey;
-  /** The fingerprint of the key's public half. */
+  // The fingerprint of the public key.
   keyId: string;
 }
 
 const SIGNATURE_ALGORITHM = 'RSASSA-PKCS1-v1_5';
 
 /**
- * Signs the bundle manifest: `keyId` set to the signing key's fingerprint, the
- * canonical JSON of the result, the signature over those bytes.
+ * Signs the bundle manifest.
+ * It sets `keyId` to the fingerprint of the signing key and signs the canonical JSON of the result.
  */
 export async function signManifest(
   manifest: ManifestToSign,
@@ -54,10 +54,8 @@ export async function signManifest(
 }
 
 /**
- * Whether the envelope's signature covers its `manifest` bytes under the key
- * its `keyId` names among `publicKeys`; an unsigned envelope verifies against
- * no key, and so does a signature under an unknown scheme or by a key below
- * the minimum size.
+ * Whether the signature covers the `manifest` bytes under the key in `publicKeys` that `keyId` names.
+ * False for an unsigned envelope, an unknown scheme or a key below the minimum size.
  */
 export async function verifyManifestSignature(
   envelope: Pick<ManifestEnvelope, 'manifest' | 'signature'>,
@@ -70,8 +68,8 @@ export async function verifyManifestSignature(
 }
 
 /**
- * The public half of a private key, self-describing: what a signer holds
- * names the `keyId` it signs under and the key a config lists.
+ * Resolves the self-describing public key of a private key.
+ * It tells a signer which key the config must list, and so which `keyId` it signs under.
  */
 export async function resolvePublicKeyOfPrivateKey(
   privateKey: string,
@@ -132,7 +130,7 @@ async function verifyMessage(
   }
 }
 
-/** The public half through the private key's JWK, which carries it. */
+// The JWK of a private key carries its public half.
 async function resolvePublicKeyOfCryptoKey(
   privateKey: CryptoKey,
 ): Promise<string> {

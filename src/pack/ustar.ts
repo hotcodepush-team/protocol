@@ -1,19 +1,11 @@
-/**
- * The pack: an uncompressed ustar archive of two entry kinds, every header
- * field zero but those an entry needs and the checksum computed, so the bytes
- * are identical on every assembly and `tar -tvf` lists a pack in a support
- * case. A file entry is a file's stored object named by the file's content
- * hash. A patch entry, `patches/{from}/{to}`, is a BSDIFF40 patch that turns
- * the file `from` into the file `to`; its name is too long for the name field,
- * so `patches/{from}` sits in the ustar prefix, which the ustar magic marks as
- * one. A reader skips an entry of any other name, so a later kind does not
- * break it. The CLI writes packs, the edge Worker writes them on demand, each
- * core reads them.
- */
+// A pack is an uncompressed ustar archive. Unused header fields stay zero, so every assembly
+// yields the same bytes, and `tar -tvf` can list a pack in a support case.
+// A patch entry name is too long for the name field, so `patches/{from}` goes in the ustar prefix,
+// which only counts when the ustar magic is set. A reader skips unknown names, so a later entry kind stays compatible.
 
 export type PackEntry = PackFileEntry | PackPatchEntry;
 
-/** A file's stored object, named by the file's content hash. */
+/** A file's stored object, named by its content hash. */
 export interface PackFileEntry {
   body: ReadableStream<Uint8Array>;
   sha256: string;
@@ -42,7 +34,7 @@ const BLOCK_SIZE = 512;
 const CHECKSUM_FIELD_LENGTH = 8;
 const CHECKSUM_FIELD_OFFSET = 148;
 const HASH_PATTERN = /^[0-9a-f]{64}$/;
-/** The magic `ustar\0` and the version `00` right after it. */
+// The magic `ustar\0` followed by the version `00`.
 const MAGIC_AND_VERSION = 'ustar\x0000';
 const MAGIC_FIELD_OFFSET = 257;
 const NAME_FIELD_LENGTH = 100;
@@ -52,21 +44,25 @@ const PREFIX_FIELD_OFFSET = 345;
 const SIZE_FIELD_LENGTH = 12;
 const SIZE_FIELD_OFFSET = 124;
 
-/** The pack as a stream, from entries whose bodies are read one after the other. */
+/** Builds a pack as a stream, reading the entry bodies one after the other. */
 export function buildPack(
   entries: AsyncIterable<PackEntry> | Iterable<PackEntry>,
 ): ReadableStream<Uint8Array> {
   return readableStreamFromAsyncIterable(generatePackChunks(entries));
 }
 
-/** The file and patch entries of a pack, in order, skipping an entry of any other name and refusing a pack cut before its two end-of-archive blocks; an entry's body must be consumed, or is drained, before the next one, and the stream is cancelled and released however the iteration ends. */
+/**
+ * Reads the file and patch entries of a pack, in order, and skips entries of any other name.
+ * A body not consumed before the next entry is drained. A pack cut before its two end-of-archive blocks throws.
+ * The stream is cancelled and released however the iteration ends.
+ */
 export function readPack(
   stream: ReadableStream<Uint8Array>,
 ): AsyncIterable<PackEntry> {
   return generatePackEntries(new ByteReader(stream));
 }
 
-/** A file entry's header: the content hash in the name field, no magic. */
+/** Builds a file entry header: the content hash in the name field, with no magic. */
 export function buildPackFileHeader(
   sha256: string,
   sizeBytes: number,
@@ -79,7 +75,7 @@ export function buildPackFileHeader(
   return buildPackHeader('', sha256, sizeBytes);
 }
 
-/** A patch entry's header: `patches/{from}` in the prefix field, `{to}` in the name field, and the ustar magic. */
+/** Builds a patch entry header: `patches/{from}` in the prefix field, `{to}` in the name field, and the ustar magic. */
 export function buildPackPatchHeader(
   fromSha256: string,
   toSha256: string,
@@ -93,7 +89,7 @@ export function buildPackPatchHeader(
   return buildPackHeader(`patches/${fromSha256}`, toSha256, sizeBytes);
 }
 
-/** The header with the magic only beside a prefix, so a file entry's bytes stay those of the first packs. */
+// The magic is set only beside a prefix, so file entries keep the bytes of the first packs.
 function buildPackHeader(
   prefix: string,
   name: string,
@@ -206,7 +202,6 @@ function isZeroBlock(block: Uint8Array): boolean {
   return block.every(byte => byte === 0);
 }
 
-/** The entry's full name, `prefix/name` when the prefix field holds one, and its size. */
 function parsePackHeader(header: Uint8Array): {
   name: string;
   sizeBytes: number;
@@ -245,7 +240,6 @@ function parsePackHeader(header: Uint8Array): {
   return { name: prefix === '' ? name : `${prefix}/${name}`, sizeBytes };
 }
 
-/** The kind a full name gives an entry, `null` for a name of neither kind. */
 function parsePackEntryName(name: string): PackEntryName | null {
   if (HASH_PATTERN.test(name)) {
     return { sha256: name, type: 'file' };
@@ -259,7 +253,7 @@ function parsePackEntryName(name: string): PackEntryName | null {
   return { fromSha256, toSha256, type: 'patch' };
 }
 
-/** The field's text up to its first NUL or space, the ustar convention. */
+// By ustar convention, a field ends at its first NUL or space.
 function readField(bytes: Uint8Array): string {
   const end = bytes.findIndex(byte => byte === 0 || byte === 0x20);
   return new TextDecoder().decode(end === -1 ? bytes : bytes.subarray(0, end));
@@ -284,7 +278,6 @@ function readableStreamFromAsyncIterable(
   });
 }
 
-/** A reader over a byte stream that hands out exact byte counts and bounded sub-streams. */
 class ByteReader {
   private buffered: Uint8Array = new Uint8Array(0);
   private isDone = false;
@@ -294,7 +287,7 @@ class ByteReader {
     this.reader = stream.getReader();
   }
 
-  /** Exactly `length` bytes; an error when the stream ends first, a block boundary included, since only the end-of-archive blocks end a pack. */
+  // Only the end-of-archive blocks end a pack, so a stream that ends first fails, even at a block boundary.
   async readExactly(length: number): Promise<Uint8Array> {
     while (this.buffered.length < length && !this.isDone) {
       await this.fill();
@@ -309,13 +302,13 @@ class ByteReader {
     return bytes;
   }
 
-  /** A stream over the next `length` bytes, drawn from this reader as it is pulled, and the drain that skips what was not pulled. */
+  // The drain skips whatever the consumer did not pull.
   readStream(length: number): {
     drain: () => Promise<void>;
     stream: ReadableStream<Uint8Array>;
   } {
     const state = { remaining: length };
-    // A zero high-water mark pulls only for a consumer's read, so no pull ahead races the drain for the same bytes.
+    // A zero high-water mark pulls only when the consumer reads, so no read-ahead races the drain.
     const stream = new ReadableStream<Uint8Array>(
       {
         pull: async controller => {
@@ -340,13 +333,13 @@ class ByteReader {
     return { drain, stream };
   }
 
-  /** Cancels what is left of the stream and releases its lock; cancelling a stream that errored rejects with the error the iteration already throws. */
+  // Cancelling an errored stream rejects with the error the iteration already throws, so ignore it.
   async release(): Promise<void> {
     await this.reader.cancel().catch(() => undefined);
     this.reader.releaseLock();
   }
 
-  /** Discards the next `length` bytes chunk by chunk, never holding more than one chunk. */
+  // Holds at most one chunk at a time.
   async skip(length: number): Promise<void> {
     for (let remaining = length; remaining > 0;) {
       remaining -= (await this.readUpTo(remaining)).length;
@@ -363,14 +356,13 @@ class ByteReader {
       this.buffered = value;
       return;
     }
-    // Joined only when a header block spans two chunks.
+    // Only needed when a header block spans two chunks.
     const joined = new Uint8Array(this.buffered.length + value.length);
     joined.set(this.buffered, 0);
     joined.set(value, this.buffered.length);
     this.buffered = joined;
   }
 
-  /** The next buffered bytes, at most `maxLength`, read past zero-length chunks; an error when the stream ends first. */
   private async readUpTo(maxLength: number): Promise<Uint8Array> {
     while (this.buffered.length === 0 && !this.isDone) {
       await this.fill();

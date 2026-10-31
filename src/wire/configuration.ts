@@ -19,13 +19,14 @@ import {
   NonEmptyStringSchema,
 } from './primitives.js';
 
-/** Every duration in seconds, one unit, which the key names with its `Seconds` suffix. */
+// Every duration uses seconds, and its key ends in `Seconds`.
 const SecondsSchema = z.number().nonnegative();
 
-/** The SDK options every build carries, each with its default, so a file with the app id alone is complete; the public keys join per file, in the form each is read in. */
+// Every option has a default, so a file with only the app id is complete.
+// The public keys are added per file, in the encoding each reader needs.
 const SDK_OPTIONS_SHAPE = {
   applyStrategy: z.enum(APPLY_STRATEGIES).default('next_start'),
-  /** At least 60 seconds, the floor, since a zero made the core check in a tight loop; 900 when the project sets none. */
+  /** At least 60 seconds, since zero made the core check in a tight loop. Defaults to 900. */
   checkIntervalSeconds: SecondsSchema.min(60).default(900),
   checkStrategy: z.enum(CHECK_STRATEGIES).default('auto'),
   downloadStrategy: z.enum(DOWNLOAD_STRATEGIES).default('auto'),
@@ -33,18 +34,16 @@ const SDK_OPTIONS_SHAPE = {
   mandatoryApplyStrategy: z
     .enum(MANDATORY_APPLY_STRATEGIES)
     .default('immediate'),
-  /** The least time in the background before a `next_resume` apply. */
+  /** The minimum time in the background before a `next_resume` apply. */
   nextResumeMinimumBackgroundSeconds: SecondsSchema.default(300),
   readySignal: z.enum(READY_SIGNALS).default('render'),
   readyTimeoutSeconds: SecondsSchema.min(1).default(10),
 };
 
 /**
- * A public key as a device reads it, in the encoding its platform's own API
- * imports with no ASN.1 handled on the device: the base64 of the key's DER —
- * PKCS #1 for iOS's `SecKeyCreateWithData`, SPKI for Android's
- * `X509EncodedKeySpec` — beside its key id, the fingerprint over the SPKI
- * bytes, which a device cannot recompute from PKCS #1.
+ * A public key as a device reads it: base64 DER in the encoding the native API imports, so the device parses no ASN.1.
+ * That is PKCS #1 for `SecKeyCreateWithData` on iOS and SPKI for `X509EncodedKeySpec` on Android.
+ * `keyId` is the fingerprint over the SPKI bytes, which a device cannot recompute from PKCS #1.
  */
 export const DevicePublicKeySchema = z.looseObject({
   der: Base64Schema,
@@ -53,67 +52,62 @@ export const DevicePublicKeySchema = z.looseObject({
 export type DevicePublicKey = z.infer<typeof DevicePublicKeySchema>;
 
 /**
- * `hotcodepush.json` in the project root, written by `init` and read by every
- * CLI command: the app id, the channel by name, the SDK options and, for the
- * CLI alone, `extraFingerprintPaths`.
+ * `hotcodepush.json` in the project root, written by `init` and read by every CLI command.
+ * Only the CLI uses `extraFingerprintPaths`.
  */
 export const ProjectConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   channel: ChannelNameSchema.default('production'),
-  /** The extra paths the fingerprint hashes beside the packages: files or directories, relative to the project root, a sibling workspace's through `..`. */
+  /**
+   * Files or directories the fingerprint hashes beside the packages, relative to the project root.
+   * `..` may reach a sibling workspace.
+   */
   extraFingerprintPaths: z.array(ExtraFingerprintPathSchema).default([]),
-  /** The keys the app's binaries accept, self-describing, `rsa-v1_5-sha256:` and the base64 of the SPKI DER. */
+  /** The keys the app binaries accept, as `rsa-v1_5-sha256:` and the base64 of the SPKI DER. */
   publicKeys: z.array(SigningPublicKeySchema).default([]),
 });
 export type ProjectConfiguration = z.infer<typeof ProjectConfigurationSchema>;
 
 /**
- * The resource file the device reads: the project's configuration with the
- * channel resolved to its id by the embed step and the CLI's own key left
- * behind, plus what only a build step can know. The hosts are present outside
- * production builds alone.
+ * The resource file the device reads: the project configuration plus what only a build step knows.
+ * The embed step resolves the channel to its id and drops the CLI-only key. Hosts are set only outside production builds.
  */
 export const ConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   builtAt: IsoTimestampSchema,
   /**
-   * Null in a build whose embed step ran without a token or offline and could
-   * not resolve the channel's name: such a build answers `failed` with
-   * `channel_unknown`, requests nothing and reports nothing.
+   * Null when the embed step ran offline or without a token and could not resolve the channel name.
+   * Such a build answers `failed` with `channel_unknown`, and requests and reports nothing.
    */
   channelId: NonEmptyStringSchema.nullable(),
   embeddedBundleId: IdentifierSchema.nullable(),
   /**
-   * Null in a build that bundled no JavaScript, a React Native or Expo debug
-   * build: its build step registers no binary and asks the API nothing, and
-   * the SDK answers `skipped` with `build_debug`.
+   * Null in a build that bundled no JavaScript, such as a React Native or Expo debug build.
+   * Its build step registers no binary, and the SDK answers `skipped` with `build_debug`.
    */
   embeddedBundleManifest: BundleManifestSchema.nullable(),
   filesBaseUrl: HttpUrlSchema.optional(),
   /**
-   * The fingerprint of the native contract the build was made from, `fp1:`
-   * and the hash: the same string the device reports and a release's
-   * conditions name; null when the recipe could not read the project.
+   * The fingerprint of the native contract of the build, the same string the device reports and conditions name.
+   * Null when the recipe could not read the project.
    */
   fingerprint: NonEmptyStringSchema.nullable(),
-  /** The project's public keys as the embed step re-encoded them for the platform the file is written for. */
+  /** The project public keys, re-encoded by the embed step for the platform of this file. */
   publicKeys: z.array(DevicePublicKeySchema).default([]),
   updatesBaseUrl: HttpUrlSchema.optional(),
 });
 export type Configuration = z.infer<typeof ConfigurationSchema>;
 
-/** The hosts a production build fetches from, which carries neither in its resource file. */
+// A production build carries no hosts in its resource file, so it uses these.
 const FILES_BASE_URL_DEFAULT = 'https://files.hotcodepush.com';
 const UPDATES_BASE_URL_DEFAULT = 'https://updates.hotcodepush.com';
 
 /**
- * Whether a manifest, pack or delta URL lies under the configured files or
- * updates host, the production hosts when the build names none: it starts
- * with the base URL and a `/`, so another scheme, userinfo, a look-alike
- * host, another port or another path is off the host, `manifest_invalid`
- * before a byte is written.
+ * Whether a manifest, pack or delta URL lies under the files or updates host, the production hosts when none is set.
+ * It must start with the base URL and a `/`, so another scheme, userinfo, look-alike host, port or path fails.
+ * The device then fails with `manifest_invalid` before writing a byte.
  */
 export function isUrlOnConfiguredHost(
   url: string,
@@ -124,14 +118,14 @@ export function isUrlOnConfiguredHost(
   );
 }
 
-/** The files host the build names, the production one when it names none. */
+/** The files host, or the production one when the configuration names none. */
 export function resolveFilesBaseUrl(
   hosts: Pick<Configuration, 'filesBaseUrl'>,
 ): string {
   return hosts.filesBaseUrl ?? FILES_BASE_URL_DEFAULT;
 }
 
-/** The updates host the build names, the production one when it names none. */
+/** The updates host, or the production one when the configuration names none. */
 export function resolveUpdatesBaseUrl(
   hosts: Pick<Configuration, 'updatesBaseUrl'>,
 ): string {

@@ -1,8 +1,6 @@
 /**
- * Canonical JSON: object keys sorted by their UTF-16 code units, no
- * whitespace, strings and numbers as JSON.stringify writes them, so the same
- * document yields the same bytes in TypeScript, Swift and Kotlin — the bytes a
- * manifest signature covers and a manifest hash names.
+ * Serializes a value as canonical JSON, the bytes a manifest signature and a manifest hash cover.
+ * Keys are sorted by UTF-16 code units, with no whitespace. Strings and numbers follow JSON.stringify.
  */
 export function stringifyCanonicalJson(value: unknown): string {
   if (value === null) {
@@ -22,7 +20,7 @@ export function stringifyCanonicalJson(value: unknown): string {
       if (Array.isArray(value)) {
         return `[${value.map(entry => stringifyCanonicalJson(entry)).join(',')}]`;
       }
-      // A Date, a Map or a typed array would read as `{}` or index keys: a bug to surface, never bytes to sign.
+      // A Date, Map or typed array would serialize as `{}` or index keys. Fail rather than sign wrong bytes.
       if (!isPlainObject(value)) {
         throw new TypeError('canonical JSON carries plain objects only');
       }
