@@ -20,30 +20,25 @@ export const ManifestFileSchema = z.looseObject({
 export type ManifestFile = z.infer<typeof ManifestFileSchema>;
 
 /**
- * The bundle manifest: what the CLI knows before the upload, the bytes it
- * signs as canonical JSON when signing is on. Additive with no majors; the
- * file hashes bind the signature to the bytes, so the server's facts ride the
- * envelope beside it, unsigned. A reader keeps a platform it does not know,
- * and a field it does not know, such as the `patches` a manifest stored
- * before 2026-10-04 still carries. The embedded bundle's manifest in the
- * resource file is a bundle manifest too.
+ * The bundle manifest: what the CLI knows before the upload. With signing on, its canonical JSON is the signed bytes.
+ * It has no majors and is additive only. The server facts ride unsigned in the envelope, since the file hashes already bind the signature to the bytes.
+ * A reader keeps unknown platforms and fields, such as `patches` in a manifest stored before 2026-10-04.
+ * The resource file holds the manifest of the embedded bundle in the same shape.
  */
 export const BundleManifestSchema = z.looseObject({
   appId: NonEmptyStringSchema,
   bundleVersion: z.string(),
   files: z.array(ManifestFileSchema),
   fingerprint: NonEmptyStringSchema.nullable(),
-  /** The fingerprint of the key that signed the manifest, `null` when unsigned. */
+  /** The fingerprint of the signing key, or `null` when unsigned. */
   keyId: NonEmptyStringSchema.nullable(),
   platforms: z.array(NonEmptyStringSchema),
 });
 export type BundleManifest = z.infer<typeof BundleManifestSchema>;
 
 /**
- * Whether the manifest names the device's app and lists its platform, signed
- * or not: a manifest for another app or another platform is
- * `manifest_invalid` before a byte is written, so neither a tampered index
- * nor a cache serving another app's bundle puts it on the device.
+ * Whether the manifest names the app of the device and lists its platform, signed or not.
+ * If not, the device fails with `manifest_invalid` before writing a byte, so a tampered index or a wrong cache never installs it.
  */
 export function isManifestForDevice(
   manifest: BundleManifest,
@@ -63,11 +58,10 @@ export const EnvelopeDeltaSchema = z.looseObject({
 export type EnvelopeDelta = z.infer<typeof EnvelopeDeltaSchema>;
 
 /**
- * The document at the manifest's key, written by the server's `complete`:
- * the manifest as the signed string, the signature, the reserved encryption
- * slot and, unsigned beside them, the server's facts — the bundle's id and
- * creation time, and the pack and the deltas as stored. An envelope stored
- * before 2026-10-04 still carries `patches`, which a reader ignores.
+ * The document at the manifest key, written by the server on `complete`.
+ * It holds the signed manifest string, the signature and a reserved encryption slot.
+ * The server facts sit unsigned beside them: bundle id, creation time, pack and deltas.
+ * An envelope stored before 2026-10-04 still carries `patches`, which a reader ignores.
  */
 export const ManifestEnvelopeSchema = z.looseObject({
   bundleId: IdentifierSchema,

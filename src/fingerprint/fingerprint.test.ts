@@ -32,7 +32,7 @@ const FIXTURE = JSON.parse(
   ),
 ) as FingerprintFixture;
 
-/** A workspace `apps/scanner` with no dependencies, its extra fingerprint paths added per test. */
+// Each test adds its own extra fingerprint paths.
 const LINKED_PROJECT_FILES: Record<string, string> = {
   'apps/scanner/package.json': JSON.stringify({ name: 'scanner' }),
   'package-lock.json': JSON.stringify({
@@ -42,7 +42,7 @@ const LINKED_PROJECT_FILES: Record<string, string> = {
   'package.json': JSON.stringify({ workspaces: ['apps/*'] }),
 };
 
-/** A project held in memory: the files by path, the directories implied by them, no symbolic links. */
+// Directories are implied by the file paths, and there are no symbolic links.
 function createMemoryReader(files: Record<string, string>): ProjectReader {
   return {
     readDirectory(path) {
@@ -75,7 +75,6 @@ function createMemoryReader(files: Record<string, string>): ProjectReader {
   };
 }
 
-/** The memory project with one symbolic link: the path `link` resolving to `target`. */
 function createLinkedReader(
   files: Record<string, string>,
   link: string,

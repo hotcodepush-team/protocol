@@ -52,7 +52,7 @@ const MANIFEST = {
   platforms: ['android', 'ios'],
 };
 
-/** What a bundle carried before 2026-10-04, in its manifest and its envelope. */
+// What a bundle carried before 2026-10-04, in its manifest and its envelope.
 const STORED_PATCHES = [
   {
     format: 'bsdiff',

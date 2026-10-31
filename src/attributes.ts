@@ -5,7 +5,7 @@ import { computeSha256Hex } from './hash/sha256.js';
 export const ATTRIBUTE_KEY_MAX_LENGTH = 64;
 export const ATTRIBUTE_VALUE_MAX_LENGTH = 256;
 
-/** A key is an identifier: letters, digits, `_`, `-` and `.`, at most 64 characters. */
+/** An attribute key: 1 to 64 letters, digits, `_`, `-` or `.`. */
 export const AttributeKeySchema = z
   .string()
   .min(1)
@@ -13,9 +13,8 @@ export const AttributeKeySchema = z
   .regex(/^[A-Za-z0-9_.-]+$/);
 
 /**
- * A value is at most 256 Unicode code points, counted neither in UTF-16 code
- * units nor in the characters a reader sees, with no control character: C0,
- * DEL or C1, Unicode's `Cc`. zod counts a string's length in code points.
+ * An attribute value: at most 256 code points, with no control character (Unicode `Cc`).
+ * The limit counts code points, not UTF-16 units or visible characters.
  */
 export const AttributeValueSchema = z
   .string()
@@ -28,15 +27,14 @@ export const AttributesSchema = z.record(
 );
 
 /**
- * The hash an `attribute` condition carries: `sha256(key + '\0' + value)` over
- * the UTF-8 bytes, so the public index confirms a guess but never lists a value;
- * the NUL separator is safe because a key can never contain one.
+ * Hashes an attribute as an `attribute` condition carries it: `sha256(key + '\0' + value)` over UTF-8.
+ * The public index can confirm a guessed value but never lists one. A key never contains NUL.
  */
 export function hashAttribute(key: string, value: string): string {
   return computeSha256Hex(`${key}\0${value}`);
 }
 
-/** The hash a `device` condition lists for one device id. */
+/** Hashes a device id as a `device` condition lists it. */
 export function hashDeviceId(deviceId: string): string {
   return computeSha256Hex(deviceId);
 }

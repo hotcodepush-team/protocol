@@ -1,14 +1,16 @@
 /**
- * The project as the fingerprint reads it, by paths relative to the project
- * root and `/`-separated, so the CLI hands in the file system and a test an
- * in-memory project.
+ * Reads the project for the fingerprint, by `/`-separated paths relative to the project root.
+ * The CLI passes the file system, a test an in-memory project.
  */
 export interface ProjectReader {
-  /** The entries of the directory at the path, or null when no directory is there. */
+  /** Lists the directory at the path, or returns null when no directory is there. */
   readDirectory(path: string): Promise<ProjectDirectoryEntry[] | null>;
-  /** The bytes of the file at the path, or null when no file is there. */
+  /** Reads the file at the path, or returns null when no file is there. */
   readFile(path: string): Promise<Uint8Array | null>;
-  /** The path with every symbolic link resolved, relative to the root and `/`-separated, `..`-led when it lies outside the root, or null when nothing is there. */
+  /**
+   * Resolves every symbolic link in the path, or returns null when nothing is there.
+   * The result is `/`-separated and relative to the root, starting with `..` when it lies outside.
+   */
   readRealPath(path: string): Promise<string | null>;
 }
 
@@ -21,7 +23,6 @@ export class FingerprintError extends Error {
   override readonly name = 'FingerprintError';
 }
 
-/** The JSON value of a file's text, or null when there is no text or it does not parse. */
 export function parseProjectJson(text: string | null): unknown {
   try {
     return text === null ? null : JSON.parse(text);
@@ -30,7 +31,6 @@ export function parseProjectJson(text: string | null): unknown {
   }
 }
 
-/** The file's text, or null when no file is there. */
 export async function readProjectText(
   reader: ProjectReader,
   path: string,

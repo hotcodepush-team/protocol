@@ -6,12 +6,8 @@ import type {
   SyncTrigger,
 } from './results.js';
 
-/**
- * The SDK's events, defined once here and emitted by every SDK, as
- * sdk-api.md's Events section writes them: results answer what the app
- * called, events report what the SDK did on its own. Each SDK declares its
- * own listener API around them.
- */
+// The events every SDK emits, as defined in sdk-api.md. Each SDK wraps them in its own listener API.
+// Results answer what the app called. Events report what the SDK did on its own.
 
 /** A check found a release the device qualifies for. */
 export interface UpdateAvailableEvent {
@@ -21,7 +17,10 @@ export interface UpdateAvailableEvent {
   trigger: SyncTrigger;
 }
 
-/** The download completed; `applyStrategy` says when the update is applied, `manual` meaning the app's `applyUpdate()`. */
+/**
+ * The download completed. `applyStrategy` says when the update is applied.
+ * With `manual`, the app applies it by calling `applyUpdate()`.
+ */
 export interface UpdateDownloadedEvent {
   applyStrategy: Exclude<ApplyStrategy, 'immediate'>;
   release: Release;
@@ -36,7 +35,7 @@ export interface UpdateFailedEvent {
   trigger: SyncTrigger;
 }
 
-/** While a pack downloads; `progress` from `0` to `1`. */
+/** Sent while a pack downloads. `progress` runs from `0` to `1`. */
 export interface DownloadProgressEvent {
   downloadSizeBytes: number;
   progress: number;
@@ -44,7 +43,10 @@ export interface DownloadProgressEvent {
   releaseId: string;
 }
 
-/** At the start that follows a rollback, once, before the readiness gate; `toRelease` is `null` for the embedded bundle. */
+/**
+ * Sent once at the start after a rollback, before the readiness gate.
+ * `toRelease` is `null` for the embedded bundle.
+ */
 export interface UpdateRolledBackEvent {
   fromRelease: Release;
   reason: RollbackReason;

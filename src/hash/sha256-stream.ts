@@ -1,7 +1,7 @@
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 
-/** A pass-through whose `digest` resolves with the SHA-256 hex of every byte that flowed through. */
+/** Passes bytes through unchanged. `digest` resolves with the SHA-256 hex of all of them at the end. */
 export class Sha256TransformStream extends TransformStream<
   Uint8Array,
   Uint8Array
@@ -27,7 +27,7 @@ export class Sha256TransformStream extends TransformStream<
   }
 }
 
-/** The SHA-256 hex of a stream, consumed to its end. */
+/** Computes the SHA-256 hex of a stream, reading it to the end. */
 export async function computeSha256HexOfStream(
   stream: ReadableStream<Uint8Array>,
 ): Promise<string> {

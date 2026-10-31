@@ -1,9 +1,4 @@
-/**
- * Writes `catalog.json` from `CATALOG` in `src/results.ts`, the one source of
- * the values; a test fails when the committed file is stale.
- *
- *     npm run catalog
- */
+// Run with `npm run catalog`. A test fails when the committed file is stale.
 import { writeFileSync } from 'node:fs';
 
 import { CATALOG } from '../src/results.ts';

@@ -25,7 +25,7 @@ import {
 
 export const ChannelSourceSchema = z.enum(CHANNEL_SOURCES);
 
-/** The facts a device has, sent when they differ from the acknowledged ones or the month began. */
+/** The facts a device has. It sends them when they differ from the acknowledged ones or a new month began. */
 export const DeviceReportSchema = z.looseObject({
   attributes: AttributesSchema,
   binaryBuild: PrintableStringSchema,
@@ -76,7 +76,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
     type: z.literal('confirmed' satisfies DeviceEventType),
   }),
   z.looseObject({
-    /** The app's `rollbackUpdate({ reason })` on `app_requested`, under the attribute-value rule. */
+    /** The reason the app passed to `rollbackUpdate({ reason })`, on `app_requested`. Same rule as an attribute value. */
     detail: AttributeValueSchema.optional(),
     reason: z.enum(FAILED_EVENT_REASONS),
     releaseId: IdentifierSchema,
@@ -90,7 +90,7 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
 ]);
 export type DeviceEvent = z.infer<typeof DeviceEventSchema>;
 
-/** The outbox's cap and so the largest batch a device sends; the events endpoint refuses a larger one. */
+/** The outbox cap, so also the largest batch a device sends. The events endpoint refuses a larger one. */
 export const BATCH_EVENT_COUNT_LIMIT = 200;
 
 /** One batch to `POST /v1/apps/{appId}/events`. */
@@ -103,24 +103,22 @@ export const DeviceEventsRequestSchema = z.looseObject({
 });
 export type DeviceEventsRequest = z.infer<typeof DeviceEventsRequestSchema>;
 
-/** The `202`: the server time the device keeps as `reportedAt` by `resolveKeptReportedAt`. */
+/** The `202` response: the server time the device keeps as `reportedAt` through `resolveKeptReportedAt`. */
 export const DeviceEventsResponseSchema = z.looseObject({
   reportedAt: IsoTimestampSchema,
 });
 export type DeviceEventsResponse = z.infer<typeof DeviceEventsResponseSchema>;
 
-/** A `202` as the device reads it: the server time, and whether the acknowledged batch carried the device report. */
+/** A `202` as the device reads it. `hasReport` says whether the acknowledged batch carried the device report. */
 export interface DeviceEventsAcknowledgement {
   hasReport: boolean;
   reportedAt: string;
 }
 
 /**
- * The `reportedAt` a device keeps after a `202`: the stamp of the first
- * acknowledged batch of a UTC month that carried the device report, the month
- * read from the stamp itself. A later acknowledgement replaces it only when it
- * falls in a later UTC month, and a batch of events alone never moves it, so
- * the device compares with `cappedAt` the stamp the consumer counted it by.
+ * Resolves the `reportedAt` a device keeps after a `202`: the stamp of the first acknowledged report in a UTC month.
+ * Only a report in a later month replaces it, never a batch of events alone.
+ * So the device compares `cappedAt` with the same stamp the server counted it by.
  */
 export function resolveKeptReportedAt(
   reportedAt: string | null,
@@ -139,7 +137,7 @@ export function resolveKeptReportedAt(
   return reportedAt;
 }
 
-/** The months since year zero, so a later month compares greater across a year's turn. */
+// Counts months since year zero, so the order holds across the turn of a year.
 function resolveUtcMonthNumber(timestamp: string): number {
   const date = new Date(timestamp);
   return date.getUTCFullYear() * 12 + date.getUTCMonth();

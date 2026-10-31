@@ -1,12 +1,6 @@
-/**
- * The `fp1` fingerprint, the hash of the native contract (decided
- * 2026-09-16): from the committed lockfile, the packages that ship native
- * code and the runtime packages, plus the files under the extra paths the app
- * declares; the canonical JSON of those contributors, its SHA-256, the `fp1:`
- * prefix. `fp1` versions the whole recipe — inputs, canonicalization and
- * hash — so a change to anything here is `fp2`, never an edit, since
- * fingerprints compare by equality only.
- */
+// The `fp1` fingerprint hashes the native contract (decided 2026-09-16).
+// `fp1` versions the whole recipe: inputs, canonicalization and hash.
+// Fingerprints compare by equality only, so any change here is `fp2`, never an edit.
 import { z } from 'zod';
 
 import { stringifyCanonicalJson } from '../canonical-json.js';
@@ -33,15 +27,21 @@ import {
 } from './project-reader.js';
 
 export interface FingerprintProject {
-  /** The extra paths the app declares in `extraFingerprintPaths`: files or directories, relative to the project's directory, a sibling workspace's through `..`, inside the reader's root. */
+  /**
+   * The files or directories the app lists in `extraFingerprintPaths`, relative to the project directory.
+   * A path may reach a sibling workspace through `..` but must stay inside the reader's root.
+   */
   extraFingerprintPaths: readonly string[];
-  /** The project's directory relative to the reader's root, the lockfile's directory: a workspace's path in a monorepo, empty when they are one. */
+  /**
+   * The project directory relative to the reader's root, which holds the lockfile.
+   * In a monorepo this is the workspace path. Empty when both are the same directory.
+   */
   projectPath: string;
-  /** The project from the directory holding its lockfile, a monorepo's root where the workspace installs. */
+  /** Reads from the directory that holds the lockfile, the monorepo root for a workspace. */
   reader: ProjectReader;
 }
 
-/** What the fingerprint hashes, and what `hotcodepush fingerprint` prints and `fingerprint diff` compares. */
+/** What the fingerprint hashes. `hotcodepush fingerprint` prints it and `fingerprint diff` compares it. */
 export interface FingerprintContributors {
   /** The files under the extra paths, each with its hash. */
   extraFingerprintPaths: ExtraFingerprintFile[];
@@ -53,22 +53,19 @@ export interface ExtraFingerprintFile {
   sha256: string;
 }
 
-/** A locked package as the walk found it installed, in the directory its markers are read from. */
 interface InstalledPackage {
   directory: string;
   locked: LockedPackage;
 }
 
-/** A dependency the walk has yet to find, with the directory of the project or package depending on it. */
 interface PendingDependency {
   dependency: LockedDependency;
   dependentDirectory: string;
 }
 
 /**
- * The packages whose version is the native layer itself, contributing
- * whatever their markers say: the Capacitor runtime, and React Native and the
- * Cordova platforms, which no marker detects.
+ * The packages that always contribute, since their version is the native layer itself.
+ * No marker detects React Native or the Cordova platforms.
  */
 export const FINGERPRINT_RUNTIME_PACKAGES = [
   '@capacitor/android',
@@ -87,7 +84,7 @@ const ProjectManifestSchema = z.looseObject({
   optionalDependencies: z.record(z.string(), z.string()).optional(),
 });
 
-/** `fp1:` and the SHA-256 of the contributors' canonical JSON. */
+/** Computes the fingerprint: `fp1:` and the SHA-256 of the canonical JSON of the contributors. */
 export function computeFingerprint(
   contributors: FingerprintContributors,
 ): string {
@@ -95,16 +92,10 @@ export function computeFingerprint(
 }
 
 /**
- * The contributors of the project's fingerprint, read through the project
- * reader: the packages the lockfile installs for the project, walked from
- * its own package.json through the lockfile's dependency tree, so a sibling
- * workspace's packages never contribute; the markers of each installed copy,
- * read in the directory the lockfile installs it in, so a nested copy is
- * never read from a hoisted namesake of another version; and the files under
- * the extra paths. Every copy that ships native code or is a runtime package
- * contributes, one entry per name, version and integrity, sorted by name,
- * version and integrity; the files sorted by path, hidden files inside a
- * declared directory skipped.
+ * Reads what the fingerprint hashes: the native and runtime packages the lockfile installs, and the extra files.
+ * Packages are walked from the project's package.json, so a sibling workspace never contributes.
+ * Each installed copy is read where the lockfile installs it, never from a hoisted copy of another version.
+ * Hidden files inside a declared directory are skipped.
  */
 export async function readFingerprintContributors(
   project: FingerprintProject,
@@ -156,7 +147,7 @@ async function readLockfile(
       `The project has no lockfile. Commit one of ${LOCKFILE_NAMES.join(', ')}.`,
     );
   }
-  // Two lockfiles mean one is stale, and reading the stale one could match a binary it does not describe.
+  // Two lockfiles mean one is stale. Reading the stale one could match the wrong binary.
   if (others.length > 0) {
     throw new FingerprintError(
       `The project has ${lockfiles.map(found => found.name).join(' and ')}. Keep the one its package manager writes.`,
@@ -165,7 +156,6 @@ async function readLockfile(
   return lockfile;
 }
 
-/** Every dependency of every kind the project's package.json declares, the walk's start. */
 async function readProjectDependencies(
   reader: ProjectReader,
   projectPath: string,
@@ -187,13 +177,8 @@ async function readProjectDependencies(
   ];
 }
 
-/**
- * Each installed copy the walk reaches from the project, once, whatever the
- * path it was reached by. A locked package that is not installed is
- * refused: its markers cannot be read, and hashing it as native-free would
- * match binaries it does not describe. An optional one is skipped with its
- * own dependencies, since a platform it does not support never installs it.
- */
+// A missing package is refused, since hashing it as native-free could match the wrong binary.
+// A missing optional package is skipped with its dependencies, since an unsupported platform never installs it.
 async function readInstalledPackages(
   reader: ProjectReader,
   projectPath: string,
@@ -238,7 +223,6 @@ async function readInstalledPackages(
   return [...installedPackages.values()];
 }
 
-/** The first of the directories a package may be installed in that exists; null when none does. */
 async function readInstallDirectory(
   reader: ProjectReader,
   directories: string[],
@@ -298,13 +282,8 @@ async function readExtraFingerprintFiles(
   );
 }
 
-/**
- * Where a declared extra path lies, relative to the lockfile's directory:
- * resolved against the project's directory, then its symbolic links resolved
- * by the reader. A path that leaves the lockfile's directory is refused before
- * the reader resolves it and after, so a sibling workspace can be named and
- * nothing outside the repository can.
- */
+// The path must stay inside the lockfile directory both before and after resolving symbolic links.
+// So a sibling workspace can be named, but nothing outside the repository.
 async function readExtraFingerprintRealPath(
   reader: ProjectReader,
   projectPath: string,
@@ -360,12 +339,11 @@ async function collectExtraFingerprintFiles(
   return [{ path, sha256: computeSha256Hex(bytes) }];
 }
 
-/** A path inside the project as the reader takes it, relative to the lockfile's directory. */
 function resolveProjectFilePath(projectPath: string, path: string): string {
   return projectPath === '' ? path : `${projectPath}/${path}`;
 }
 
-/** The path with each `..` segment taking off the named segment before it, `..`-led when it climbs above the root. */
+// A path that climbs above the root keeps its leading `..` segments.
 function resolveParentSegments(path: string): string {
   const segments: string[] = [];
   for (const segment of path.split('/')) {
@@ -378,12 +356,12 @@ function resolveParentSegments(path: string): string {
   return segments.join('/');
 }
 
-/** Whether a path relative to the root names something below it, never the root itself. */
+// The root itself does not count as inside.
 function isInsideRoot(path: string): boolean {
   return path !== '' && path !== '..' && !path.startsWith('../');
 }
 
-/** Order by UTF-16 code units, the same on every machine and locale. */
+// Unlike localeCompare, this order is the same on every machine and locale.
 function compareCodeUnits(first: string, second: string): number {
   if (first === second) {
     return 0;

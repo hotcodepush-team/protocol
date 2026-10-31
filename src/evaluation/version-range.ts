@@ -1,22 +1,19 @@
-/**
- * The range subset the three evaluators share, over dotted numeric versions:
- * comparators `>=`, `>`, `<=`, `<`, `=`, whitespace allowed after the operator,
- * a bare version as equality, partial versions and trailing `x` or `*`
- * components as intervals, alternatives joined by `||`, comparators of one
- * alternative joined by whitespace. Anything else does not parse, and a
- * condition that does not parse is not satisfied.
- */
+// The range syntax all three evaluators share, over dotted numeric versions.
+// Comparators are `>=`, `>`, `<=`, `<` and `=`, with optional whitespace after the operator.
+// A bare version means equality. A partial version or trailing `x` or `*` means an interval.
+// `||` joins alternatives and whitespace joins comparators. Anything else does not parse.
 
 export type Version = readonly number[];
 
 type Comparator = { operator: '<' | '<=' | '=' | '>' | '>='; version: Version };
 
-/** One comparator and the whitespace after it, wildcards only as trailing components; sticky, so matching stops at the first character that is not one. */
+// Matches one comparator and the whitespace after it, with wildcards only as trailing components.
+// Sticky, so matching stops at the first character that does not fit.
 const COMPARATOR_PATTERN =
   /(>=|<=|>|<|=)?\s*(\d+(?:\.\d+)*(?:\.[xX*])*|[xX*](?:\.[xX*])*)(?:\s+|$)/gy;
 const VERSION_PATTERN = /^\d+(\.\d+)*$/;
 
-/** A version's numeric components; `null` when the string is not a dotted number. */
+/** Parses a dotted numeric version into its components, or `null` when it is not one. */
 export function parseVersion(value: string): Version | null {
   const trimmed = value.trim();
   if (!VERSION_PATTERN.test(trimmed)) {
@@ -26,17 +23,16 @@ export function parseVersion(value: string): Version | null {
 }
 
 /**
- * Whether the range parses in the shared subset, so the API and the CLI
- * refuse one that does not before a write, the rule `range_syntax`.
+ * Whether the range parses in the shared syntax.
+ * The API and the CLI refuse an invalid range before a write, under the rule `range_syntax`.
  */
 export function isValidVersionRange(range: string): boolean {
   return parseVersionRange(range) !== null;
 }
 
 /**
- * Whether the version satisfies the range: `null` when the range does not parse.
- * A comparator compares only as many components as it names, so `2.4.1`
- * matches a device on `2.4.1` with any build, while `2.4.1.57` names the build.
+ * Whether the version satisfies the range, or `null` when the range does not parse.
+ * A comparator compares only the components it names, so `2.4.1` matches any build of `2.4.1`.
  */
 export function isVersionInRange(
   version: Version,
@@ -88,7 +84,6 @@ function isComparatorSatisfied(
   }
 }
 
-/** The alternatives of the range, each its comparators; `null` when one does not parse. */
 function parseVersionRange(range: string): Comparator[][] | null {
   const alternatives: Comparator[][] = [];
   for (const alternative of range.split('||')) {
@@ -145,7 +140,7 @@ function parseComparator(match: RegExpMatchArray): Comparator[] | null {
   );
 }
 
-/** A partial or wildcard version as the interval it names: `1.2` and `1.2.x` are `>=1.2 <1.3`, `x` is everything. */
+// `1.2` and `1.2.x` mean `>=1.2 <1.3`, and `x` matches everything.
 function resolveIntervalComparators(fixed: readonly number[]): Comparator[] {
   if (fixed.length === 0) {
     return [];
