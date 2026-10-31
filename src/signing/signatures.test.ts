@@ -17,7 +17,7 @@ import {
 interface SignaturesFixture {
   keys: {
     bits: number;
-    fingerprint: string;
+    keyId: string;
     name: string;
     privateKey: string;
     publicKey: string;
@@ -54,9 +54,9 @@ function resolvePrivateKeyOfName(keyName: string): string {
 }
 
 function resolvePrivateKeyOfKeyId(keyId: string): string {
-  const key = FIXTURE.keys.find(({ fingerprint }) => fingerprint === keyId);
+  const key = FIXTURE.keys.find(key => key.keyId === keyId);
   if (key === undefined) {
-    throw new Error(`No fixture key has the fingerprint ${keyId}.`);
+    throw new Error(`No fixture key has the key id ${keyId}.`);
   }
   return key.privateKey;
 }

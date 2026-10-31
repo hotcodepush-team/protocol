@@ -111,7 +111,7 @@ The cases pin the three counts apart: 256 emoji are accepted, 257 code points of
 ## `signatures.json`
 
 One scheme is allowed, `rsa-v1_5-sha256`: RSASSA-PKCS1-v1_5 with SHA-256, which Web Crypto, iOS's Security framework and Android's `Signature` verify alike.
-`keys` are test key pairs, `{ name, bits, publicKey, privateKey, fingerprint }`: the public key self-describing, `rsa-v1_5-sha256:` and the base64 of its SPKI DER, the private key the base64 of its PKCS #8 DER, the fingerprint `sha256:` and the hex SHA-256 of the SPKI bytes.
+`keys` are test key pairs, `{ name, bits, publicKey, privateKey, keyId }`: the public key self-describing, `rsa-v1_5-sha256:` and the base64 of its SPKI DER, the private key the base64 of its PKCS #8 DER, the fingerprint `sha256:` and the hex SHA-256 of the SPKI bytes.
 `manifests` are `{ name, envelope, publicKeys, devicePublicKeys, isValid }`: an envelope whose `manifest` is the canonical JSON of the signed content, verified against the listed keys; tampered bytes, a key the verifier does not hold, a null signature, a value under another prefix — `ed25519:` included, an unknown scheme — and a key under 2048 bits are refused.
 A case lists its keys twice over: `publicKeys` as `hotcodepush.json` lists them, and `devicePublicKeys.android` and `devicePublicKeys.ios` as a resource file carries them, `{ der, keyId }` — the base64 of the SPKI DER for Android's `X509EncodedKeySpec`, of the PKCS #1 DER for iOS's `SecKeyCreateWithData`, each beside the fingerprint a signature names, since a device cannot recompute it from PKCS #1 bytes.
 The size of a key is read from the key the platform imported, never from its bytes.
