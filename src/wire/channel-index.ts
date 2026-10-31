@@ -78,7 +78,7 @@ export const IndexReleaseSchema = z.looseObject({
   manifestUrl: HttpUrlSchema,
   notes: z.string().nullable(),
   number: z.int().positive(),
-  rolloutPercentage: z.int().min(0).max(100),
+  rolloutPercent: z.int().min(0).max(100),
   sizeBytes: SizeBytesSchema,
 });
 export type IndexRelease = z.infer<typeof IndexReleaseSchema>;
@@ -88,7 +88,7 @@ export const ChannelIndexSchema = z.looseObject({
   appId: NonEmptyStringSchema,
   cappedAt: IsoTimestampSchema.nullable(),
   channelId: NonEmptyStringSchema,
-  isPaused: z.boolean(),
+  pausedAt: IsoTimestampSchema.nullable(),
   platform: PlatformSchema,
   releases: z.array(IndexReleaseSchema),
   revokedReleaseIds: z.array(IdentifierSchema),

@@ -7,7 +7,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -26,7 +26,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -41,7 +41,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -60,7 +60,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -77,7 +77,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -96,7 +96,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096,
             "laterField": "ignored"
           }
@@ -115,7 +115,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -134,7 +134,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -149,7 +149,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -168,7 +168,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -183,7 +183,7 @@
         "appId": "app-1",
         "cappedAt": "2026-09-30T00:00:00.000Z",
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -202,7 +202,41 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should accept a paused channel",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "pausedAt": "2026-09-30T08:15:00.000Z",
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -217,7 +251,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -236,7 +270,7 @@
             "manifestUrl": "http://localhost:8787/files/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -253,7 +287,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -272,7 +306,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -287,7 +321,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -306,7 +340,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -321,7 +355,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -340,7 +374,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -355,7 +389,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -374,7 +408,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -389,7 +423,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -408,7 +442,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -423,7 +457,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -442,7 +476,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -457,7 +491,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -476,7 +510,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -491,7 +525,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -510,7 +544,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -525,7 +559,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -544,7 +578,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -559,7 +593,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -578,7 +612,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -593,7 +627,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -612,7 +646,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -627,7 +661,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -646,7 +680,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -661,7 +695,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -680,7 +714,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -695,7 +729,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -713,7 +747,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -723,12 +757,12 @@
       }
     },
     {
-      "name": "should refuse a release without rolloutPercentage",
+      "name": "should refuse a release without rolloutPercent",
       "index": {
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -761,7 +795,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -780,7 +814,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100
+            "rolloutPercent": 100
           }
         ],
         "revokedReleaseIds": ["release-1"],
@@ -794,7 +828,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -807,7 +841,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -822,7 +856,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -840,7 +874,7 @@
             "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -850,7 +884,7 @@
       }
     },
     {
-      "name": "should refuse an index without isPaused",
+      "name": "should refuse an index without pausedAt, which is null when not paused",
       "index": {
         "appId": "app-1",
         "cappedAt": null,
@@ -873,7 +907,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -888,7 +922,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -907,7 +941,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -920,7 +954,7 @@
       "index": {
         "appId": "app-1",
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -939,7 +973,41 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
+            "sizeBytes": 4096
+          }
+        ],
+        "revokedReleaseIds": ["release-1"],
+        "schema": 1,
+        "sequence": 7
+      }
+    },
+    {
+      "name": "should refuse a pausedAt that is neither a timestamp nor null: true, as the isPaused it replaced was written",
+      "index": {
+        "appId": "app-1",
+        "cappedAt": null,
+        "channelId": "channel-1",
+        "pausedAt": true,
+        "platform": "ios",
+        "releases": [
+          {
+            "bundleId": "bundle-2",
+            "bundleVersion": "1.4.2",
+            "conditions": [
+              {
+                "range": ">=2.3.0",
+                "type": "binary"
+              }
+            ],
+            "createdAt": "2026-09-29T10:00:00.000Z",
+            "id": "release-2",
+            "isMandatory": false,
+            "manifestSha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+            "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
+            "notes": null,
+            "number": 2,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -954,7 +1022,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -973,7 +1041,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -988,7 +1056,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1007,7 +1075,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 50.5,
+            "rolloutPercent": 50.5,
             "sizeBytes": 4096
           }
         ],
@@ -1022,7 +1090,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1041,7 +1109,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 101,
+            "rolloutPercent": 101,
             "sizeBytes": 4096
           }
         ],
@@ -1056,7 +1124,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1075,7 +1143,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": -1
           }
         ],
@@ -1090,7 +1158,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1109,7 +1177,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1124,7 +1192,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "windows",
         "releases": [
           {
@@ -1143,7 +1211,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1158,7 +1226,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1177,7 +1245,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1192,7 +1260,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1210,7 +1278,7 @@
             "manifestUrl": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1225,7 +1293,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1244,7 +1312,7 @@
             "manifestUrl": "javascript:alert(1)",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1259,7 +1327,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1278,7 +1346,7 @@
             "manifestUrl": "file:///apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1293,7 +1361,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1312,7 +1380,7 @@
             "manifestUrl": "data:application/json,{}",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1327,7 +1395,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1346,7 +1414,7 @@
             "manifestUrl": "ftp://files.hotcodepush.com/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],
@@ -1361,7 +1429,7 @@
         "appId": "app-1",
         "cappedAt": null,
         "channelId": "channel-1",
-        "isPaused": false,
+        "pausedAt": null,
         "platform": "ios",
         "releases": [
           {
@@ -1380,7 +1448,7 @@
             "manifestUrl": "/apps/app-1/bundles/bundle-2/manifest.json",
             "notes": null,
             "number": 2,
-            "rolloutPercentage": 100,
+            "rolloutPercent": 100,
             "sizeBytes": 4096
           }
         ],

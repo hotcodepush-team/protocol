@@ -38,7 +38,6 @@ export const DEVICE_EVENT_TYPES = [
   'confirmed',
   'downloaded',
   'failed',
-  'rolled_back',
 ] as const;
 export type DeviceEventType = (typeof DEVICE_EVENT_TYPES)[number];
 
@@ -161,7 +160,7 @@ export type SyncResult =
     }
   | { notes: string | null; release: Release; status: 'applied' }
   | {
-      condition?: ConditionType;
+      conditionType?: ConditionType;
       reason: SkippedReason;
       release: Release | null;
       status: 'skipped';

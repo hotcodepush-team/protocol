@@ -9,8 +9,7 @@
     "checked",
     "confirmed",
     "downloaded",
-    "failed",
-    "rolled_back"
+    "failed"
   ],
   "downloadStrategies": ["auto", "manual", "unmetered"],
   "failedReasons": [

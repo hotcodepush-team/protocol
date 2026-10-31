@@ -54,14 +54,13 @@ const FAILED_EVENT_REASONS = [
 
 export const DeviceEventSchema = z.discriminatedUnion('type', [
   z.looseObject({
-    condition: z.enum(CONDITION_TYPES).optional(),
+    conditionType: z.enum(CONDITION_TYPES).optional(),
     reason: z.enum(SKIPPED_REASONS).optional(),
     releaseId: IdentifierSchema,
     status: z.enum(CHECKED_EVENT_STATUSES),
     type: z.literal('checked' satisfies DeviceEventType),
   }),
   z.looseObject({
-    bundleId: IdentifierSchema,
     downloadSizeBytes: SizeBytesSchema.max(BUNDLE_BYTES_LIMIT),
     packKind: z.enum(PACK_KINDS),
     releaseId: IdentifierSchema,
@@ -81,11 +80,6 @@ export const DeviceEventSchema = z.discriminatedUnion('type', [
     reason: z.enum(FAILED_EVENT_REASONS),
     releaseId: IdentifierSchema,
     type: z.literal('failed' satisfies DeviceEventType),
-  }),
-  z.looseObject({
-    fromReleaseId: IdentifierSchema,
-    toReleaseId: IdentifierSchema.nullable(),
-    type: z.literal('rolled_back' satisfies DeviceEventType),
   }),
 ]);
 export type DeviceEvent = z.infer<typeof DeviceEventSchema>;

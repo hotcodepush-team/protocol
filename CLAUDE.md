@@ -45,6 +45,7 @@ The channel index and the bundle manifest are parsed by native code compiled int
   So did the delivery change of the same day: `patches` left the manifest, the envelope and the signed content, and the pack gained the patch entry `patches/{from}/{to}`, a BSDIFF40 patch between two files named by their content hashes.
   A manifest or an envelope stored with `patches` still parses, the field ignored, and a pack reader skips an entry of any other name with its body, so a later entry kind is additive.
   So did the renaming of 2026-10-25: every value of the catalog lowercase snake_case, `SIGNATURE_INVALID` now `signature_invalid`, `next-start` now `next_start` and the device event `rolledBack` now `rolled_back`; from there the catalog is additive only again.
+  So did the reshaping of 2026-10-31: the device event `rolled_back` retired, `bundleId` gone from the `downloaded` event, `condition` now `conditionType`, the boolean `isPaused` now the timestamp `pausedAt` and `rolloutPercentage` now `rolloutPercent`; from there the catalog and the shapes are additive only.
 - A change that cannot be additive is a new schema major with its own path, `v2`, and a handbook decision first — never an edit.
 - `CHANNEL_INDEX_SCHEMA` is the format major and equals the `v1` in the path; a reader refuses an index whose `schema` is not the one it asked for.
 - Conditions are frozen once shipped: a new meaning is a new type, and an unknown type fails closed; the index carries no directive, revocation being the plain revoked list every SDK understands.
