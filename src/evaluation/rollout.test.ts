@@ -20,13 +20,9 @@ const CASES = (
 ).cases;
 
 describe('resolveRolloutBucket', () => {
-  test.each(
-    CASES.map(
-      entry => [entry.deviceId, entry.releaseId, entry.bucket] as const,
-    ),
-  )(
-    'should put device %j and release %j into bucket %i',
-    (deviceId, releaseId, bucket) => {
+  test.each(CASES)(
+    'should put device $deviceId and release $releaseId into bucket $bucket',
+    ({ bucket, deviceId, releaseId }) => {
       expect(resolveRolloutBucket(deviceId, releaseId)).toBe(bucket);
     },
   );

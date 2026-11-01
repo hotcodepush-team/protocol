@@ -62,16 +62,17 @@ describe('parseVersion', () => {
 });
 
 describe('isVersionInRange', () => {
-  test.each(
-    CASES.map(entry => [entry.version, entry.range, entry.satisfied] as const),
-  )('should answer %s in %j with %s', (version, range, satisfied) => {
-    const parsed = parseVersion(version);
-    expect(parsed).not.toBeNull();
-    if (parsed === null) {
-      return;
-    }
-    expect(isVersionInRange(parsed, range)).toBe(satisfied);
-  });
+  test.each(CASES)(
+    'should answer $version in $range with $satisfied',
+    ({ range, satisfied, version }) => {
+      const parsed = parseVersion(version);
+      expect(parsed).not.toBeNull();
+      if (parsed === null) {
+        return;
+      }
+      expect(isVersionInRange(parsed, range)).toBe(satisfied);
+    },
+  );
 
   test.each([
     ['>= 1.2', '>=1.2'],

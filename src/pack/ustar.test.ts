@@ -334,11 +334,11 @@ describe('buildPackPatchHeader', () => {
   });
 
   test.each([
-    ['from', 'index.js', TO_SHA256],
-    ['to', FROM_SHA256, 'index.js'],
+    { fromSha256: 'index.js', side: 'from', toSha256: TO_SHA256 },
+    { fromSha256: FROM_SHA256, side: 'to', toSha256: 'index.js' },
   ])(
-    'should refuse a %s that is not a sha256',
-    (_side, fromSha256, toSha256) => {
+    'should refuse a $side that is not a sha256',
+    ({ fromSha256, toSha256 }) => {
       expect(() => buildPackPatchHeader(fromSha256, toSha256, 5)).toThrow(
         PackFormatError,
       );

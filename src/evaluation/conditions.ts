@@ -41,23 +41,12 @@ function isConditionSatisfied(
     return false;
   }
   switch (condition.type) {
-    case 'attribute': {
-      // Own members only, so an inherited key such as `constructor` never counts.
-      const value = Object.hasOwn(device.attributes, condition.key)
-        ? device.attributes[condition.key]
-        : undefined;
-      return (
-        value !== undefined &&
-        hashAttribute(condition.key, value) === condition.valueSha256
-      );
-    }
-    case 'binary': {
-      const binaryVersion = resolveBinaryVersion(device);
-      return (
-        binaryVersion !== null &&
-        isVersionInRange(binaryVersion, condition.range) === true
-      );
-    }
+    case 'attribute':
+      return isAttributeConditionSatisfied(condition, device);
+    case 'binary':
+      return isVersionConditionSatisfied(condition, {
+        version: resolveBinaryVersion(device),
+      });
     case 'device':
       return condition.hashedIds.includes(hashDeviceId(device.deviceId));
     case 'fingerprint':
@@ -65,14 +54,34 @@ function isConditionSatisfied(
         device.fingerprint !== null &&
         device.fingerprint === condition.fingerprint
       );
-    case 'os': {
-      const osVersion = parseVersion(device.osVersion);
-      return (
-        osVersion !== null &&
-        isVersionInRange(osVersion, condition.range) === true
-      );
-    }
+    case 'os':
+      return isVersionConditionSatisfied(condition, {
+        version: parseVersion(device.osVersion),
+      });
   }
+}
+
+function isAttributeConditionSatisfied(
+  condition: Extract<KnownCondition, { type: 'attribute' }>,
+  device: DeviceInfo,
+): boolean {
+  // Own members only, so an inherited key such as `constructor` never counts.
+  const value = Object.hasOwn(device.attributes, condition.key)
+    ? device.attributes[condition.key]
+    : undefined;
+  return (
+    value !== undefined &&
+    hashAttribute(condition.key, value) === condition.valueSha256
+  );
+}
+
+function isVersionConditionSatisfied(
+  condition: Extract<KnownCondition, { type: 'binary' | 'os' }>,
+  { version }: { version: readonly number[] | null },
+): boolean {
+  return (
+    version !== null && isVersionInRange(version, condition.range) === true
+  );
 }
 
 // Appends the build number as at least the fourth component, so `1.0` build `57` is `1.0.0.57`.

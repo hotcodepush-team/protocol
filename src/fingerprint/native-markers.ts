@@ -18,8 +18,8 @@ export async function hasNativeMarkers(
   return (
     hasFile(entries, 'plugin.xml') ||
     (await isCapacitorPlugin(reader, directory)) ||
-    (await hasIosModule(reader, directory, entries)) ||
-    (await hasAndroidModule(reader, directory, entries))
+    (await hasIosModule(reader, { directory, entries })) ||
+    (await hasAndroidModule(reader, { directory, entries }))
   );
 }
 
@@ -36,8 +36,10 @@ async function isCapacitorPlugin(
 
 async function hasIosModule(
   reader: ProjectReader,
-  directory: string,
-  entries: ProjectDirectoryEntry[],
+  {
+    directory,
+    entries,
+  }: { directory: string; entries: ProjectDirectoryEntry[] },
 ): Promise<boolean> {
   if (!hasDirectory(entries, 'ios')) {
     return false;
@@ -50,8 +52,10 @@ async function hasIosModule(
 
 async function hasAndroidModule(
   reader: ProjectReader,
-  directory: string,
-  entries: ProjectDirectoryEntry[],
+  {
+    directory,
+    entries,
+  }: { directory: string; entries: ProjectDirectoryEntry[] },
 ): Promise<boolean> {
   if (!hasDirectory(entries, 'android')) {
     return false;

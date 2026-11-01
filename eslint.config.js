@@ -19,9 +19,19 @@ export default defineConfig(
         { devDependencies: ['**/*.test.ts', '**/*.config.*'] },
       ],
       'import-x/order': ['error', { alphabetize: { order: 'asc' } }],
+      'complexity': ['error', 10],
+      'max-lines-per-function': [
+        'error',
+        { IIFEs: true, max: 40, skipBlankLines: true, skipComments: true },
+      ],
+      'max-params': ['error', 2],
     },
     settings: {
       'import-x/resolver-next': [createTypeScriptImportResolver()],
     },
+  },
+  {
+    files: ['**/*.test.ts', 'test/**', 'e2e/**'],
+    rules: { 'max-lines-per-function': 'off' },
   },
 );

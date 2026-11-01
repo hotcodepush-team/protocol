@@ -77,8 +77,7 @@ function createMemoryReader(files: Record<string, string>): ProjectReader {
 
 function createLinkedReader(
   files: Record<string, string>,
-  link: string,
-  target: string,
+  { link, target }: { link: string; target: string },
 ): ProjectReader {
   const reader = createMemoryReader(files);
   return {
@@ -142,8 +141,7 @@ describe('readFingerprintContributors', () => {
         ...LINKED_PROJECT_FILES,
         'packages/scanner-native/ios/Bridge.swift': '',
       },
-      'apps/scanner/native',
-      'packages/scanner-native/ios',
+      { link: 'apps/scanner/native', target: 'packages/scanner-native/ios' },
     );
     const contributors = await readFingerprintContributors({
       extraFingerprintPaths: ['native'],
@@ -156,11 +154,10 @@ describe('readFingerprintContributors', () => {
   });
 
   test("should refuse an extra fingerprint path when its symbolic link leads out of the lockfile's directory", async () => {
-    const reader = createLinkedReader(
-      LINKED_PROJECT_FILES,
-      'apps/scanner/native',
-      '../outside/ios',
-    );
+    const reader = createLinkedReader(LINKED_PROJECT_FILES, {
+      link: 'apps/scanner/native',
+      target: '../outside/ios',
+    });
     await expect(
       readFingerprintContributors({
         extraFingerprintPaths: ['native'],

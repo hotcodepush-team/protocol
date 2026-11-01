@@ -51,7 +51,6 @@ export function evaluateChannelIndex(
   index: ChannelIndex,
   device: DeviceInfo,
 ): ChannelIndexEvaluation {
-  const currentIndexRelease = resolveCurrentIndexRelease(index, device);
   if (isDeviceBeyondCap(index, device)) {
     return {
       outcome: {
@@ -64,76 +63,93 @@ export function evaluateChannelIndex(
   }
   const verdicts = [...index.releases]
     .sort((left, right) => right.number - left.number)
-    .map(release => resolveReleaseVerdict(release, index, device));
+    .map(release => resolveReleaseVerdict(release, { device, index }));
+  return { outcome: resolveOutcome(index, { device, verdicts }), verdicts };
+}
+
+function resolveOutcome(
+  index: ChannelIndex,
+  { device, verdicts }: { device: DeviceInfo; verdicts: ReleaseVerdict[] },
+): EvaluationOutcome {
   const currentNumber =
     device.currentRelease?.number ?? EMBEDDED_RELEASE_NUMBER;
-  const isCurrentRevoked =
-    device.currentRelease !== null &&
-    isReleaseRevoked(device.currentRelease, index);
   const eligibleVerdicts = verdicts.filter(verdict => verdict.isEligible);
+  const newerEligibleVerdict = eligibleVerdicts.find(
+    verdict => verdict.release.number > currentNumber,
+  );
+  if (index.pausedAt === null && newerEligibleVerdict !== undefined) {
+    const target = newerEligibleVerdict.release;
+    return {
+      isMandatory: isMandatoryTransitively(target, {
+        currentNumber,
+        eligibleVerdicts,
+      }),
+      release: target,
+      status: 'available',
+    };
+  }
+  if (isCurrentReleaseRevoked(index, device)) {
+    const olderEligibleVerdict = eligibleVerdicts.find(
+      verdict => verdict.release.number < currentNumber,
+    );
+    return {
+      reason: 'release_revoked',
+      release: olderEligibleVerdict?.release ?? null,
+      status: 'skipped',
+    };
+  }
+  return (
+    resolveNewerSkippedOutcome(index, { currentNumber, verdicts }) ?? {
+      release: resolveCurrentIndexRelease(index, device),
+      status: 'up_to_date',
+    }
+  );
+}
+
+// The newest release above the current one that is not revoked, and why the device does not take it.
+function resolveNewerSkippedOutcome(
+  index: ChannelIndex,
+  {
+    currentNumber,
+    verdicts,
+  }: { currentNumber: number; verdicts: readonly ReleaseVerdict[] },
+): EvaluationOutcome | null {
   const newerVerdict = verdicts.find(
     verdict =>
       verdict.release.number > currentNumber &&
       verdict.reason !== 'release_revoked',
   );
-  const newerEligibleVerdict = eligibleVerdicts.find(
-    verdict => verdict.release.number > currentNumber,
-  );
-  const olderEligibleVerdict = eligibleVerdicts.find(
-    verdict => verdict.release.number < currentNumber,
-  );
-  if (index.pausedAt === null && newerEligibleVerdict !== undefined) {
-    const target = newerEligibleVerdict.release;
+  if (newerVerdict === undefined) {
+    return null;
+  }
+  if (index.pausedAt !== null) {
     return {
-      outcome: {
-        isMandatory: isMandatoryTransitively(
-          target,
-          currentNumber,
-          eligibleVerdicts,
-        ),
-        release: target,
-        status: 'available',
-      },
-      verdicts,
+      reason: 'channel_paused',
+      release: newerVerdict.release,
+      status: 'skipped',
     };
   }
-  if (isCurrentRevoked) {
-    return {
-      outcome: {
-        reason: 'release_revoked',
-        release: olderEligibleVerdict?.release ?? null,
-        status: 'skipped',
-      },
-      verdicts,
-    };
-  }
-  if (index.pausedAt !== null && newerVerdict !== undefined) {
-    return {
-      outcome: {
-        reason: 'channel_paused',
-        release: newerVerdict.release,
-        status: 'skipped',
-      },
-      verdicts,
-    };
-  }
-  if (newerVerdict !== undefined && newerVerdict.reason !== undefined) {
-    return {
-      outcome: {
-        ...(newerVerdict.conditionType === undefined
-          ? {}
-          : { conditionType: newerVerdict.conditionType }),
-        reason: newerVerdict.reason,
-        release: newerVerdict.release,
-        status: 'skipped',
-      },
-      verdicts,
-    };
+  if (newerVerdict.reason === undefined) {
+    return null;
   }
   return {
-    outcome: { release: currentIndexRelease, status: 'up_to_date' },
-    verdicts,
+    ...(newerVerdict.conditionType === undefined
+      ? {}
+      : { conditionType: newerVerdict.conditionType }),
+    reason: newerVerdict.reason,
+    release: newerVerdict.release,
+    status: 'skipped',
   };
+}
+
+function isCurrentReleaseRevoked(
+  index: ChannelIndex,
+  device: DeviceInfo,
+): boolean {
+  return (
+    device.currentRelease !== null &&
+    isReleaseRevoked(device.currentRelease, index)
+  );
 }
 
 function isDeviceBeyondCap(index: ChannelIndex, device: DeviceInfo): boolean {
@@ -150,8 +166,10 @@ function isDeviceBeyondCap(index: ChannelIndex, device: DeviceInfo): boolean {
 // Only releases the device could take count.
 function isMandatoryTransitively(
   target: IndexRelease,
-  currentNumber: number,
-  eligibleVerdicts: readonly ReleaseVerdict[],
+  {
+    currentNumber,
+    eligibleVerdicts,
+  }: { currentNumber: number; eligibleVerdicts: readonly ReleaseVerdict[] },
 ): boolean {
   return eligibleVerdicts.some(
     verdict =>
@@ -181,13 +199,12 @@ function resolveCurrentIndexRelease(
 
 function resolveReleaseVerdict(
   release: IndexRelease,
-  index: ChannelIndex,
-  device: DeviceInfo,
+  { device, index }: { device: DeviceInfo; index: ChannelIndex },
 ): ReleaseVerdict {
   const conditions = release.conditions.map(condition =>
     resolveConditionVerdict(condition, device),
   );
-  const skipped = resolveSkippedReason(release, conditions, index, device);
+  const skipped = resolveSkippedReason(release, { conditions, device, index });
   if (skipped === null) {
     return { conditions, isEligible: true, release };
   }
@@ -196,9 +213,15 @@ function resolveReleaseVerdict(
 
 function resolveSkippedReason(
   release: IndexRelease,
-  conditions: readonly ConditionVerdict[],
-  index: ChannelIndex,
-  device: DeviceInfo,
+  {
+    conditions,
+    device,
+    index,
+  }: {
+    conditions: readonly ConditionVerdict[];
+    device: DeviceInfo;
+    index: ChannelIndex;
+  },
 ): { conditionType?: ConditionType; reason: SkippedReason } | null {
   if (isReleaseRevoked(release, index)) {
     return { reason: 'release_revoked' };
