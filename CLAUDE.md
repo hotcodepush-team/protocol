@@ -80,7 +80,7 @@ The channel index and the bundle manifest are parsed by native code compiled int
 
 ## Agent workspace
 
-- `.mcp.json` is absent on purpose: the one server for this repo's stack, HotCodePush's own at `https://mcp.hotcodepush.com/mcp`, is not live yet; the file arrives with it.
+- No `.mcp.json`: no server covers this repo's stack yet; the HotCodePush server joins when it exists.
 - `.claude/skills/` holds the developer skills copied from `hotcodepush-team/.github` with the skills CLI and pinned in `skills-lock.json`; update them with `npx skills update`.
 - `.github/copilot-instructions.md` holds the review criteria, the only Copilot-specific file.
 - Commits are conventional commits; `main` is trunk, CI is the gate, and a commit that lands an issue says `Closes #<n>`.
