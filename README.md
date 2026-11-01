@@ -43,7 +43,7 @@ npm ci
 npm run build        # compiles src/ into dist/
 npm test
 npm run lint && npm run typecheck
-npm run fmt          # Prettier, run before every commit
+npm run fmt          # ESLint's fixes and Prettier, run before every commit
 ```
 
 `npm run catalog` writes `catalog.json` from `src/results.ts`; a test fails when the committed file is stale.
