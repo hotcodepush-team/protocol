@@ -23,6 +23,9 @@ const { outcome, verdicts } = evaluateChannelIndex(index, deviceInfo);
 // outcome: the release to take, or the reason not to; verdicts: every release explained
 ```
 
+A release condition as the API and the database hold it, `ReleaseConditionSchema`, carries raw values: `{ type: 'attribute', key, value }` and `{ type: 'device', ids }`.
+Only the public channel index carries hashes, and `toWireCondition` is the one bridge from the raw condition to the index.
+
 `@hotcodepush/protocol/catalog.json` holds every value of the catalog, the statuses, reasons and strategies, for a reader outside TypeScript.
 
 The package is the foundation of the HotCodePush SDKs, not their supported API: an app uses the SDK for its framework.

@@ -1,0 +1,59 @@
+import { z } from 'zod';
+
+import {
+  AttributeKeySchema,
+  AttributeValueSchema,
+  hashAttribute,
+  hashDeviceId,
+} from './attributes.js';
+import type { Condition } from './wire/channel-index.js';
+import {
+  BinaryConditionSchema,
+  DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT,
+  FingerprintConditionSchema,
+  OsConditionSchema,
+} from './wire/channel-index.js';
+import { UuidSchema } from './wire/primitives.js';
+
+// Strict, unlike the wire: the API shape is ours and complete, so an unknown field is a mistake.
+
+/** An `attribute` condition as the API and the database hold it, with the raw value. */
+export const AttributeReleaseConditionSchema = z.strictObject({
+  key: AttributeKeySchema,
+  type: z.literal('attribute'),
+  value: AttributeValueSchema,
+});
+
+/** A `device` condition as the API and the database hold it, with the raw device ids. */
+export const DeviceReleaseConditionSchema = z.strictObject({
+  ids: z.array(UuidSchema).max(DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT),
+  type: z.literal('device'),
+});
+
+/** A release condition as the API and the database hold it. Only the public index carries hashes. */
+export const ReleaseConditionSchema = z.discriminatedUnion('type', [
+  AttributeReleaseConditionSchema,
+  BinaryConditionSchema,
+  DeviceReleaseConditionSchema,
+  FingerprintConditionSchema,
+  OsConditionSchema,
+]);
+export type ReleaseCondition = z.infer<typeof ReleaseConditionSchema>;
+
+/** Converts a release condition into the hashed shape the channel index carries. */
+export function toWireCondition(condition: ReleaseCondition): Condition {
+  switch (condition.type) {
+    case 'attribute':
+      return {
+        key: condition.key,
+        type: 'attribute',
+        valueSha256: hashAttribute(condition.key, condition.value),
+      };
+    case 'device':
+      return { hashedIds: condition.ids.map(hashDeviceId), type: 'device' };
+    case 'binary':
+    case 'fingerprint':
+    case 'os':
+      return condition;
+  }
+}
