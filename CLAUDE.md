@@ -65,6 +65,8 @@ The channel index and the bundle manifest are parsed by native code compiled int
 - Every value is lowercase snake_case with no prefix, error codes included; a reason names the thing at fault first, `signature_invalid`, `channel_paused`; a name a platform owns keeps that platform's form: environment variables, HTTP headers, MCP tool names, CLI flags and each language's identifiers.
 - Never the non-null assertion; nullish coalescing or a real check.
 - Test titles read `should <verb> …`, lowercase, conditions starting with `when`.
+- A test earns its place by catching a bug nothing else catches, at the lowest layer that can prove it; one test per branch, never per value, and nothing for what the types, the framework or a library guarantee.
+- A new test names the behaviour or the bug it proves; if deleting the production code would not fail it, it does not get in.
 - Fixtures and examples carry invented data only.
 
 ## Comments
