@@ -33,6 +33,7 @@ The rules: a `checkIntervalSeconds` below 60, the floor, since a zero made the c
 ## `version-ranges.json`
 
 `{ version, range, satisfied }` over the shared range subset — `satisfied` is `true`, `false`, or `null` when the range does not parse, which a condition treats as not satisfied and `isValidVersionRange` refuses, the API's and the CLI's `range_syntax` rule.
+A version component is at most 2^53 - 1, 9007199254740991, the largest integer JavaScript holds exactly: a version or a range naming a larger one does not parse.
 
 ## `rollout-buckets.json`
 

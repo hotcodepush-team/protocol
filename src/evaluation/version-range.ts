@@ -2,6 +2,7 @@
 // Comparators are `>=`, `>`, `<=`, `<` and `=`, with optional whitespace after the operator.
 // A bare version means equality. A partial version or trailing `x` or `*` means an interval.
 // `||` joins alternatives and whitespace joins comparators. Anything else does not parse.
+// A component above 2^53 - 1 does not parse either, since JavaScript holds no larger integer exactly.
 
 export type Version = readonly number[];
 
@@ -19,7 +20,7 @@ export function parseVersion(value: string): Version | null {
   if (!VERSION_PATTERN.test(trimmed)) {
     return null;
   }
-  return trimmed.split('.').map(component => Number.parseInt(component, 10));
+  return parseVersionComponents(trimmed.split('.'));
 }
 
 /**
@@ -126,18 +127,29 @@ function parseComparator(match: RegExpMatchArray): Comparator[] | null {
   if (wildcardIndex !== -1 && operator !== undefined) {
     return null;
   }
+  const fixed = parseVersionComponents(
+    components.slice(
+      0,
+      wildcardIndex === -1 ? components.length : wildcardIndex,
+    ),
+  );
+  if (fixed === null) {
+    return null;
+  }
   if (
     wildcardIndex === -1 &&
     (operator !== undefined || components.length >= 3)
   ) {
-    const version = components.map(component => Number.parseInt(component, 10));
-    return [{ operator: operator ?? '=', version }];
+    return [{ operator: operator ?? '=', version: fixed }];
   }
-  return resolveIntervalComparators(
-    components
-      .slice(0, wildcardIndex === -1 ? components.length : wildcardIndex)
-      .map(component => Number.parseInt(component, 10)),
-  );
+  return resolveIntervalComparators(fixed);
+}
+
+function parseVersionComponents(components: readonly string[]): Version | null {
+  const version = components.map(component => Number.parseInt(component, 10));
+  return version.every(component => Number.isSafeInteger(component))
+    ? version
+    : null;
 }
 
 // `1.2` and `1.2.x` mean `>=1.2 <1.3`, and `x` matches everything.
