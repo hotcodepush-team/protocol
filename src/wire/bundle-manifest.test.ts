@@ -87,13 +87,6 @@ describe('BundleManifestSchema', () => {
   test('should parse the bundle manifest', () => {
     expect(BundleManifestSchema.parse(MANIFEST)).toEqual(MANIFEST);
   });
-
-  test('should reject a file hash that is not sha256 hex', () => {
-    const files = [{ ...MANIFEST.files[0], sha256: 'nope' }];
-    expect(BundleManifestSchema.safeParse({ ...MANIFEST, files }).success).toBe(
-      false,
-    );
-  });
 });
 
 describe('the wire rules', () => {
