@@ -31,16 +31,25 @@ describe('ReleaseConditionSchema', () => {
       { key: 'plan', type: 'attribute', value: 'ü'.repeat(257) },
     ],
     [
-      'a hashed value',
+      'an attribute condition with an unknown key',
       {
         key: 'plan',
         type: 'attribute',
+        value: 'beta',
         valueSha256: hashAttribute('plan', 'beta'),
       },
     ],
     [
       'a binary condition with an unknown key',
       { range: '>=2.0.0', scope: 'all', type: 'binary' },
+    ],
+    [
+      'a device condition with an unknown key',
+      {
+        hashedIds: [hashDeviceId(DEVICE_ID)],
+        ids: [DEVICE_ID],
+        type: 'device',
+      },
     ],
     ['an id that is no uuid', { ids: ['device-1'], type: 'device' }],
     [
