@@ -133,6 +133,15 @@ const YarnLockfileEntrySchema = z.looseObject({
 });
 type YarnLockfileEntry = z.infer<typeof YarnLockfileEntrySchema>;
 
+type NpmLockfilePackages = z.infer<typeof NpmLockfileSchema>['packages'];
+type PnpmLockfile = z.infer<typeof PnpmLockfileSchema>;
+
+// The entries of a yarn.lock, and the entry key of each `name@range` descriptor it satisfies.
+interface YarnLockfile {
+  entries: Record<string, unknown>;
+  entryKeysByDescriptor: Map<string, string>;
+}
+
 const NODE_MODULES_SEGMENT = 'node_modules/';
 // Matches an alias version, which is the aliased package's key such as `real-name@1.2.3`, scoped or not.
 // No other version starts with a name and an `@`.
@@ -149,22 +158,19 @@ const YARN_ROOT_WORKSPACE = '.';
 // From a monorepo root lockfile, only this workspace's packages count, never a sibling's.
 // An unknown lockfile format is refused rather than misread.
 export async function readLockedTree(
-  lockfileName: LockfileName,
-  text: string,
-  project: LockedProject,
-  reader: ProjectReader,
+  lockfile: { name: LockfileName; text: string },
+  { project, reader }: { project: LockedProject; reader: ProjectReader },
 ): Promise<LockedTree> {
-  switch (lockfileName) {
+  switch (lockfile.name) {
     case 'package-lock.json':
-      return resolveNpmLockedTree(text, project);
+      return resolveNpmLockedTree(lockfile.text, project);
     case 'pnpm-lock.yaml':
-      return resolvePnpmLockedTree(
-        text,
+      return resolvePnpmLockedTree(lockfile.text, {
         project,
-        await readPnpmVirtualStoreNames(reader),
-      );
+        virtualStoreNames: await readPnpmVirtualStoreNames(reader),
+      });
     case 'yarn.lock':
-      return resolveYarnLockedTree(text, project);
+      return resolveYarnLockedTree(lockfile.text, project);
   }
 }
 
@@ -173,81 +179,148 @@ function resolveNpmLockedTree(
   text: string,
   project: LockedProject,
 ): LockedTree {
+  const packages = parseNpmLockfilePackages(text);
+  return {
+    projectDependencies: project.dependencies.flatMap(declared =>
+      resolveNpmDependency(declared, { directory: project.path, packages }),
+    ),
+    resolveDependencies: dependency => {
+      const entry = packages[dependency.key];
+      return [
+        ...resolveDeclaredDependencies({
+          isOptional: false,
+          ranges: entry?.dependencies,
+        }),
+        ...resolveDeclaredDependencies({
+          isOptional: true,
+          ranges: entry?.optionalDependencies,
+        }),
+        ...resolveDeclaredDependencies({
+          isOptional: false,
+          ranges: entry?.peerDependencies,
+        }),
+      ].flatMap(declared =>
+        resolveNpmDependency(declared, { directory: dependency.key, packages }),
+      );
+    },
+    resolveInstallDirectories: dependency => [dependency.key],
+  };
+}
+
+function parseNpmLockfilePackages(text: string): NpmLockfilePackages {
   const lockfile = NpmLockfileSchema.safeParse(
-    parseLockfileText('package-lock.json', text, JSON.parse),
+    parseLockfileText(text, {
+      lockfileName: 'package-lock.json',
+      parse: JSON.parse,
+    }),
   );
   if (!lockfile.success) {
     throw new FingerprintError(
       'The file package-lock.json is not a lockfile of version 2 or 3. Run "npm install" with npm 7 or later.',
     );
   }
-  const { packages } = lockfile.data;
-  const resolveDependency = (
-    directory: string,
-    declared: DeclaredDependency,
-  ): LockedDependency[] => {
-    for (const key of resolveNodeModulesPaths(directory, declared.name)) {
-      const entry = packages[key];
-      if (entry !== undefined) {
-        return entry.link === true ||
-          entry.inBundle === true ||
-          entry.version === undefined
-          ? []
-          : [
-              {
-                isOptional: declared.isOptional,
-                key,
-                package: {
-                  integrity: entry.integrity ?? entry.resolved ?? null,
-                  name: declared.name,
-                  version: entry.version,
-                },
-              },
-            ];
-      }
+  return lockfile.data.packages;
+}
+
+function resolveNpmDependency(
+  declared: DeclaredDependency,
+  { directory, packages }: { directory: string; packages: NpmLockfilePackages },
+): LockedDependency[] {
+  for (const key of resolveNodeModulesPaths(directory, {
+    name: declared.name,
+  })) {
+    const entry = packages[key];
+    if (entry === undefined) {
+      continue;
     }
-    return [];
-  };
-  return {
-    projectDependencies: project.dependencies.flatMap(declared =>
-      resolveDependency(project.path, declared),
-    ),
-    resolveDependencies: dependency => {
-      const entry = packages[dependency.key];
-      return [
-        ...resolveDeclaredDependencies(entry?.dependencies, false),
-        ...resolveDeclaredDependencies(entry?.optionalDependencies, true),
-        ...resolveDeclaredDependencies(entry?.peerDependencies, false),
-      ].flatMap(declared => resolveDependency(dependency.key, declared));
-    },
-    resolveInstallDirectories: dependency => [dependency.key],
-  };
+    if (
+      entry.link === true ||
+      entry.inBundle === true ||
+      entry.version === undefined
+    ) {
+      return [];
+    }
+    return [
+      {
+        isOptional: declared.isOptional,
+        key,
+        package: {
+          integrity: entry.integrity ?? entry.resolved ?? null,
+          name: declared.name,
+          version: entry.version,
+        },
+      },
+    ];
+  }
+  return [];
 }
 
 // pnpm installs each snapshot in a virtual store directory named after it.
 // An alias contributes the aliased package's version and integrity under the declared name, as in every lockfile.
 function resolvePnpmLockedTree(
   text: string,
-  project: LockedProject,
-  virtualStoreNames: ReadonlySet<string>,
+  {
+    project,
+    virtualStoreNames,
+  }: { project: LockedProject; virtualStoreNames: ReadonlySet<string> },
 ): LockedTree {
+  const lockfile = parsePnpmLockfile(text);
+  const importedVersions = resolvePnpmImportedVersions(lockfile, project);
+  return {
+    projectDependencies: project.dependencies.flatMap(declared => {
+      const version = importedVersions.get(declared.name);
+      return version === undefined
+        ? []
+        : resolvePnpmDependency({ ...declared, range: version }, lockfile);
+    }),
+    resolveDependencies: dependency => {
+      const snapshot = lockfile.snapshots[dependency.key];
+      return [
+        ...resolveDeclaredDependencies({
+          isOptional: false,
+          ranges: snapshot?.dependencies,
+        }),
+        ...resolveDeclaredDependencies({
+          isOptional: true,
+          ranges: snapshot?.optionalDependencies,
+        }),
+      ].flatMap(declared => resolvePnpmDependency(declared, lockfile));
+    },
+    resolveInstallDirectories: (dependency, dependentDirectory) =>
+      resolvePnpmInstallDirectories(dependency, {
+        dependentDirectory,
+        virtualStoreNames,
+      }),
+  };
+}
+
+function parsePnpmLockfile(text: string): PnpmLockfile {
   const lockfile = PnpmLockfileSchema.safeParse(
-    parseLockfileText('pnpm-lock.yaml', text, parseYaml),
+    parseLockfileText(text, {
+      lockfileName: 'pnpm-lock.yaml',
+      parse: parseYaml,
+    }),
   );
   if (!lockfile.success) {
     throw new FingerprintError(
       'The file pnpm-lock.yaml is not a lockfile of version 9.0. Run "pnpm install" with pnpm 9 or later.',
     );
   }
-  const { importers, packages, snapshots } = lockfile.data;
+  return lockfile.data;
+}
+
+function resolvePnpmImportedVersions(
+  lockfile: PnpmLockfile,
+  project: LockedProject,
+): Map<string, string> {
   const importerPath = project.path === '' ? PNPM_ROOT_IMPORTER : project.path;
-  const importer = importers[importerPath];
+  const importer = lockfile.importers[importerPath];
   if (importer === undefined) {
     throw new FingerprintError(
       `The file pnpm-lock.yaml holds no importer "${importerPath}". Run "pnpm install".`,
     );
   }
-  const importedVersions = new Map(
+  return new Map(
     [
       importer.dependencies,
       importer.devDependencies,
@@ -259,59 +332,58 @@ function resolvePnpmLockedTree(
       ]),
     ),
   );
-  const resolveDependency = (
-    declared: DeclaredDependency,
-  ): LockedDependency[] => {
-    const key = resolvePnpmSnapshotKey(declared);
-    if (declared.range.startsWith(PNPM_LINK_PREFIX) || !(key in snapshots)) {
-      return [];
-    }
-    // A snapshot key adds the resolved peers in parentheses. A package key does not.
-    const packageKey = key.split('(')[0] ?? key;
-    const resolution = packages[packageKey]?.resolution;
-    return [
-      {
-        isOptional: declared.isOptional,
-        key,
-        package: {
-          integrity: resolution?.integrity ?? resolution?.tarball ?? null,
-          name: declared.name,
-          version: packageKey.slice(
-            resolvePnpmPackageName(packageKey).length + 1,
-          ),
-        },
+}
+
+function resolvePnpmDependency(
+  declared: DeclaredDependency,
+  lockfile: PnpmLockfile,
+): LockedDependency[] {
+  const key = resolvePnpmSnapshotKey(declared);
+  if (
+    declared.range.startsWith(PNPM_LINK_PREFIX) ||
+    !(key in lockfile.snapshots)
+  ) {
+    return [];
+  }
+  // A snapshot key adds the resolved peers in parentheses. A package key does not.
+  const packageKey = key.split('(')[0] ?? key;
+  const resolution = lockfile.packages[packageKey]?.resolution;
+  return [
+    {
+      isOptional: declared.isOptional,
+      key,
+      package: {
+        integrity: resolution?.integrity ?? resolution?.tarball ?? null,
+        name: declared.name,
+        version: packageKey.slice(
+          resolvePnpmPackageName(packageKey).length + 1,
+        ),
       },
-    ];
-  };
-  return {
-    projectDependencies: project.dependencies.flatMap(declared => {
-      const version = importedVersions.get(declared.name);
-      return version === undefined
-        ? []
-        : resolveDependency({ ...declared, range: version });
+    },
+  ];
+}
+
+function resolvePnpmInstallDirectories(
+  dependency: LockedDependency,
+  {
+    dependentDirectory,
+    virtualStoreNames,
+  }: { dependentDirectory: string; virtualStoreNames: ReadonlySet<string> },
+): string[] {
+  const virtualStoreName = resolvePnpmVirtualStoreName(
+    dependency.key,
+    virtualStoreNames,
+  );
+  return [
+    ...(virtualStoreName === null
+      ? []
+      : [
+          `${PNPM_VIRTUAL_STORE_DIRECTORY}/${virtualStoreName}/${NODE_MODULES_SEGMENT}${resolvePnpmPackageName(dependency.key)}`,
+        ]),
+    ...resolveNodeModulesPaths(dependentDirectory, {
+      name: dependency.package.name,
     }),
-    resolveDependencies: dependency => {
-      const snapshot = snapshots[dependency.key];
-      return [
-        ...resolveDeclaredDependencies(snapshot?.dependencies, false),
-        ...resolveDeclaredDependencies(snapshot?.optionalDependencies, true),
-      ].flatMap(resolveDependency);
-    },
-    resolveInstallDirectories: (dependency, dependentDirectory) => {
-      const virtualStoreName = resolvePnpmVirtualStoreName(
-        dependency.key,
-        virtualStoreNames,
-      );
-      return [
-        ...(virtualStoreName === null
-          ? []
-          : [
-              `${PNPM_VIRTUAL_STORE_DIRECTORY}/${virtualStoreName}/${NODE_MODULES_SEGMENT}${resolvePnpmPackageName(dependency.key)}`,
-            ]),
-        ...resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
-      ];
-    },
-  };
+  ];
 }
 
 // Empty when another package manager installed the project.
@@ -348,12 +420,15 @@ function resolvePnpmVirtualStoreName(
     return name;
   }
   const shortenedNames = [...virtualStoreNames].filter(storeName =>
-    isShortenedVirtualStoreName(storeName, name),
+    isShortenedVirtualStoreName(storeName, { name }),
   );
   return shortenedNames.length === 1 ? (shortenedNames[0] ?? null) : null;
 }
 
-function isShortenedVirtualStoreName(storeName: string, name: string): boolean {
+function isShortenedVirtualStoreName(
+  storeName: string,
+  { name }: { name: string },
+): boolean {
   const separatorIndex = storeName.lastIndexOf('_');
   return (
     separatorIndex > 0 &&
@@ -368,76 +443,96 @@ function resolveYarnLockedTree(
   text: string,
   project: LockedProject,
 ): LockedTree {
-  const lockfile = parseLockfileText('yarn.lock', text, parseSyml);
+  const lockfile = parseYarnLockfile(text);
+  const projectDependencies =
+    YARN_METADATA_KEY in lockfile.entries
+      ? resolveBerryWorkspaceDependencies(project, lockfile)
+      : project.dependencies;
+  return {
+    projectDependencies: projectDependencies.flatMap(declared =>
+      resolveYarnDependency(declared, lockfile),
+    ),
+    resolveDependencies: dependency =>
+      resolveYarnEntryDependencies(
+        parseYarnLockfileEntry(
+          dependency.key,
+          lockfile.entries[dependency.key],
+        ),
+      ).flatMap(declared => resolveYarnDependency(declared, lockfile)),
+    resolveInstallDirectories: (dependency, dependentDirectory) =>
+      resolveNodeModulesPaths(dependentDirectory, {
+        name: dependency.package.name,
+      }),
+  };
+}
+
+function parseYarnLockfile(text: string): YarnLockfile {
+  const entries = parseLockfileText(text, {
+    lockfileName: 'yarn.lock',
+    parse: parseSyml,
+  });
   const entryKeysByDescriptor = new Map(
-    Object.keys(lockfile).flatMap(key =>
+    Object.keys(entries).flatMap(key =>
       key.split(', ').map(descriptor => [descriptor, key]),
     ),
   );
-  const resolveDependency = (
-    declared: DeclaredDependency,
-  ): LockedDependency[] => {
-    const key = entryKeysByDescriptor.get(`${declared.name}@${declared.range}`);
-    if (key === undefined) {
-      return [];
-    }
-    const entry = parseYarnLockfileEntry(key, lockfile[key]);
-    // A soft link is a workspace, link or portal, so it is the app's own code.
-    if (entry.linkType === 'soft') {
-      return [];
-    }
-    const { checksum, integrity, resolution, resolved, version } = entry;
-    return [
-      {
-        isOptional: declared.isOptional,
-        key,
-        package: {
-          integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
-          name: declared.name,
-          version,
-        },
+  return { entries, entryKeysByDescriptor };
+}
+
+function resolveYarnDependency(
+  declared: DeclaredDependency,
+  lockfile: YarnLockfile,
+): LockedDependency[] {
+  const key = lockfile.entryKeysByDescriptor.get(
+    `${declared.name}@${declared.range}`,
+  );
+  if (key === undefined) {
+    return [];
+  }
+  const entry = parseYarnLockfileEntry(key, lockfile.entries[key]);
+  // A soft link is a workspace, link or portal, so it is the app's own code.
+  if (entry.linkType === 'soft') {
+    return [];
+  }
+  const { checksum, integrity, resolution, resolved, version } = entry;
+  return [
+    {
+      isOptional: declared.isOptional,
+      key,
+      package: {
+        integrity: integrity ?? checksum ?? resolved ?? resolution ?? null,
+        name: declared.name,
+        version,
       },
-    ];
-  };
-  const projectDependencies =
-    YARN_METADATA_KEY in lockfile
-      ? resolveBerryWorkspaceDependencies(
-          lockfile,
-          entryKeysByDescriptor,
-          project,
-        )
-      : project.dependencies;
-  return {
-    projectDependencies: projectDependencies.flatMap(resolveDependency),
-    resolveDependencies: dependency => {
-      const entry = parseYarnLockfileEntry(
-        dependency.key,
-        lockfile[dependency.key],
-      );
-      return [
-        ...Object.entries(entry.dependencies ?? {}).map(([name, range]) => ({
-          isOptional: entry.dependenciesMeta?.[name]?.optional === 'true',
-          name,
-          range,
-        })),
-        ...resolveDeclaredDependencies(entry.optionalDependencies, true),
-      ].flatMap(resolveDependency);
     },
-    resolveInstallDirectories: (dependency, dependentDirectory) =>
-      resolveNodeModulesPaths(dependentDirectory, dependency.package.name),
-  };
+  ];
+}
+
+function resolveYarnEntryDependencies(
+  entry: YarnLockfileEntry,
+): DeclaredDependency[] {
+  return [
+    ...Object.entries(entry.dependencies ?? {}).map(([name, range]) => ({
+      isOptional: entry.dependenciesMeta?.[name]?.optional === 'true',
+      name,
+      range,
+    })),
+    ...resolveDeclaredDependencies({
+      isOptional: true,
+      ranges: entry.optionalDependencies,
+    }),
+  ];
 }
 
 // Berry records the workspace's descriptors with its own protocols added, so they replace the package.json ranges.
 function resolveBerryWorkspaceDependencies(
-  lockfile: Record<string, unknown>,
-  entryKeysByDescriptor: Map<string, string>,
   project: LockedProject,
+  lockfile: YarnLockfile,
 ): DeclaredDependency[] {
   const workspacePath =
     project.path === '' ? YARN_ROOT_WORKSPACE : project.path;
-  const workspaceKey = [...entryKeysByDescriptor].find(([descriptor]) =>
-    descriptor.endsWith(`@workspace:${workspacePath}`),
+  const workspaceKey = [...lockfile.entryKeysByDescriptor].find(
+    ([descriptor]) => descriptor.endsWith(`@workspace:${workspacePath}`),
   )?.[1];
   if (workspaceKey === undefined) {
     throw new FingerprintError(
@@ -445,8 +540,8 @@ function resolveBerryWorkspaceDependencies(
     );
   }
   const workspaceRanges =
-    parseYarnLockfileEntry(workspaceKey, lockfile[workspaceKey]).dependencies ??
-    {};
+    parseYarnLockfileEntry(workspaceKey, lockfile.entries[workspaceKey])
+      .dependencies ?? {};
   return project.dependencies.flatMap(declared => {
     const range = workspaceRanges[declared.name];
     return range === undefined ? [] : [{ ...declared, range }];
@@ -466,10 +561,13 @@ function parseYarnLockfileEntry(
   return entry.data;
 }
 
-export function resolveDeclaredDependencies(
-  ranges: Record<string, string> | undefined,
-  isOptional: boolean,
-): DeclaredDependency[] {
+export function resolveDeclaredDependencies({
+  isOptional,
+  ranges,
+}: {
+  isOptional: boolean;
+  ranges: Record<string, string> | undefined;
+}): DeclaredDependency[] {
   return Object.entries(ranges ?? {}).map(([name, range]) => ({
     isOptional,
     name,
@@ -478,7 +576,10 @@ export function resolveDeclaredDependencies(
 }
 
 // Node searches the directory's own `node_modules` first, then each ancestor that is not itself a `node_modules`.
-function resolveNodeModulesPaths(directory: string, name: string): string[] {
+function resolveNodeModulesPaths(
+  directory: string,
+  { name }: { name: string },
+): string[] {
   const segments = directory === '' ? [] : directory.split('/');
   return segments
     .map((_segment, index) => segments.slice(0, segments.length - index))
@@ -489,9 +590,11 @@ function resolveNodeModulesPaths(directory: string, name: string): string[] {
 }
 
 function parseLockfileText<T>(
-  lockfileName: LockfileName,
   text: string,
-  parse: (text: string) => T,
+  {
+    lockfileName,
+    parse,
+  }: { lockfileName: LockfileName; parse: (text: string) => T },
 ): T {
   try {
     return parse(text);

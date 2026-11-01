@@ -48,13 +48,13 @@ export function isVersionInRange(
   );
 }
 
-function compareVersions(
-  left: Version,
-  right: Version,
-  length: number,
+// Compares only the components the comparator names.
+function compareToComparatorVersion(
+  version: Version,
+  comparator: Comparator,
 ): number {
-  for (let index = 0; index < length; index++) {
-    const difference = (left[index] ?? 0) - (right[index] ?? 0);
+  for (let index = 0; index < comparator.version.length; index++) {
+    const difference = (version[index] ?? 0) - (comparator.version[index] ?? 0);
     if (difference !== 0) {
       return difference;
     }
@@ -66,11 +66,7 @@ function isComparatorSatisfied(
   version: Version,
   comparator: Comparator,
 ): boolean {
-  const order = compareVersions(
-    version,
-    comparator.version,
-    comparator.version.length,
-  );
+  const order = compareToComparatorVersion(version, comparator);
   switch (comparator.operator) {
     case '<':
       return order < 0;

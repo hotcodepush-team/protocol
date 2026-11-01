@@ -72,10 +72,11 @@ export function buildPackFileHeader(
       `a file entry is named by its sha256, not ${JSON.stringify(sha256)}`,
     );
   }
-  return buildPackHeader('', sha256, sizeBytes);
+  return buildPackHeader({ name: sha256, prefix: '', sizeBytes });
 }
 
 /** Builds a patch entry header: `patches/{from}` in the prefix field, `{to}` in the name field, and the ustar magic. */
+// eslint-disable-next-line max-params -- Public package API: an object parameter is a feat! change the owner decides.
 export function buildPackPatchHeader(
   fromSha256: string,
   toSha256: string,
@@ -86,24 +87,24 @@ export function buildPackPatchHeader(
       `a patch entry is named by two sha256, not ${JSON.stringify(fromSha256)} and ${JSON.stringify(toSha256)}`,
     );
   }
-  return buildPackHeader(`patches/${fromSha256}`, toSha256, sizeBytes);
+  return buildPackHeader({
+    name: toSha256,
+    prefix: `patches/${fromSha256}`,
+    sizeBytes,
+  });
 }
 
 // The magic is set only beside a prefix, so file entries keep the bytes of the first packs.
-function buildPackHeader(
-  prefix: string,
-  name: string,
-  sizeBytes: number,
-): Uint8Array {
-  if (
-    !Number.isInteger(sizeBytes) ||
-    sizeBytes < 0 ||
-    sizeBytes > 0o77777777777
-  ) {
-    throw new PackFormatError(
-      `a pack entry size must fit the ustar size field, not ${sizeBytes}`,
-    );
-  }
+function buildPackHeader({
+  name,
+  prefix,
+  sizeBytes,
+}: {
+  name: string;
+  prefix: string;
+  sizeBytes: number;
+}): Uint8Array {
+  assertSizeFitsSizeField(sizeBytes);
   const encoder = new TextEncoder();
   const header = new Uint8Array(BLOCK_SIZE);
   header.set(encoder.encode(name), 0);
@@ -115,6 +116,24 @@ function buildPackHeader(
     encoder.encode(`${sizeBytes.toString(8).padStart(11, '0')}\0`),
     SIZE_FIELD_OFFSET,
   );
+  writeChecksum(header);
+  return header;
+}
+
+function assertSizeFitsSizeField(sizeBytes: number): void {
+  if (
+    !Number.isInteger(sizeBytes) ||
+    sizeBytes < 0 ||
+    sizeBytes > 0o77777777777
+  ) {
+    throw new PackFormatError(
+      `a pack entry size must fit the ustar size field, not ${sizeBytes}`,
+    );
+  }
+}
+
+// The checksum is summed over the header with its own field read as spaces.
+function writeChecksum(header: Uint8Array): void {
   header.fill(
     0x20,
     CHECKSUM_FIELD_OFFSET,
@@ -122,10 +141,9 @@ function buildPackHeader(
   );
   const checksum = header.reduce((sum, byte) => sum + byte, 0);
   header.set(
-    encoder.encode(`${checksum.toString(8).padStart(6, '0')}\0 `),
+    new TextEncoder().encode(`${checksum.toString(8).padStart(6, '0')}\0 `),
     CHECKSUM_FIELD_OFFSET,
   );
-  return header;
 }
 
 function resolvePackEntryName(entry: PackEntry): string {

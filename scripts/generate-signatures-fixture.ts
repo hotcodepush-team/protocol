@@ -68,72 +68,71 @@ const fixture = {
     "Signatures over the bundle manifest. One scheme is allowed, rsa-v1_5-sha256: RSASSA-PKCS1-v1_5 with SHA-256. A public key and a signature value are self-describing, `rsa-v1_5-sha256:<base64>`, the public key the base64 of its SPKI DER; a value under any other prefix, ed25519 included, names an unknown scheme and is refused. A private key is the base64 of its PKCS #8 DER. A key's keyId is the key id: `sha256:` and the hex SHA-256 of the SPKI bytes, and a signature's keyId is the key id of the key it is verified with. A key under 2048 bits is refused wherever it is imported. A manifest signature covers the UTF-8 bytes of the envelope's manifest string, the canonical JSON of the bundle manifest, whose keyId is the key id of the key that signs it and null when unsigned. Each case lists its keys three ways: publicKeys as hotcodepush.json lists them, and devicePublicKeys as a resource file carries them per platform — the base64 of the SPKI DER for android, of the PKCS #1 DER for ios, each beside its keyId. The keys are test keys.",
   keys: KEYS,
   manifests: [
-    buildCase(
-      'should accept a manifest signed by a listed key',
-      signedByA,
-      [KEY_A],
-      true,
-    ),
+    buildCase('should accept a manifest signed by a listed key', {
+      isValid: true,
+      keys: [KEY_A],
+      signedManifest: signedByA,
+    }),
     buildCase(
       'should accept a manifest signed by a key of 2048 bits, the minimum',
-      signedByFloor,
-      [KEY_FLOOR],
-      true,
-    ),
-    buildCase(
-      'should select the key the keyId names among several',
-      signedByA,
-      [KEY_B, KEY_A, KEY_FLOOR],
-      true,
-    ),
-    buildCase(
-      'should refuse a manifest changed after signing',
       {
+        isValid: true,
+        keys: [KEY_FLOOR],
+        signedManifest: signedByFloor,
+      },
+    ),
+    buildCase('should select the key the keyId names among several', {
+      isValid: true,
+      keys: [KEY_B, KEY_A, KEY_FLOOR],
+      signedManifest: signedByA,
+    }),
+    buildCase('should refuse a manifest changed after signing', {
+      isValid: false,
+      keys: [KEY_A],
+      signedManifest: {
         ...signedByA,
         manifest: signedByA.manifest.replace(
           '"bundleVersion":"1.0.1"',
           '"bundleVersion":"1.0.2"',
         ),
       },
-      [KEY_A],
-      false,
-    ),
-    buildCase(
-      'should refuse a signature changed after signing',
-      {
+    }),
+    buildCase('should refuse a signature changed after signing', {
+      isValid: false,
+      keys: [KEY_A],
+      signedManifest: {
         ...signedByA,
         signature: {
           ...signedByA.signature,
           value: flipFirstSignatureCharacter(signedByA.signature.value),
         },
       },
-      [KEY_A],
-      false,
-    ),
-    buildCase(
-      'should refuse an unsigned manifest',
-      {
+    }),
+    buildCase('should refuse an unsigned manifest', {
+      isValid: false,
+      keys: [KEY_A],
+      signedManifest: {
         manifest: stringifyCanonicalJson({ ...MANIFEST, keyId: null }),
         signature: null,
       },
-      [KEY_A],
-      false,
-    ),
-    buildCase(
-      'should refuse a signature by a key not in the list',
-      signedByB,
-      [KEY_A],
-      false,
-    ),
+    }),
+    buildCase('should refuse a signature by a key not in the list', {
+      isValid: false,
+      keys: [KEY_A],
+      signedManifest: signedByB,
+    }),
     buildCase(
       'should refuse a signature checked against the key its keyId names when another listed key made it',
-      signedByBUnderA,
-      [KEY_A, KEY_B],
-      false,
-    ),
-    buildCase(
-      'should refuse a scheme outside the allow-list, ed25519',
       {
+        isValid: false,
+        keys: [KEY_A, KEY_B],
+        signedManifest: signedByBUnderA,
+      },
+    ),
+    buildCase('should refuse a scheme outside the allow-list, ed25519', {
+      isValid: false,
+      keys: [KEY_A],
+      signedManifest: {
         ...signedByA,
         signature: {
           keyId: KEY_A.keyId,
@@ -141,21 +140,17 @@ const fixture = {
             'ed25519:1GP+qGsACCYnFnEQwrAary024EqZa6UNX9QiljIM6SAv5wmJ4ph/lIPfD0H7xN7QXxu+brdspejCCrQF1BLNBA==',
         },
       },
-      [KEY_A],
-      false,
-    ),
-    buildCase(
-      'should refuse a signature by a key under 2048 bits',
-      signedBySmall,
-      [KEY_SMALL],
-      false,
-    ),
-    buildCase(
-      'should refuse every signature when no key is listed',
-      signedByA,
-      [],
-      false,
-    ),
+    }),
+    buildCase('should refuse a signature by a key under 2048 bits', {
+      isValid: false,
+      keys: [KEY_SMALL],
+      signedManifest: signedBySmall,
+    }),
+    buildCase('should refuse every signature when no key is listed', {
+      isValid: false,
+      keys: [],
+      signedManifest: signedByA,
+    }),
   ],
 };
 
@@ -163,9 +158,11 @@ writeFileSync(FIXTURE_URL, `${JSON.stringify(fixture, null, 2)}\n`);
 
 function buildCase(
   name: string,
-  { manifest, signature }: SignedManifest,
-  keys: FixtureKey[],
-  isValid: boolean,
+  {
+    isValid,
+    keys,
+    signedManifest: { manifest, signature },
+  }: { isValid: boolean; keys: FixtureKey[]; signedManifest: SignedManifest },
 ) {
   return {
     name,

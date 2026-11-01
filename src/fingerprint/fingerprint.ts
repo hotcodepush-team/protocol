@@ -99,32 +99,23 @@ export async function readFingerprintContributors(
   project: FingerprintProject,
 ): Promise<FingerprintContributors> {
   const { projectPath, reader } = project;
-  const lockfile = await readLockfile(reader);
-  const installedPackages = await readInstalledPackages(
+  const tree = await readLockedTree(await readLockfile(reader), {
+    project: {
+      dependencies: await readProjectDependencies(project),
+      path: projectPath,
+    },
     reader,
-    projectPath,
-    await readLockedTree(
-      lockfile.name,
-      lockfile.text,
-      {
-        dependencies: await readProjectDependencies(reader, projectPath),
-        path: projectPath,
-      },
-      reader,
-    ),
-  );
+  });
   const nativePackages: LockedPackage[] = [];
-  for (const { directory, locked } of installedPackages) {
-    if (await isNativePackage(reader, locked.name, directory)) {
+  for (const { directory, locked } of await readInstalledPackages(project, {
+    tree,
+  })) {
+    if (await isNativePackage(reader, { directory, name: locked.name })) {
       nativePackages.push(locked);
     }
   }
   return {
-    extraFingerprintPaths: await readExtraFingerprintFiles(
-      reader,
-      projectPath,
-      project.extraFingerprintPaths,
-    ),
+    extraFingerprintPaths: await readExtraFingerprintFiles(project),
     packages: resolveUniquePackages(nativePackages),
   };
 }
@@ -155,11 +146,12 @@ async function readLockfile(
 }
 
 async function readProjectDependencies(
-  reader: ProjectReader,
-  projectPath: string,
+  project: FingerprintProject,
 ): Promise<DeclaredDependency[]> {
-  const path = resolveProjectFilePath(projectPath, 'package.json');
-  const text = await readProjectText(reader, path);
+  const path = resolveProjectFilePath(project.projectPath, {
+    path: 'package.json',
+  });
+  const text = await readProjectText(project.reader, path);
   if (text === null) {
     throw new FingerprintError(`The project has no ${path}.`);
   }
@@ -169,44 +161,41 @@ async function readProjectDependencies(
   }
   const { dependencies, devDependencies, optionalDependencies } = manifest.data;
   return [
-    ...resolveDeclaredDependencies(dependencies, false),
-    ...resolveDeclaredDependencies(devDependencies, false),
-    ...resolveDeclaredDependencies(optionalDependencies, true),
+    ...resolveDeclaredDependencies({ isOptional: false, ranges: dependencies }),
+    ...resolveDeclaredDependencies({
+      isOptional: false,
+      ranges: devDependencies,
+    }),
+    ...resolveDeclaredDependencies({
+      isOptional: true,
+      ranges: optionalDependencies,
+    }),
   ];
 }
 
-// A missing package is refused, since hashing it as native-free could match the wrong binary.
-// A missing optional package is skipped with its dependencies, since an unsupported platform never installs it.
 async function readInstalledPackages(
-  reader: ProjectReader,
-  projectPath: string,
-  tree: LockedTree,
+  project: FingerprintProject,
+  { tree }: { tree: LockedTree },
 ): Promise<InstalledPackage[]> {
   const installedPackages = new Map<string, InstalledPackage>();
   const pendingDependencies: PendingDependency[] = tree.projectDependencies.map(
-    dependency => ({ dependency, dependentDirectory: projectPath }),
+    dependency => ({ dependency, dependentDirectory: project.projectPath }),
   );
   for (
     let pending = pendingDependencies.shift();
     pending !== undefined;
     pending = pendingDependencies.shift()
   ) {
-    const { dependency, dependentDirectory } = pending;
+    const { dependency } = pending;
     if (installedPackages.has(dependency.key)) {
       continue;
     }
-    const directory = await readInstallDirectory(
-      reader,
-      tree.resolveInstallDirectories(dependency, dependentDirectory),
-    );
+    const directory = await readInstallDirectory(project.reader, {
+      ...pending,
+      tree,
+    });
     if (directory === null) {
-      if (dependency.isOptional) {
-        continue;
-      }
-      const { name, version } = dependency.package;
-      throw new FingerprintError(
-        `The lockfile installs ${name} ${version} but node_modules does not hold it. Install the dependencies first.`,
-      );
+      continue;
     }
     installedPackages.set(dependency.key, {
       directory,
@@ -221,7 +210,30 @@ async function readInstalledPackages(
   return [...installedPackages.values()];
 }
 
+// A missing package is refused, since hashing it as native-free could match the wrong binary.
+// A missing optional package is null, skipped with its dependencies, since an unsupported platform never installs it.
 async function readInstallDirectory(
+  reader: ProjectReader,
+  {
+    dependency,
+    dependentDirectory,
+    tree,
+  }: PendingDependency & { tree: LockedTree },
+): Promise<string | null> {
+  const directory = await readFirstExistingDirectory(
+    reader,
+    tree.resolveInstallDirectories(dependency, dependentDirectory),
+  );
+  if (directory !== null || dependency.isOptional) {
+    return directory;
+  }
+  const { name, version } = dependency.package;
+  throw new FingerprintError(
+    `The lockfile installs ${name} ${version} but node_modules does not hold it. Install the dependencies first.`,
+  );
+}
+
+async function readFirstExistingDirectory(
   reader: ProjectReader,
   directories: string[],
 ): Promise<string | null> {
@@ -250,8 +262,7 @@ function resolveUniquePackages(packages: LockedPackage[]): LockedPackage[] {
 
 async function isNativePackage(
   reader: ProjectReader,
-  name: string,
-  directory: string,
+  { directory, name }: { directory: string; name: string },
 ): Promise<boolean> {
   return (
     (FINGERPRINT_RUNTIME_PACKAGES as readonly string[]).includes(name) ||
@@ -260,18 +271,17 @@ async function isNativePackage(
 }
 
 async function readExtraFingerprintFiles(
-  reader: ProjectReader,
-  projectPath: string,
-  declaredPaths: readonly string[],
+  project: FingerprintProject,
 ): Promise<ExtraFingerprintFile[]> {
   const filesByPath = new Map<string, ExtraFingerprintFile>();
-  for (const declaredPath of declaredPaths) {
-    const realPath = await readExtraFingerprintRealPath(
-      reader,
-      projectPath,
+  for (const declaredPath of project.extraFingerprintPaths) {
+    const realPath = await readExtraFingerprintRealPath(project, {
       declaredPath,
-    );
-    for (const file of await collectExtraFingerprintFiles(reader, realPath)) {
+    });
+    for (const file of await collectExtraFingerprintFiles(
+      project.reader,
+      realPath,
+    )) {
       filesByPath.set(file.path, file);
     }
   }
@@ -283,9 +293,8 @@ async function readExtraFingerprintFiles(
 // The path must stay inside the lockfile directory both before and after resolving symbolic links.
 // So a sibling workspace can be named, but nothing outside the repository.
 async function readExtraFingerprintRealPath(
-  reader: ProjectReader,
-  projectPath: string,
-  declaredPath: string,
+  { projectPath, reader }: FingerprintProject,
+  { declaredPath }: { declaredPath: string },
 ): Promise<string> {
   if (!ExtraFingerprintPathSchema.safeParse(declaredPath).success) {
     throw new FingerprintError(
@@ -293,7 +302,7 @@ async function readExtraFingerprintRealPath(
     );
   }
   const resolvedPath = resolveParentSegments(
-    resolveProjectFilePath(projectPath, declaredPath),
+    resolveProjectFilePath(projectPath, { path: declaredPath }),
   );
   const realPath = isInsideRoot(resolvedPath)
     ? await reader.readRealPath(resolvedPath)
@@ -337,7 +346,10 @@ async function collectExtraFingerprintFiles(
   return [{ path, sha256: computeSha256Hex(bytes) }];
 }
 
-function resolveProjectFilePath(projectPath: string, path: string): string {
+function resolveProjectFilePath(
+  projectPath: string,
+  { path }: { path: string },
+): string {
   return projectPath === '' ? path : `${projectPath}/${path}`;
 }
 

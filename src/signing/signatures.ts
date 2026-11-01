@@ -64,7 +64,10 @@ export async function verifyManifestSignature(
   if (envelope.signature === null) {
     return false;
   }
-  return verifyMessage(envelope.manifest, envelope.signature, publicKeys);
+  return verifyMessage(envelope.manifest, {
+    publicKeys,
+    signature: envelope.signature,
+  });
 }
 
 /**
@@ -103,8 +106,10 @@ async function signMessage(
 
 async function verifyMessage(
   message: string,
-  signature: Signature,
-  publicKeys: readonly string[],
+  {
+    publicKeys,
+    signature,
+  }: { publicKeys: readonly string[]; signature: Signature },
 ): Promise<boolean> {
   const parsedValue = parseSelfDescribingBytes(signature.value);
   const publicKey = publicKeys.find(
