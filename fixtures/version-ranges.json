@@ -1,5 +1,5 @@
 {
-  "description": "The range subset the three evaluators share: version, range, whether it is satisfied — null when the range does not parse.",
+  "description": "The range subset the three evaluators share: version, range, whether it is satisfied — null when the range does not parse. A version component is at most 9007199254740991, 2^53 - 1, and a range naming a larger one does not parse.",
   "cases": [
     {
       "range": ">=2.3.0",
@@ -213,6 +213,16 @@
     },
     {
       "range": "1.2x",
+      "satisfied": null,
+      "version": "1.2.3"
+    },
+    {
+      "range": "9007199254740991",
+      "satisfied": true,
+      "version": "9007199254740991.0.0"
+    },
+    {
+      "range": ">=9007199254740992",
       "satisfied": null,
       "version": "1.2.3"
     }

@@ -1,5 +1,5 @@
 {
-  "description": "Resource files as the embed step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the embed step registered the bundle or not; embeddedBundleId is null when it did not. embeddedBundleManifest is null in a build that bundled no JavaScript, a React Native or Expo debug build: its build step registers no binary and asks the API nothing, so embeddedBundleId is null with it, and the SDK answers skipped with build_debug. channelId is null in a build whose embed step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the embed step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the fingerprint over the SPKI bytes, which a signature names. refusedResourceFiles are files a reader refuses, each an accepted file with one fault, so each pins one rule: a checkIntervalSeconds below 60, the floor, since a zero made the core check in a tight loop; an applyStrategy outside the catalog; a value of the wrong type; a null where a key may be absent but not null; a missing fingerprint or embeddedBundleId; an empty fingerprint or keyId; and a der that is not canonical base64.",
+  "description": "Resource files as the build step writes them, each with the embedded bundle's manifest as a reader reads it: the project's configuration with the channel resolved to its id, the SDK options and their defaults, the build-time facts, and the files and updates hosts in a build against staging or the local stack alone. The embedded bundle's manifest is the bundle manifest, the same whether the build step registered the bundle or not; embeddedBundleId is null when it did not. embeddedBundleManifest is null in a build that bundled no JavaScript, a React Native or Expo debug build: its build step registers no binary and asks the API nothing, so embeddedBundleId is null with it, and the SDK answers skipped with build_debug. channelId is null in a build whose build step ran without a token or offline and could not resolve the channel's name; that build registers nothing either. publicKeys are the project's public keys as the build step re-encoded them for the platform the file is written for, so the platform's own API imports them with no ASN.1 handled on the device: each { der, keyId }, der the base64 of the PKCS #1 DER on iOS and of the SPKI DER on Android, keyId the key id: `sha256:` and the hex SHA-256 of the SPKI bytes, which a signature names. refusedResourceFiles are files a reader refuses, each an accepted file with one fault, so each pins one rule: a checkIntervalSeconds below 60, the floor, since a zero made the core check in a tight loop; an applyStrategy outside the catalog; a value of the wrong type; a null where a key may be absent but not null; a missing fingerprint, embeddedBundleId, channelId or embeddedBundleManifest; an empty fingerprint, channelId or keyId; an embeddedBundleId outside the identifier charset; a host that is not a URL; a public key without its keyId or in the self-describing form; and a der that is not canonical base64.",
   "cases": [
     {
       "name": "should read the manifest of a registered embedded bundle as written",
@@ -221,7 +221,7 @@
       }
     },
     {
-      "name": "should read a build without a channel, whose embed step ran without a token or offline",
+      "name": "should read a build without a channel, whose build step ran without a token or offline",
       "resourceFile": {
         "appId": "a1",
         "builtAt": "2026-09-29T10:00:00.000Z",
@@ -630,6 +630,70 @@
       }
     },
     {
+      "name": "should refuse a public key without its key id",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null,
+        "publicKeys": [
+          {
+            "der": "AQID"
+          }
+        ]
+      }
+    },
+    {
+      "name": "should refuse a public key in the self-describing form the project file lists",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null,
+        "publicKeys": ["rsa-v1_5-sha256:AQID"]
+      }
+    },
+    {
       "name": "should refuse a null ready timeout, since an option may be absent but not null",
       "resourceFile": {
         "appId": "a1",
@@ -716,6 +780,44 @@
       }
     },
     {
+      "name": "should refuse a file without the channel id key, which is null when the channel is unknown",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null
+      }
+    },
+    {
+      "name": "should refuse a file without the embedded bundle manifest key, which is null when no JavaScript was bundled",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "embeddedBundleId": "b0",
+        "fingerprint": null
+      }
+    },
+    {
       "name": "should refuse an empty fingerprint",
       "resourceFile": {
         "appId": "a1",
@@ -742,6 +844,64 @@
           "platforms": ["ios"]
         },
         "fingerprint": ""
+      }
+    },
+    {
+      "name": "should refuse an empty channel id",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null
+      }
+    },
+    {
+      "name": "should refuse an embedded bundle id outside the identifier charset",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "embeddedBundleId": "../b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null
       }
     },
     {
@@ -772,6 +932,36 @@
         },
         "filesBaseUrl": null,
         "fingerprint": null
+      }
+    },
+    {
+      "name": "should refuse a files base url that is not a URL",
+      "resourceFile": {
+        "appId": "a1",
+        "builtAt": "2026-09-29T10:00:00.000Z",
+        "channelId": "c1",
+        "embeddedBundleId": "b0",
+        "embeddedBundleManifest": {
+          "appId": "a1",
+          "bundleVersion": "1.4.1",
+          "files": [
+            {
+              "path": "assets/index-a1b2c3.js",
+              "sha256": "bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1",
+              "sizeBytes": 37
+            },
+            {
+              "path": "index.html",
+              "sha256": "8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870",
+              "sizeBytes": 81
+            }
+          ],
+          "fingerprint": null,
+          "keyId": null,
+          "platforms": ["ios"]
+        },
+        "fingerprint": null,
+        "filesBaseUrl": "files"
       }
     },
     {

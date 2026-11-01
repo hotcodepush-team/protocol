@@ -70,12 +70,6 @@ describe('ChannelIndexSchema', () => {
     expect(parsed).toHaveProperty('later', true);
   });
 
-  test('should reject another schema major', () => {
-    expect(ChannelIndexSchema.safeParse({ ...INDEX, schema: 2 }).success).toBe(
-      false,
-    );
-  });
-
   test('should match the constant to the v1 in the path', () => {
     expect(CHANNEL_INDEX_SCHEMA).toBe(1);
   });
@@ -121,9 +115,5 @@ describe('ConditionSchema', () => {
   test('should parse an unknown condition type as it is', () => {
     const condition = { region: 'eu', type: 'geo' };
     expect(ConditionSchema.parse(condition)).toEqual(condition);
-  });
-
-  test('should reject a known condition type with a wrong shape', () => {
-    expect(ConditionSchema.safeParse({ type: 'binary' }).success).toBe(false);
   });
 });

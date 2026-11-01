@@ -7,7 +7,7 @@ import type * as Protocol from '../src/index.ts';
 
 interface FixtureKey {
   bits: number;
-  fingerprint: string;
+  keyId: string;
   name: string;
   privateKey: string;
   publicKey: string;
@@ -60,12 +60,12 @@ const MANIFEST = {
 const signedByA = await signManifest(MANIFEST, KEY_A.privateKey);
 const signedByB = await signManifest(MANIFEST, KEY_B.privateKey);
 const signedByFloor = await signManifest(MANIFEST, KEY_FLOOR.privateKey);
-const signedBySmall = await signWithoutChecks(KEY_SMALL, KEY_SMALL.fingerprint);
-const signedByBUnderA = await signWithoutChecks(KEY_B, KEY_A.fingerprint);
+const signedBySmall = await signWithoutChecks(KEY_SMALL, KEY_SMALL.keyId);
+const signedByBUnderA = await signWithoutChecks(KEY_B, KEY_A.keyId);
 
 const fixture = {
   description:
-    "Signatures over the bundle manifest. One scheme is allowed, rsa-v1_5-sha256: RSASSA-PKCS1-v1_5 with SHA-256. A public key and a signature value are self-describing, `rsa-v1_5-sha256:<base64>`, the public key the base64 of its SPKI DER; a value under any other prefix, ed25519 included, names an unknown scheme and is refused. A private key is the base64 of its PKCS #8 DER. A key fingerprint is `sha256:` and the SHA-256 of the SPKI bytes in hex, and a signature's keyId is the fingerprint of the key it is verified with. A key under 2048 bits is refused wherever it is imported. A manifest signature covers the UTF-8 bytes of the envelope's manifest string, the canonical JSON of the bundle manifest, whose keyId is the fingerprint of the key that signs it and null when unsigned. Each case lists its keys three ways: publicKeys as hotcodepush.json lists them, and devicePublicKeys as a resource file carries them per platform — the base64 of the SPKI DER for android, of the PKCS #1 DER for ios, each beside its keyId. The keys are test keys.",
+    "Signatures over the bundle manifest. One scheme is allowed, rsa-v1_5-sha256: RSASSA-PKCS1-v1_5 with SHA-256. A public key and a signature value are self-describing, `rsa-v1_5-sha256:<base64>`, the public key the base64 of its SPKI DER; a value under any other prefix, ed25519 included, names an unknown scheme and is refused. A private key is the base64 of its PKCS #8 DER. A key's keyId is the key id: `sha256:` and the hex SHA-256 of the SPKI bytes, and a signature's keyId is the key id of the key it is verified with. A key under 2048 bits is refused wherever it is imported. A manifest signature covers the UTF-8 bytes of the envelope's manifest string, the canonical JSON of the bundle manifest, whose keyId is the key id of the key that signs it and null when unsigned. Each case lists its keys three ways: publicKeys as hotcodepush.json lists them, and devicePublicKeys as a resource file carries them per platform — the base64 of the SPKI DER for android, of the PKCS #1 DER for ios, each beside its keyId. The keys are test keys.",
   keys: KEYS,
   manifests: [
     buildCase(
@@ -136,7 +136,7 @@ const fixture = {
       {
         ...signedByA,
         signature: {
-          keyId: KEY_A.fingerprint,
+          keyId: KEY_A.keyId,
           value:
             'ed25519:1GP+qGsACCYnFnEQwrAary024EqZa6UNX9QiljIM6SAv5wmJ4ph/lIPfD0H7xN7QXxu+brdspejCCrQF1BLNBA==',
         },
@@ -174,11 +174,11 @@ function buildCase(
     devicePublicKeys: {
       android: keys.map(key => ({
         der: encodeSpkiDer(key),
-        keyId: key.fingerprint,
+        keyId: key.keyId,
       })),
       ios: keys.map(key => ({
         der: encodePkcs1Der(key),
-        keyId: key.fingerprint,
+        keyId: key.keyId,
       })),
     },
     isValid,

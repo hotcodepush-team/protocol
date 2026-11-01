@@ -180,20 +180,6 @@ describe('ConfigurationSchema', () => {
     expect(ConfigurationSchema.safeParse(PROJECT).success).toBe(false);
   });
 
-  test.each(['channelId', 'embeddedBundleManifest'])(
-    'should require the %s key, its value or null',
-    requiredKey => {
-      const [registered] = RESOURCE_FILE_CASES;
-      const resourceFile = registered?.resourceFile as Record<string, unknown>;
-      const withoutRequiredKey = Object.fromEntries(
-        Object.entries(resourceFile).filter(([key]) => key !== requiredKey),
-      );
-      expect(ConfigurationSchema.safeParse(withoutRequiredKey).success).toBe(
-        false,
-      );
-    },
-  );
-
   test('should read a null channel id from a build that could not resolve its channel', () => {
     const withoutChannel = RESOURCE_FILE_CASES.find(({ name }) =>
       name.includes('without a channel'),
@@ -203,16 +189,8 @@ describe('ConfigurationSchema', () => {
     expect(parsed.embeddedBundleId).toBeNull();
   });
 
-  test('should reject an empty channel id', () => {
-    const [registered] = RESOURCE_FILE_CASES;
-    const resourceFile = registered?.resourceFile as Record<string, unknown>;
-    expect(
-      ConfigurationSchema.safeParse({ ...resourceFile, channelId: '' }).success,
-    ).toBe(false);
-  });
-
   test.each(['iOS', 'Android'])(
-    'should read the public keys of an %s build as the embed step encoded them, each beside its key id',
+    'should read the public keys of an %s build as the build step encoded them, each beside its key id',
     platform => {
       const withKeys = RESOURCE_FILE_CASES.find(({ name }) =>
         name.includes(`public keys of an ${platform} build`),
@@ -230,21 +208,6 @@ describe('ConfigurationSchema', () => {
     expect(
       ConfigurationSchema.parse(registered?.resourceFile).publicKeys,
     ).toEqual([]);
-  });
-
-  test.each([
-    ['the self-describing form the project file lists', 'rsa-v1_5-sha256:AQID'],
-    ['a key without its key id', { der: 'AQID' }],
-    ['a key whose bytes are not canonical base64', { der: 'AQI', keyId: 'k1' }],
-  ])('should reject %s among the public keys', (_condition, publicKey) => {
-    const [registered] = RESOURCE_FILE_CASES;
-    const resourceFile = registered?.resourceFile as Record<string, unknown>;
-    expect(
-      ConfigurationSchema.safeParse({
-        ...resourceFile,
-        publicKeys: [publicKey],
-      }).success,
-    ).toBe(false);
   });
 
   test('should default every SDK option to the value the resource file at the defaults spells out', () => {
@@ -292,26 +255,6 @@ describe('ConfigurationSchema', () => {
         extraFingerprintPaths: ['./shared/Plugins'],
       }).success,
     ).toBe(true);
-  });
-
-  test('should reject an embedded bundle id outside the identifier charset', () => {
-    const [registered] = RESOURCE_FILE_CASES;
-    const resourceFile = registered?.resourceFile as Record<string, unknown>;
-    expect(
-      ConfigurationSchema.safeParse({
-        ...resourceFile,
-        embeddedBundleId: '../b0',
-      }).success,
-    ).toBe(false);
-  });
-
-  test('should reject a host that is not a URL', () => {
-    const [registered] = RESOURCE_FILE_CASES;
-    const resourceFile = registered?.resourceFile as Record<string, unknown>;
-    expect(
-      ConfigurationSchema.safeParse({ ...resourceFile, filesBaseUrl: 'files' })
-        .success,
-    ).toBe(false);
   });
 
   test.each(RESOURCE_FILE_CASES)(

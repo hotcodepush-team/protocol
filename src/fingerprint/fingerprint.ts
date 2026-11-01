@@ -63,11 +63,9 @@ interface PendingDependency {
   dependentDirectory: string;
 }
 
-/**
- * The packages that always contribute, since their version is the native layer itself.
- * No marker detects React Native or the Cordova platforms.
- */
-export const FINGERPRINT_RUNTIME_PACKAGES = [
+// The packages that always contribute, since their version is the native layer itself.
+// No marker detects React Native or the Cordova platforms.
+const FINGERPRINT_RUNTIME_PACKAGES = [
   '@capacitor/android',
   '@capacitor/core',
   '@capacitor/ios',
