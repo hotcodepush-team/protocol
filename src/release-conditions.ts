@@ -24,19 +24,32 @@ export const AttributeReleaseConditionSchema = z.strictObject({
   value: AttributeValueSchema,
 });
 
+/** A `binary` condition as the API and the database hold it. */
+export const BinaryReleaseConditionSchema = z.strictObject(
+  BinaryConditionSchema.shape,
+);
+
 /** A `device` condition as the API and the database hold it, with the raw device ids. */
 export const DeviceReleaseConditionSchema = z.strictObject({
   ids: z.array(UuidSchema).max(DEVICE_CONDITION_HASHED_ID_COUNT_LIMIT),
   type: z.literal('device'),
 });
 
+/** A `fingerprint` condition as the API and the database hold it. */
+export const FingerprintReleaseConditionSchema = z.strictObject(
+  FingerprintConditionSchema.shape,
+);
+
+/** An `os` condition as the API and the database hold it. */
+export const OsReleaseConditionSchema = z.strictObject(OsConditionSchema.shape);
+
 /** A release condition as the API and the database hold it. Only the public index carries hashes. */
 export const ReleaseConditionSchema = z.discriminatedUnion('type', [
   AttributeReleaseConditionSchema,
-  BinaryConditionSchema,
+  BinaryReleaseConditionSchema,
   DeviceReleaseConditionSchema,
-  FingerprintConditionSchema,
-  OsConditionSchema,
+  FingerprintReleaseConditionSchema,
+  OsReleaseConditionSchema,
 ]);
 export type ReleaseCondition = z.infer<typeof ReleaseConditionSchema>;
 

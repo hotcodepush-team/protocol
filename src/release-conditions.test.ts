@@ -38,6 +38,10 @@ describe('ReleaseConditionSchema', () => {
         valueSha256: hashAttribute('plan', 'beta'),
       },
     ],
+    [
+      'a binary condition with an unknown key',
+      { range: '>=2.0.0', scope: 'all', type: 'binary' },
+    ],
     ['an id that is no uuid', { ids: ['device-1'], type: 'device' }],
     [
       '501 ids',
