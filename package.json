@@ -35,10 +35,11 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "catalog": "node scripts/generate-catalog.ts",
-    "fmt": "prettier --write .",
-    "lint": "eslint .",
+    "fmt": "eslint --fix . && prettier --write .",
+    "lint": "eslint . && prettier --check .",
     "test": "vitest run",
-    "typecheck": "tsc --project tsconfig.typecheck.json"
+    "typecheck": "tsc --project tsconfig.typecheck.json",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

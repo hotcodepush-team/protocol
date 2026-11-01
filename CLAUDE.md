@@ -27,10 +27,11 @@ Tests live beside the code they test, `*.test.ts` next to the file.
 | ------------------- | ------------------------------------------------------------------------- |
 | `npm run build`     | compile `src/` into `dist/` with declarations and source maps             |
 | `npm run catalog`   | write `catalog.json` from `src/results.ts`; a test fails when it is stale |
-| `npm run fmt`       | format with Prettier                                                      |
-| `npm run lint`      | ESLint                                                                    |
+| `npm run fmt`       | ESLint's fixes and Prettier                                               |
+| `npm run lint`      | ESLint and Prettier's check                                               |
 | `npm test`          | Vitest                                                                    |
 | `npm run typecheck` | `tsc --noEmit`                                                            |
+| `npm run verify`    | lint, typecheck, test and build, the local gate before a push             |
 
 Run `npm run fmt` before every commit; lint, typecheck, test and build must pass, as `ci.yml` checks on every push and pull request.
 `ci.yml`'s `preview` job publishes every push to `main` and every pull request to pkg.pr.new through its GitHub App, no secret involved; a consumer's install runs no script of ours, and a commit a lockfile pins stays installable.
