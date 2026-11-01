@@ -196,7 +196,7 @@ export interface NotifyReadyResult {
 /** A snapshot of the SDK state: everything the debug screen shows. */
 export interface GetStateResult {
   currentRelease: Release | null;
-  /** From the resource file; `null` in a build the embed step did not register. */
+  /** From the resource file; `null` in a build the build step did not register. */
   embeddedBundleId: string | null;
   failedBundleIds: string[];
   fallbackRelease: Release | null;

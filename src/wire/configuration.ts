@@ -43,7 +43,7 @@ const SDK_OPTIONS_SHAPE = {
 /**
  * A public key as a device reads it: base64 DER in the encoding the native API imports, so the device parses no ASN.1.
  * That is PKCS #1 for `SecKeyCreateWithData` on iOS and SPKI for `X509EncodedKeySpec` on Android.
- * `keyId` is the fingerprint over the SPKI bytes, which a device cannot recompute from PKCS #1.
+ * `keyId` is the key id: `sha256:` and the hex SHA-256 of the SPKI bytes, which a device cannot recompute from PKCS #1.
  */
 export const DevicePublicKeySchema = z.looseObject({
   der: Base64Schema,
@@ -71,14 +71,14 @@ export type ProjectConfiguration = z.infer<typeof ProjectConfigurationSchema>;
 
 /**
  * The resource file the device reads: the project configuration plus what only a build step knows.
- * The embed step resolves the channel to its id and drops the CLI-only key. Hosts are set only outside production builds.
+ * The build step resolves the channel to its id and drops the CLI-only key. Hosts are set only outside production builds.
  */
 export const ConfigurationSchema = z.looseObject({
   ...SDK_OPTIONS_SHAPE,
   appId: NonEmptyStringSchema,
   builtAt: IsoTimestampSchema,
   /**
-   * Null when the embed step ran offline or without a token and could not resolve the channel name.
+   * Null when the build step ran offline or without a token and could not resolve the channel name.
    * Such a build answers `failed` with `channel_unknown`, and requests and reports nothing.
    */
   channelId: NonEmptyStringSchema.nullable(),
@@ -94,7 +94,7 @@ export const ConfigurationSchema = z.looseObject({
    * Null when the recipe could not read the project.
    */
   fingerprint: NonEmptyStringSchema.nullable(),
-  /** The project public keys, re-encoded by the embed step for the platform of this file. */
+  /** The project public keys, re-encoded by the build step for the platform of this file. */
   publicKeys: z.array(DevicePublicKeySchema).default([]),
   updatesBaseUrl: HttpUrlSchema.optional(),
 });

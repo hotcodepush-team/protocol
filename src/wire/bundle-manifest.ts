@@ -30,7 +30,7 @@ export const BundleManifestSchema = z.looseObject({
   bundleVersion: z.string(),
   files: z.array(ManifestFileSchema),
   fingerprint: NonEmptyStringSchema.nullable(),
-  /** The fingerprint of the signing key, or `null` when unsigned. */
+  /** The key id of the signing key: `sha256:` and the hex SHA-256 of its SPKI bytes, or `null` when unsigned. */
   keyId: NonEmptyStringSchema.nullable(),
   platforms: z.array(NonEmptyStringSchema),
 });
