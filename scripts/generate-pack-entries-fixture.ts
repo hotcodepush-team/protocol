@@ -204,7 +204,11 @@ function buildPatchEntry(): PackEntry {
 
 // Stands in for an entry kind a later version may add.
 function buildSkippedEntryHeader(sizeBytes: number): Uint8Array {
-  const header = buildPackPatchHeader(BASE.sha256, TARGET.sha256, sizeBytes);
+  const header = buildPackPatchHeader({
+    fromSha256: BASE.sha256,
+    sizeBytes,
+    toSha256: TARGET.sha256,
+  });
   header.fill(
     0,
     PREFIX_FIELD_OFFSET,

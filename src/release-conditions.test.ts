@@ -36,7 +36,7 @@ describe('ReleaseConditionSchema', () => {
         key: 'plan',
         type: 'attribute',
         value: 'beta',
-        valueSha256: hashAttribute('plan', 'beta'),
+        valueSha256: hashAttribute({ key: 'plan', value: 'beta' }),
       },
     ],
     [

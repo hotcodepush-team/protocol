@@ -58,13 +58,15 @@ describe('AttributesSchema', () => {
 
 describe('hashAttribute', () => {
   test('should hash the key, a NUL and the value', () => {
-    expect(hashAttribute('userId', '42')).toBe(
+    expect(hashAttribute({ key: 'userId', value: '42' })).toBe(
       computeSha256Hex('userId\u000042'),
     );
   });
 
   test('should tell a shifted separator apart', () => {
-    expect(hashAttribute('ab', 'c')).not.toBe(hashAttribute('a', 'bc'));
+    expect(hashAttribute({ key: 'ab', value: 'c' })).not.toBe(
+      hashAttribute({ key: 'a', value: 'bc' }),
+    );
   });
 });
 

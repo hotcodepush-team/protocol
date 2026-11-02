@@ -105,7 +105,7 @@ describe('evaluateChannelIndex', () => {
         expect(
           fixtureCase.acknowledgements.reduce<string | null>(
             (reportedAt, acknowledgement) =>
-              resolveKeptReportedAt(reportedAt, acknowledgement),
+              resolveKeptReportedAt(acknowledgement, { reportedAt }),
             null,
           ),
         ).toBe(fixtureCase.device.reportedAt);

@@ -116,8 +116,8 @@ export interface DeviceEventsAcknowledgement {
  * So the device compares `cappedAt` with the same stamp the server counted it by.
  */
 export function resolveKeptReportedAt(
-  reportedAt: string | null,
   acknowledgement: DeviceEventsAcknowledgement,
+  { reportedAt }: { reportedAt: string | null },
 ): string | null {
   if (!acknowledgement.hasReport) {
     return reportedAt;
