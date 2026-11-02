@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { stringifyCanonicalJson } from '../canonical-json.js';
 import { computeSha256Hex } from '../hash/sha256.js';
 import { ExtraFingerprintPathSchema } from '../wire/primitives.js';
+import { readLockedTree } from './lockfiles/read-locked-tree.js';
 import type {
   DeclaredDependency,
   LockedDependency,
@@ -13,11 +14,7 @@ import type {
   LockedTree,
   LockfileName,
 } from './lockfiles.js';
-import {
-  LOCKFILE_NAMES,
-  readLockedTree,
-  resolveDeclaredDependencies,
-} from './lockfiles.js';
+import { LOCKFILE_NAMES, resolveDeclaredDependencies } from './lockfiles.js';
 import { hasNativeMarkers } from './native-markers.js';
 import type { ProjectReader } from './project-reader.js';
 import {
