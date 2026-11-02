@@ -76,12 +76,11 @@ export function buildPackFileHeader(
 }
 
 /** Builds a patch entry header: `patches/{from}` in the prefix field, `{to}` in the name field, and the ustar magic. */
-// eslint-disable-next-line max-params -- Public package API: an object parameter is a feat! change the owner decides.
-export function buildPackPatchHeader(
-  fromSha256: string,
-  toSha256: string,
-  sizeBytes: number,
-): Uint8Array {
+export function buildPackPatchHeader({
+  fromSha256,
+  sizeBytes,
+  toSha256,
+}: Pick<PackPatchEntry, 'fromSha256' | 'sizeBytes' | 'toSha256'>): Uint8Array {
   if (!HASH_PATTERN.test(fromSha256) || !HASH_PATTERN.test(toSha256)) {
     throw new PackFormatError(
       `a patch entry is named by two sha256, not ${JSON.stringify(fromSha256)} and ${JSON.stringify(toSha256)}`,
@@ -162,7 +161,7 @@ async function* generatePackChunks(
   for await (const entry of entries) {
     yield entry.type === 'file'
       ? buildPackFileHeader(entry.sha256, entry.sizeBytes)
-      : buildPackPatchHeader(entry.fromSha256, entry.toSha256, entry.sizeBytes);
+      : buildPackPatchHeader(entry);
     let written = 0;
     for await (const chunk of entry.body) {
       written += chunk.length;

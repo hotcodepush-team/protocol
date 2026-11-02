@@ -6,10 +6,13 @@ const FNV_PRIME = 0x01000193;
  * It is 32-bit FNV-1a over the UTF-8 of the device id followed by the release id.
  * A device takes a release when its bucket is below the rollout percentage.
  */
-export function resolveRolloutBucket(
-  deviceId: string,
-  releaseId: string,
-): number {
+export function resolveRolloutBucket({
+  deviceId,
+  releaseId,
+}: {
+  deviceId: string;
+  releaseId: string;
+}): number {
   const bytes = new TextEncoder().encode(`${deviceId}${releaseId}`);
   let hash = FNV_OFFSET_BASIS;
   for (const byte of bytes) {

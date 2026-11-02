@@ -60,7 +60,7 @@ export function toWireCondition(condition: ReleaseCondition): Condition {
       return {
         key: condition.key,
         type: 'attribute',
-        valueSha256: hashAttribute(condition.key, condition.value),
+        valueSha256: hashAttribute(condition),
       };
     case 'device':
       return { hashedIds: condition.ids.map(hashDeviceId), type: 'device' };

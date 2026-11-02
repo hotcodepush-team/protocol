@@ -319,7 +319,11 @@ describe('buildPackFileHeader', () => {
 
 describe('buildPackPatchHeader', () => {
   test('should write the from hash in the prefix, the to hash as the name and the ustar magic, every other field but size and checksum zero', () => {
-    const header = buildPackPatchHeader(FROM_SHA256, TO_SHA256, 5);
+    const header = buildPackPatchHeader({
+      fromSha256: FROM_SHA256,
+      sizeBytes: 5,
+      toSha256: TO_SHA256,
+    });
     const decode = (start: number, end: number): string =>
       new TextDecoder().decode(header.subarray(start, end));
     expect(decode(0, 100)).toBe(TO_SHA256.padEnd(100, '\0'));
@@ -339,9 +343,9 @@ describe('buildPackPatchHeader', () => {
   ])(
     'should refuse a $side that is not a sha256',
     ({ fromSha256, toSha256 }) => {
-      expect(() => buildPackPatchHeader(fromSha256, toSha256, 5)).toThrow(
-        PackFormatError,
-      );
+      expect(() =>
+        buildPackPatchHeader({ fromSha256, sizeBytes: 5, toSha256 }),
+      ).toThrow(PackFormatError);
     },
   );
 });

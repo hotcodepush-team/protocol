@@ -71,7 +71,7 @@ function isAttributeConditionSatisfied(
     : undefined;
   return (
     value !== undefined &&
-    hashAttribute(condition.key, value) === condition.valueSha256
+    hashAttribute({ key: condition.key, value }) === condition.valueSha256
   );
 }
 

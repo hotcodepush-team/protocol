@@ -30,7 +30,13 @@ export const AttributesSchema = z.record(
  * Hashes an attribute as an `attribute` condition carries it: `sha256(key + '\0' + value)` over UTF-8.
  * The public index can confirm a guessed value but never lists one. A key never contains NUL.
  */
-export function hashAttribute(key: string, value: string): string {
+export function hashAttribute({
+  key,
+  value,
+}: {
+  key: string;
+  value: string;
+}): string {
   return computeSha256Hex(`${key}\0${value}`);
 }
 

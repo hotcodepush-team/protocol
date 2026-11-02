@@ -97,7 +97,7 @@ describe('resolveKeptReportedAt', () => {
         reportedAt: acknowledgement.reportedAt,
       }).success,
     ).toBe(true);
-    expect(resolveKeptReportedAt(reportedAt, acknowledgement)).toBe(
+    expect(resolveKeptReportedAt(acknowledgement, { reportedAt })).toBe(
       keptReportedAt,
     );
   });

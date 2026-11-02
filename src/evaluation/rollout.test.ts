@@ -23,13 +23,16 @@ describe('resolveRolloutBucket', () => {
   test.each(CASES)(
     'should put device $deviceId and release $releaseId into bucket $bucket',
     ({ bucket, deviceId, releaseId }) => {
-      expect(resolveRolloutBucket(deviceId, releaseId)).toBe(bucket);
+      expect(resolveRolloutBucket({ deviceId, releaseId })).toBe(bucket);
     },
   );
 
   test('should stay within a hundred buckets', () => {
     for (let index = 0; index < 1000; index++) {
-      const bucket = resolveRolloutBucket(`device-${index}`, 'release');
+      const bucket = resolveRolloutBucket({
+        deviceId: `device-${index}`,
+        releaseId: 'release',
+      });
       expect(bucket).toBeGreaterThanOrEqual(0);
       expect(bucket).toBeLessThan(100);
     }
