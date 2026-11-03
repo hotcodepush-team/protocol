@@ -9,6 +9,19 @@
     "type": "git",
     "url": "git+https://github.com/hotcodepush-team/protocol.git"
   },
+  "bugs": {
+    "url": "https://github.com/hotcodepush-team/protocol/issues"
+  },
+  "keywords": [
+    "capacitor",
+    "cordova",
+    "expo",
+    "hotcodepush",
+    "live-updates",
+    "ota-updates",
+    "protocol",
+    "react-native"
+  ],
   "type": "module",
   "engines": {
     "node": ">=22"
