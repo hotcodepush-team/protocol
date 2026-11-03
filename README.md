@@ -4,7 +4,11 @@ The HotCodePush update-protocol client for JavaScript: the wire types, the evalu
 
 ## Installation
 
-The package is not on npm yet. Every commit is published to pkg.pr.new by CI, so install one by its commit SHA and bump it deliberately, never a branch:
+```sh
+npm install @hotcodepush/protocol
+```
+
+CI also publishes every commit to pkg.pr.new, so a commit can be tried before its release; install one by its commit SHA, never a branch:
 
 ```sh
 npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>

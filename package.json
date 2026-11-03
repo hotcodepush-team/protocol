@@ -1,7 +1,7 @@
 {
   "name": "@hotcodepush/protocol",
   "description": "The HotCodePush update-protocol client for JavaScript: the wire types, the evaluator, the signatures, the fingerprint recipe and the fixture suite",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": false,
   "license": "MIT",
   "homepage": "https://hotcodepush.com",
@@ -9,6 +9,19 @@
     "type": "git",
     "url": "git+https://github.com/hotcodepush-team/protocol.git"
   },
+  "bugs": {
+    "url": "https://github.com/hotcodepush-team/protocol/issues"
+  },
+  "keywords": [
+    "capacitor",
+    "cordova",
+    "expo",
+    "hotcodepush",
+    "live-updates",
+    "ota-updates",
+    "protocol",
+    "react-native"
+  ],
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -37,6 +50,7 @@
     "catalog": "node scripts/generate-catalog.ts",
     "fmt": "eslint --fix . && prettier --write .",
     "lint": "eslint . && prettier --check .",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
     "typecheck": "tsc --project tsconfig.typecheck.json",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build"

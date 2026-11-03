@@ -2,7 +2,7 @@
 
 `@hotcodepush/protocol`, the one update-protocol client in TypeScript: the wire types, the evaluator and the fixture suite.
 The Swift package `HotCodePushCore` (`core-ios`) and the Android library `com.hotcodepush:core-android` (`core-android`) implement the same functions and types, proven equal by this repo's fixtures.
-The monorepo, the SDKs and the CLI consume it from pkg.pr.new until its publish decision — `npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>`, a consumer pinning one commit and bumping it deliberately, never `@main`; it is not the supported API, apps use the SDK for their framework.
+The monorepo, the SDKs and the CLI move to its npm release by a caret range, `^0.1.0`, once 0.1.0 is out, and try an unreleased commit through its pkg.pr.new build, `npm install https://pkg.pr.new/hotcodepush-team/protocol/@hotcodepush/protocol@<sha>`, pinned by commit, never `@main`; it is not the supported API, apps use the SDK for their framework.
 Stack: TypeScript compiled by `tsc` into ESM in `dist/`, ESLint, Prettier, Vitest, Node 24.
 
 The plan is the private `handbook` repo, checked out beside this one: `../handbook/docs/`.
@@ -35,7 +35,8 @@ Tests live beside the code they test, `*.test.ts` next to the file.
 
 Run `npm run fmt` before every commit; lint, typecheck, test and build must pass, as `ci.yml` checks on every push and pull request.
 `ci.yml`'s `preview` job publishes every push to `main` and every pull request to pkg.pr.new through its GitHub App, no secret involved; a consumer's install runs no script of ours, and a commit a lockfile pins stays installable.
-No releases yet: the version stays `0.0.0`, and release-please and npm provenance arrive with the publish decision.
+Release-please keeps a release pull request open on `main`, and merging it tags the release.
+`release.yml` then publishes to npm with provenance over OIDC, `prepublishOnly` building `dist/` first.
 
 ## Wire format
 
