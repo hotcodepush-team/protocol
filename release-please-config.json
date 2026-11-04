@@ -7,5 +7,6 @@
   "initial-version": "0.1.0",
   "packages": {
     ".": {}
-  }
+  },
+  "bootstrap-sha": "7e07225875867eebea42df0017fc939a4b9ac9f8"
 }
