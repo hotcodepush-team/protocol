@@ -68,7 +68,7 @@ export interface HotCodePushMethods {
    */
   rollbackUpdate(options?: RollbackUpdateOptions): Promise<void>;
   /**
-   * Merges string attributes into the ones that `attribute` conditions match.
+   * Merges the given attributes into the ones that `attribute` conditions match.
    *
    * A `null` value removes the key.
    */

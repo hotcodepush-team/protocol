@@ -233,7 +233,10 @@ export interface GetDeviceResult {
   sdkVersion: string;
 }
 
-export type SetAttributesOptions = Record<string, string | null>;
+export interface SetAttributesOptions {
+  /** The attributes to merge. A `null` value removes the key. */
+  attributes: Record<string, string | null>;
+}
 
 export interface RollbackUpdateOptions {
   /** The cause in the app, sent as `detail` in the `failed` event. Printable, at most 256 characters. */
