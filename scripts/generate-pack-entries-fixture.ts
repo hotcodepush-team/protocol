@@ -95,7 +95,7 @@ const entries = [
 
 const fixture = {
   description:
-    "The entry kinds of a pack and what a device does with a patch entry. A file entry is a file's stored object, the gzip the bucket serves, named by the content hash. A patch entry is named patches/{from}/{to} — patches/{from} in the ustar prefix field, {to} in the name field, the ustar magic and version set — and its body is a BSDIFF40 patch that turns the bytes of the file from into those of the file to. A reader composes prefix/name when the prefix is not empty and skips, with its body, an entry named neither by a content hash nor patches/{hash}/{hash}. files are the contents the cases name by sha256. delta is a pack of a file entry and a patch entry as the writer produces it. skippedEntryPack holds a file entry, an entry named skippedName, and a patch entry; a reader yields the two entries. patchCases are a patch entry, the files the device holds (its file store and embedded bundle) and the files of the signed manifest it downloads, with the outcome: applied, the patched bytes hashing to toSha256; fallback, the device fetching the file toSha256 as it fetches any file the pack did not bring; ignored, when toSha256 is not a file of the manifest.",
+    "The entry kinds of a pack and what a device does with a patch entry. A file entry is a file's stored object, the gzip the bucket serves, named by the content hash. A patch entry is named patches/{from}/{to} — patches/{from} in the ustar prefix field, {to} in the name field, the ustar magic and version set — and its body is a BSDIFF40 patch that turns the bytes of the file from into those of the file to. A reader composes prefix/name when the prefix is not empty and skips, with its body, an entry named neither by a content hash nor patches/{hash}/{hash}. files are the contents the cases name by sha256. delta is a pack of a file entry and a patch entry as the writer produces it. skippedEntryPack holds a file entry, an entry named skippedName, and a patch entry; a reader yields the two entries. patchCases are a patch entry, the files the device holds (its file store and embedded bundle) and the files of the signed manifest it downloads, with one of three outcomes. applied: the patched bytes hash to toSha256. fallback: the patch does not apply, so the device takes the full pack, which brings the file toSha256. ignored: toSha256 is not a file of the manifest.",
   files: [ASSET, BASE, OTHER, TARGET].map(file => ({
     contentBase64: encodeBase64(file.bytes),
     name: file.name,
@@ -120,28 +120,28 @@ const fixture = {
       outcome: 'applied',
     },
     {
-      name: 'should fetch the file when the device does not hold the base',
+      name: 'should take the full pack when the device does not hold the base',
       heldSha256s: [],
       manifestFiles: targetInManifest,
       patchEntry,
       outcome: 'fallback',
     },
     {
-      name: 'should fetch the file when the patch is truncated',
+      name: 'should take the full pack when the patch is truncated',
       heldSha256s: [BASE.sha256],
       manifestFiles: targetInManifest,
       patchEntry: { ...patchEntry, bodyBase64: encodeBase64(TRUNCATED_PATCH) },
       outcome: 'fallback',
     },
     {
-      name: 'should fetch the file when the patched bytes hash to another file',
+      name: 'should take the full pack when the patched bytes hash to another file',
       heldSha256s: [BASE.sha256],
       manifestFiles: targetInManifest,
       patchEntry: { ...patchEntry, bodyBase64: encodeBase64(PATCH_TO_OTHER) },
       outcome: 'fallback',
     },
     {
-      name: 'should fetch the file when the patch seeks before the start of the base',
+      name: 'should take the full pack when the patch seeks before the start of the base',
       heldSha256s: [BASE.sha256],
       manifestFiles: targetInManifest,
       patchEntry: { ...patchEntry, bodyBase64: encodeBase64(HOSTILE_PATCH) },

@@ -2,28 +2,46 @@ import { readFileSync } from 'node:fs';
 
 import { describe, expect, test } from 'vitest';
 
-import type { PackKind } from '../results.js';
+import type { FailedReason } from '../results.js';
 import { ManifestEnvelopeSchema } from '../wire/bundle-manifest.js';
 import { isUrlOnConfiguredHost } from '../wire/configuration.js';
+import type { DeviceEvent } from '../wire/device-events.js';
 import type { PackDownload, PackSource } from './pack-source.js';
-import { resolveFallbackPackSource, resolvePackSource } from './pack-source.js';
+import { resolveDeltaRouteUrl, resolvePackSources } from './pack-source.js';
 
-interface PackSourceCase {
+interface PackAnswer {
+  missingFileCount: number | null;
+  readOutcome: 'device_failed' | 'pack_read' | 'pack_refused' | null;
+  status: number | null;
+}
+
+type DownloadedEvent = Pick<
+  Extract<DeviceEvent, { type: 'downloaded' }>,
+  'downloadSizeBytes' | 'packKind'
+>;
+
+type DownloadFailedReason = Extract<
+  FailedReason,
+  'content_mismatched' | 'download_failed'
+>;
+
+interface DownloadOutcome {
+  deltaRouteUrl: string | null;
+  downloadedEvent: DownloadedEvent | null;
+  failedReason: DownloadFailedReason | null;
+  requests: PackSource[];
+}
+
+interface PackSourceCase extends DownloadOutcome {
+  answers: PackAnswer[];
   appId: string;
   baseBundleId: string | null;
+  deltaRouteAnswer: { status: number | null } | null;
   envelope: unknown;
   filesBaseUrl: string | null;
   missingFileCount: number;
   name: string;
-  packKind: PackKind | null;
-  requests: PackSource[];
-  statuses: number[];
   updatesBaseUrl: string | null;
-}
-
-interface DownloadOutcome {
-  packKind: PackKind | null;
-  requests: PackSource[];
 }
 
 const PACK_SOURCE_CASES = (
@@ -37,30 +55,59 @@ const PACK_SOURCE_CASES = (
 
 const SERVED_STATUSES = [200, 206];
 
-// Answers the requests of a download with the statuses in order.
 function resolveDownloadOutcome(
   download: PackDownload,
-  statuses: readonly number[],
+  { answers }: { answers: readonly PackAnswer[] },
 ): DownloadOutcome {
   const requests: PackSource[] = [];
-  let source = resolvePackSource(download);
-  if (source === null) {
-    return { packKind: 'files', requests };
-  }
-  for (const status of statuses) {
+  let downloadedEvent: DownloadedEvent | null = null;
+  let failedReason: DownloadFailedReason | null = null;
+  for (const source of resolvePackSources(download)) {
+    const answer = answers[requests.length];
+    if (answer === undefined) {
+      throw new Error(
+        'The case answers fewer requests than the download makes',
+      );
+    }
     requests.push(source);
-    if (SERVED_STATUSES.includes(status)) {
-      return { packKind: source.kind, requests };
+    failedReason = resolvePackFailedReason(answer);
+    if (failedReason === null) {
+      downloadedEvent = {
+        downloadSizeBytes: source.sizeBytes,
+        packKind: source.kind,
+      };
+      break;
     }
-    source = resolveFallbackPackSource(download, source);
-    if (source === null) {
-      return { packKind: null, requests };
+    if (answer.readOutcome === 'device_failed') {
+      break;
     }
   }
-  throw new Error('The case answers fewer requests than the download makes');
+  if (answers.length > requests.length) {
+    throw new Error('The case answers more requests than the download makes');
+  }
+  const deltaRouteUrl = resolveDeltaRouteUrl(download);
+  return { deltaRouteUrl, downloadedEvent, failedReason, requests };
 }
 
-describe('resolvePackSource', () => {
+function resolvePackFailedReason({
+  missingFileCount,
+  readOutcome,
+  status,
+}: PackAnswer): DownloadFailedReason | null {
+  if (
+    status === null ||
+    !SERVED_STATUSES.includes(status) ||
+    readOutcome === 'device_failed'
+  ) {
+    return 'download_failed';
+  }
+  if (readOutcome === 'pack_read' && missingFileCount === 0) {
+    return null;
+  }
+  return 'content_mismatched';
+}
+
+describe('a download', () => {
   test.each(PACK_SOURCE_CASES.map(packCase => [packCase.name, packCase]))(
     '%s',
     (_name, packCase) => {
@@ -75,13 +122,24 @@ describe('resolvePackSource', () => {
         hosts,
         missingFileCount: packCase.missingFileCount,
       };
-      const outcome = resolveDownloadOutcome(download, packCase.statuses);
+      const outcome = resolveDownloadOutcome(download, {
+        answers: packCase.answers,
+      });
       expect(outcome).toEqual({
-        packKind: packCase.packKind,
+        deltaRouteUrl: packCase.deltaRouteUrl,
+        downloadedEvent: packCase.downloadedEvent,
+        failedReason: packCase.failedReason,
         requests: packCase.requests,
       });
-      for (const request of outcome.requests) {
-        expect(isUrlOnConfiguredHost(request.url, hosts)).toBe(true);
+      expect(packCase.deltaRouteAnswer !== null).toBe(
+        outcome.deltaRouteUrl !== null,
+      );
+      const askedUrls = outcome.requests.map(request => request.url);
+      if (outcome.deltaRouteUrl !== null) {
+        askedUrls.push(outcome.deltaRouteUrl);
+      }
+      for (const url of askedUrls) {
+        expect(isUrlOnConfiguredHost(url, hosts)).toBe(true);
       }
     },
   );

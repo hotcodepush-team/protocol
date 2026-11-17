@@ -57,7 +57,8 @@ A reader composes an entry's name as the prefix, a `/` and the name when the pre
 `skippedEntryPack` holds a file entry, an entry named `skippedName` — `future/{hash}/{hash}`, through the prefix field as a later kind could be — and a patch entry; a reader yields its two `entries` and no error.
 `patchCases` are `{ name, heldSha256s, manifestFiles, patchEntry, outcome }`: a patch entry, the hashes of the files the device holds in its file store and its embedded bundle, the files of the signed manifest it downloads, and one of three outcomes, none of which fails the update.
 `applied`: the device applies the patch to the file `fromSha256` it holds, and the patched bytes hash to `toSha256`.
-`fallback`: the device fetches the file `toSha256` as it fetches any file the pack did not bring — when it does not hold the base, the patch is truncated, the patched bytes hash to another file, or the patch's control triples seek before the start of the base.
+`fallback`: the patch does not apply, so the device takes the full pack, which brings the file `toSha256`.
+That is the outcome when the device does not hold the base, the patch is truncated, the patched bytes hash to another file, or the patch's control triples seek before the start of the base.
 `ignored`: `toSha256` is not a file of the manifest, and the device leaves the entry aside.
 
 The two valid patches are fixed inputs in `scripts/pack-entries/`, written once by Colin Percival's bsdiff 4.3; the hostile one, whose control triples seek before the base, is crafted by the generator, `scripts/generate-pack-entries-fixture.ts`, so rebuilding the fixture needs no bsdiff.
@@ -65,13 +66,31 @@ The two valid patches are fixed inputs in `scripts/pack-entries/`, written once 
 ## `pack-sources.json`
 
 The pack a download requests and where it turns on each answer.
-`cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, statuses, requests, packKind }`.
+`cases` are `{ name, appId, baseBundleId, filesBaseUrl, updatesBaseUrl, envelope, missingFileCount, answers, deltaRouteAnswer, deltaRouteUrl, requests, downloadedEvent, failedReason }`, the ones that succeed before the ones that fail.
 `baseBundleId` is the bundle the device runs, a release's or the embedded bundle's, `null` without a base; the hosts are as in `configured-hosts.json`, `null` for production; `missingFileCount` counts the manifest's files the device holds neither in its file store nor in its embedded bundle.
-`statuses` are the answers to the requests in order, `requests` the packs requested, each `{ kind, packBytesLimit, sizeBytes, url }`, and `packKind` the `downloaded` event's kind: `files` when no file was missing and no pack was requested, `null` when the download failed with `download_failed`.
-The envelope's `deltas` are the deltas that exist, and a device with a base requests a delta whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch: the delta the envelope lists for its base, at that URL and size, else the streamed pack the updates host assembles at `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`, whose size is unknown and at most the full pack's, never a URL guessed on the files host.
-A device without a base requests the full pack.
-Whatever the updates host answers but a 200 or a 206, its redirect to the full pack above twenty objects and a 404 included, sends the device to the full pack, since a device follows no redirect.
-A listed delta that answers anything but a 200 or a 206, a 404 or a redirect included, and any error of the full pack fail the download, which the next cycle retries.
+`answers` are the answers to the pack requests in order, each `{ missingFileCount, readOutcome, status }`.
+Every `status` is the HTTP status of the last answer after the retries, `null` when the network gave no answer.
+`readOutcome` says how the read of the pack ended: `pack_read`, `pack_refused` for a pack that arrived and was refused, or `device_failed` when the device itself failed, `null` when the answer was not a 200 or a 206.
+`missingFileCount` counts the files still missing after a `pack_read`, `null` otherwise.
+`deltaRouteAnswer` is `{ status }`, what the delta route answered, its `status` `null` for no answer, and `null` when the device does not ask the route.
+`deltaRouteUrl` is the URL of the delta route the device asks, `null` when it asks none, and `requests` are the packs requested in order, each `{ kind, sizeBytes, url }`.
+`downloadedEvent` is what the `downloaded` event carries, `{ downloadSizeBytes, packKind }`, and `null` when the device sends none: no file was missing, so no bytes arrived, or the download failed.
+`failedReason` is `download_failed` or `content_mismatched` when the download failed, else `null`.
+
+The envelope's `deltas` are the deltas that exist.
+A device with a base takes the delta the envelope lists for that base, at its URL and size, whenever a file is missing, one included, so the main bundle of a React Native or Expo update can arrive as a patch.
+A device without a base takes the full pack.
+The delta route is a `GET` on the updates host, `{updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}`.
+A device with a base the envelope lists no delta for sends it once and never retries it, then takes the full pack.
+It requests the full pack without waiting for the route's answer and reads nothing of that answer, so no answer and no failure of the route changes the download.
+
+The device tries the packs in order.
+A pack serves the download when it answers a 200 or a 206, its read ends without a refusal or a failure of the device, and no file is missing after it.
+Any problem with a delta leads to the full pack: an answer other than a 200 or a 206, a redirect included since a device follows no redirect, no answer from the network, a pack that arrives and is refused for a broken archive, a length that is off or an entry that does not verify, a patch entry that does not apply, or a file still missing after it.
+A failure of the device itself, a write that fails on its storage or memory that runs out while a file inflates, starts no fallback and fails the download with `download_failed`.
+Apart from it, only a failed full pack fails the download, and with the full pack's own reason.
+An error answer or no answer of the full pack is `download_failed`, and a full pack that arrives and is refused or leaves a listed file missing is `content_mismatched`.
+After a delta that failed, the `downloaded` event says `full` and counts the full pack's bytes alone.
 
 ## `wire-rules.json`
 

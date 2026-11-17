@@ -61,7 +61,10 @@ export const MANDATORY_APPLY_STRATEGIES = ['immediate', 'manual'] as const;
 export type MandatoryApplyStrategy =
   (typeof MANDATORY_APPLY_STRATEGIES)[number];
 
-/** The pack that served a download, sent as `packKind` in the `downloaded` device event. `files` means no pack. */
+/**
+ * The pack that served a download, sent as `packKind` in the `downloaded` device event: `delta` or `full`.
+ * `files` and `streamed` are sent by earlier releases only, and a reader still takes them.
+ */
 export const PACK_KINDS = ['delta', 'files', 'full', 'streamed'] as const;
 export type PackKind = (typeof PACK_KINDS)[number];
 
