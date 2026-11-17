@@ -1,68 +1,8 @@
 {
-  "description": "The pack a download requests and where it turns on each answer. The envelope's deltas are the deltas that exist. A device with a base, the bundle it runs, requests a delta whenever a file is missing, one included: the delta the envelope lists for its base, else the streamed pack the updates host assembles at {updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}; anything else that host answers, its redirect to the full pack above twenty objects included, sends it to the full pack. A device without a base requests the full pack. No redirect is followed. Any error of a listed delta, a 404 included, or of the full pack fails the download with download_failed, retried next cycle. statuses are the answers to the requests in order, requests the packs requested, packKind the kind of the pack that served the download, files when no file was missing and null when the download failed.",
+  "description": "The pack a download requests and where it turns on each answer. The envelope's deltas are the deltas that exist. A device with a base, the bundle it runs, takes the delta the envelope lists for that base whenever a file is missing, one included. A device without a base takes the full pack. The delta route is a GET on the updates host, {updatesBaseUrl}/v1/apps/{appId}/bundles/{bundleId}/deltas/{baseBundleId}. A device with a base the envelope lists no delta for sends it once and never retries it, then takes the full pack. It requests the full pack without waiting for the route's answer and reads nothing of that answer, so no answer and no failure of the route changes the download. The device tries the packs in order. A pack serves the download when it answers 200 or 206, its read ends without a refusal or a failure of the device, and no file is missing after it. No redirect is followed. Any problem with a delta leads to the full pack: an answer other than 200 or 206, no answer from the network, a pack that arrives and is refused for a broken archive, a length that is off or an entry that does not verify, a patch entry that does not apply, or a file still missing after it. A failure of the device itself, a write that fails on its storage or memory that runs out while a file inflates, starts no fallback and fails the download with download_failed. Apart from it, only a failed full pack fails the download, and with the full pack's own reason: download_failed for an error answer or no answer, content_mismatched for a full pack that arrives and is refused or leaves a listed file missing. answers are the answers to the pack requests in order, each { missingFileCount, readOutcome, status }. status is the HTTP status of the last answer after the retries, null when the network gave no answer. readOutcome says how the read of the pack ended: pack_read, pack_refused for a pack that arrived and was refused, or device_failed when the device itself failed, null when the answer was not 200 or 206. missingFileCount counts the files still missing after a pack_read, null otherwise. deltaRouteAnswer is { status }, what the delta route answered, its status null for no answer, and null when the device does not ask the route. deltaRouteUrl is the URL of the delta route the device asks, null when it asks none. requests are the packs requested, in order. downloadedEvent is what the downloaded event carries, the kind and length of the pack that served the download, so after a delta that failed it names the full pack and counts its bytes alone. It is null when the device sends none: no file was missing, or the download failed. failedReason is the reason the download failed with, null when it did not fail.",
   "cases": [
     {
-      "name": "should request the streamed pack on the updates host when the device holding a base lacks a single file and the envelope lists no delta for it",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [200],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        }
-      ],
-      "packKind": "streamed"
-    },
-    {
-      "name": "should request the same streamed pack when the device holding a base lacks every file",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 2,
-      "statuses": [200],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        }
-      ],
-      "packKind": "streamed"
-    },
-    {
-      "name": "should request no pack when the device lacks no file",
+      "name": "should request no pack, ask the updates host nothing and send no downloaded event when the device lacks no file",
       "appId": "app-1",
       "baseBundleId": "bundle-1",
       "filesBaseUrl": null,
@@ -80,228 +20,15 @@
         "signature": null
       },
       "missingFileCount": 0,
-      "statuses": [],
+      "answers": [],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
       "requests": [],
-      "packKind": "files"
+      "downloadedEvent": null,
+      "failedReason": null
     },
     {
-      "name": "should take the full pack when the updates host answers its redirect above twenty objects, which the device never follows",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 2,
-      "statuses": [302, 200],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        },
-        {
-          "kind": "full",
-          "packBytesLimit": 2048,
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        }
-      ],
-      "packKind": "full"
-    },
-    {
-      "name": "should take the full pack when the updates host answers an error",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [503, 200],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        },
-        {
-          "kind": "full",
-          "packBytesLimit": 2048,
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        }
-      ],
-      "packKind": "full"
-    },
-    {
-      "name": "should take the full pack when the updates host answers 404",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [404, 200],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        },
-        {
-          "kind": "full",
-          "packBytesLimit": 2048,
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        }
-      ],
-      "packKind": "full"
-    },
-    {
-      "name": "should fail the download when the full pack the updates host gave way to answers an error",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [302, 503],
-      "requests": [
-        {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        },
-        {
-          "kind": "full",
-          "packBytesLimit": 2048,
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        }
-      ],
-      "packKind": null
-    },
-    {
-      "name": "should fail the download when the delta the envelope lists answers an error",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [
-          {
-            "baseBundleId": "bundle-1",
-            "sizeBytes": 1024,
-            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-          }
-        ],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [503],
-      "requests": [
-        {
-          "kind": "delta",
-          "packBytesLimit": 1024,
-          "sizeBytes": 1024,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        }
-      ],
-      "packKind": null
-    },
-    {
-      "name": "should fail the download when the delta the envelope lists answers a redirect, which the device never follows",
-      "appId": "app-1",
-      "baseBundleId": "bundle-1",
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [
-          {
-            "baseBundleId": "bundle-1",
-            "sizeBytes": 1024,
-            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-          }
-        ],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 1,
-      "statuses": [302],
-      "requests": [
-        {
-          "kind": "delta",
-          "packBytesLimit": 1024,
-          "sizeBytes": 1024,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
-        }
-      ],
-      "packKind": null
-    },
-    {
-      "name": "should take the full pack when the device holds no base and lacks a single file",
+      "name": "should take the full pack, answered with a 206, when the device holds no base and lacks a single file",
       "appId": "app-1",
       "baseBundleId": null,
       "filesBaseUrl": null,
@@ -319,46 +46,20 @@
         "signature": null
       },
       "missingFileCount": 1,
-      "statuses": [200],
+      "answers": [
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 206 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
       "requests": [
         {
           "kind": "full",
-          "packBytesLimit": 2048,
           "sizeBytes": 2048,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
       ],
-      "packKind": "full"
-    },
-    {
-      "name": "should fail the download when the full pack answers an error and the device holds no base",
-      "appId": "app-1",
-      "baseBundleId": null,
-      "filesBaseUrl": null,
-      "updatesBaseUrl": null,
-      "envelope": {
-        "bundleId": "bundle-2",
-        "createdAt": "2026-10-10T10:00:00.000Z",
-        "deltas": [],
-        "encryption": null,
-        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
-        "pack": {
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        },
-        "signature": null
-      },
-      "missingFileCount": 2,
-      "statuses": [404],
-      "requests": [
-        {
-          "kind": "full",
-          "packBytesLimit": 2048,
-          "sizeBytes": 2048,
-          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
-        }
-      ],
-      "packKind": null
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
     },
     {
       "name": "should take the delta the envelope lists for the device's base, at its URL and size",
@@ -372,7 +73,7 @@
         "deltas": [
           {
             "baseBundleId": "bundle-0",
-            "sizeBytes": 1024,
+            "sizeBytes": 1536,
             "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-0"
           },
           {
@@ -390,19 +91,57 @@
         "signature": null
       },
       "missingFileCount": 1,
-      "statuses": [200],
+      "answers": [
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
       "requests": [
         {
           "kind": "delta",
-          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
         }
       ],
-      "packKind": "delta"
+      "downloadedEvent": { "downloadSizeBytes": 1024, "packKind": "delta" },
+      "failedReason": null
     },
     {
-      "name": "should ask the updates host when the envelope lists deltas for other bases alone",
+      "name": "should ask the delta route and take the full pack when the envelope lists no delta for the device's base and the route answers 302",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": { "status": 302 },
+      "deltaRouteUrl": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1",
+      "requests": [
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should ask the delta route when the envelope lists deltas for other bases alone and take the full pack though the route answers 200",
       "appId": "app-1",
       "baseBundleId": "bundle-1",
       "filesBaseUrl": null,
@@ -413,7 +152,7 @@
         "deltas": [
           {
             "baseBundleId": "bundle-0",
-            "sizeBytes": 1024,
+            "sizeBytes": 1536,
             "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-0"
           }
         ],
@@ -426,19 +165,57 @@
         "signature": null
       },
       "missingFileCount": 1,
-      "statuses": [200],
+      "answers": [
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": { "status": 200 },
+      "deltaRouteUrl": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1",
       "requests": [
         {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
       ],
-      "packKind": "streamed"
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
     },
     {
-      "name": "should fail the download when the delta the envelope lists answers 404, never turning to the updates host",
+      "name": "should derive the delta route's URL from the updates host a staging build names and take the full pack though the route gives no answer",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": "https://files.staging.hotcodepush.com",
+      "updatesBaseUrl": "https://updates.staging.hotcodepush.com",
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.staging.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": { "status": null },
+      "deltaRouteUrl": "https://updates.staging.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1",
+      "requests": [
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.staging.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should take the full pack when the delta the envelope lists answers an error",
       "appId": "app-1",
       "baseBundleId": "bundle-1",
       "filesBaseUrl": null,
@@ -462,23 +239,221 @@
         "signature": null
       },
       "missingFileCount": 1,
-      "statuses": [404],
+      "answers": [
+        { "missingFileCount": null, "readOutcome": null, "status": 503 },
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
       "requests": [
         {
           "kind": "delta",
-          "packBytesLimit": 1024,
           "sizeBytes": 1024,
           "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
       ],
-      "packKind": null
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
     },
     {
-      "name": "should derive the streamed pack's URL from the updates host a staging build names",
+      "name": "should take the full pack when the delta the envelope lists answers a redirect, which the device never follows",
       "appId": "app-1",
       "baseBundleId": "bundle-1",
-      "filesBaseUrl": "https://files.staging.hotcodepush.com",
-      "updatesBaseUrl": "https://updates.staging.hotcodepush.com",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        { "missingFileCount": null, "readOutcome": null, "status": 302 },
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should take the full pack when the delta the envelope lists gets no answer from the network after the retries",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        { "missingFileCount": null, "readOutcome": null, "status": null },
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should take the full pack when the delta the envelope lists arrives and is refused",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        {
+          "missingFileCount": null,
+          "readOutcome": "pack_refused",
+          "status": 200
+        },
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should take the full pack and count its bytes alone when a file is still missing after the delta the envelope lists",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 2,
+      "answers": [
+        { "missingFileCount": 1, "readOutcome": "pack_read", "status": 200 },
+        { "missingFileCount": 0, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": { "downloadSizeBytes": 2048, "packKind": "full" },
+      "failedReason": null
+    },
+    {
+      "name": "should fail the download with download_failed when the full pack answers an error and the device holds no base",
+      "appId": "app-1",
+      "baseBundleId": null,
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
       "envelope": {
         "bundleId": "bundle-2",
         "createdAt": "2026-10-10T10:00:00.000Z",
@@ -487,26 +462,30 @@
         "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
         "pack": {
           "sizeBytes": 2048,
-          "url": "https://files.staging.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         },
         "signature": null
       },
-      "missingFileCount": 1,
-      "statuses": [200],
+      "missingFileCount": 2,
+      "answers": [
+        { "missingFileCount": null, "readOutcome": null, "status": 404 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
       "requests": [
         {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.staging.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
         }
       ],
-      "packKind": "streamed"
+      "downloadedEvent": null,
+      "failedReason": "download_failed"
     },
     {
-      "name": "should derive the streamed pack's URL from an embedded bundle's id as from a release's bundle",
+      "name": "should fail the download with content_mismatched when the full pack arrives and is refused",
       "appId": "app-1",
-      "baseBundleId": "embedded-bundle-1",
+      "baseBundleId": null,
       "filesBaseUrl": null,
       "updatesBaseUrl": null,
       "envelope": {
@@ -522,16 +501,148 @@
         "signature": null
       },
       "missingFileCount": 1,
-      "statuses": [200],
-      "requests": [
+      "answers": [
         {
-          "kind": "streamed",
-          "packBytesLimit": 2048,
-          "sizeBytes": null,
-          "url": "https://updates.hotcodepush.com/v1/apps/app-1/bundles/bundle-2/deltas/embedded-bundle-1"
+          "missingFileCount": null,
+          "readOutcome": "pack_refused",
+          "status": 200
         }
       ],
-      "packKind": "streamed"
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": null,
+      "failedReason": "content_mismatched"
+    },
+    {
+      "name": "should fail the download with content_mismatched when a listed file is still missing after the full pack",
+      "appId": "app-1",
+      "baseBundleId": null,
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 2,
+      "answers": [
+        { "missingFileCount": 1, "readOutcome": "pack_read", "status": 200 }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": null,
+      "failedReason": "content_mismatched"
+    },
+    {
+      "name": "should fail the download with the full pack's own reason, download_failed, when the full pack gets no answer after a delta that left a file missing",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 2,
+      "answers": [
+        { "missingFileCount": 1, "readOutcome": "pack_read", "status": 200 },
+        { "missingFileCount": null, "readOutcome": null, "status": null }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        },
+        {
+          "kind": "full",
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        }
+      ],
+      "downloadedEvent": null,
+      "failedReason": "download_failed"
+    },
+    {
+      "name": "should fail the download with download_failed and request no full pack when the device itself fails while it reads the delta",
+      "appId": "app-1",
+      "baseBundleId": "bundle-1",
+      "filesBaseUrl": null,
+      "updatesBaseUrl": null,
+      "envelope": {
+        "bundleId": "bundle-2",
+        "createdAt": "2026-10-10T10:00:00.000Z",
+        "deltas": [
+          {
+            "baseBundleId": "bundle-1",
+            "sizeBytes": 1024,
+            "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+          }
+        ],
+        "encryption": null,
+        "manifest": "{\"appId\":\"app-1\",\"bundleVersion\":\"1.4.2\",\"files\":[{\"path\":\"assets/index-a1b2c3.js\",\"sha256\":\"bed516453d68ad6b6c03290f64dd604b80a276f4abc75d7127be6507935d59d1\",\"sizeBytes\":37},{\"path\":\"index.html\",\"sha256\":\"8c8f3bf8856932916f7fbb68a6c7e47ecd0de8de67a7cc3083662235d2caa870\",\"sizeBytes\":81}],\"fingerprint\":\"fp1:80dcb8300bb3c1c8acf608d8f85ce8fb0d0303d2e7160854b296a1142aec492d\",\"keyId\":null,\"platforms\":[\"android\",\"ios\"]}",
+        "pack": {
+          "sizeBytes": 2048,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/pack"
+        },
+        "signature": null
+      },
+      "missingFileCount": 1,
+      "answers": [
+        {
+          "missingFileCount": null,
+          "readOutcome": "device_failed",
+          "status": 200
+        }
+      ],
+      "deltaRouteAnswer": null,
+      "deltaRouteUrl": null,
+      "requests": [
+        {
+          "kind": "delta",
+          "sizeBytes": 1024,
+          "url": "https://files.hotcodepush.com/apps/app-1/bundles/bundle-2/deltas/bundle-1"
+        }
+      ],
+      "downloadedEvent": null,
+      "failedReason": "download_failed"
     }
   ]
 }

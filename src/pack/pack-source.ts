@@ -1,5 +1,8 @@
 import type { PackKind } from '../results.js';
-import type { ManifestEnvelope } from '../wire/bundle-manifest.js';
+import type {
+  EnvelopeDelta,
+  ManifestEnvelope,
+} from '../wire/bundle-manifest.js';
 import type { Configuration } from '../wire/configuration.js';
 import { resolveUpdatesBaseUrl } from '../wire/configuration.js';
 
@@ -17,82 +20,64 @@ export interface PackDownload {
   missingFileCount: number;
 }
 
-/**
- * A pack a download requests. `sizeBytes` is null when the envelope states no length.
- * `packBytesLimit` is the most bytes the pack may hold.
- */
+/** A pack a download requests, at the URL and length the envelope states. */
 export interface PackSource {
-  kind: Exclude<PackKind, 'files'>;
-  packBytesLimit: number;
-  sizeBytes: number | null;
+  kind: Extract<PackKind, 'delta' | 'full'>;
+  sizeBytes: number;
   url: string;
 }
 
 /**
- * Resolves the pack a download requests first, or `null` when no file is missing.
- * A device without a base takes the full pack. A device with a base takes a delta even for one missing file,
- * so the main bundle arrives as a patch. That is the delta the envelope lists for the base, else the streamed pack.
+ * Resolves the packs a download tries in order: none when no file is missing, the full pack, or a delta and then the full pack.
+ * A device with a base tries the delta the envelope lists for that base first, even for one missing file,
+ * so the main bundle can arrive as a patch.
+ * The first pack that arrives, is read without a refusal and leaves no file missing serves the download.
+ * Any problem with a delta leads to the next pack. A failure of the device itself, a write that fails on its storage
+ * or memory that runs out while a file inflates, starts no fallback and is `download_failed`.
  */
-export function resolvePackSource(download: PackDownload): PackSource | null {
+export function resolvePackSources(download: PackDownload): PackSource[] {
   if (download.missingFileCount === 0) {
-    return null;
+    return [];
   }
-  const { baseBundleId, envelope } = download;
-  if (baseBundleId === null) {
-    return resolveFullPackSource(download);
-  }
-  const listedDelta = envelope.deltas.find(
-    delta => delta.baseBundleId === baseBundleId,
-  );
+  const fullPackSource = resolveFullPackSource(download);
+  const listedDelta = resolveListedDelta(download);
   if (listedDelta === undefined) {
-    return resolveStreamedPackSource(download, baseBundleId);
+    return [fullPackSource];
   }
-  return {
+  const deltaSource: PackSource = {
     kind: 'delta',
-    packBytesLimit: listedDelta.sizeBytes,
     sizeBytes: listedDelta.sizeBytes,
     url: listedDelta.url,
   };
+  return [deltaSource, fullPackSource];
 }
 
 /**
- * Resolves the pack to request after `source` answered anything but 200 or 206.
- * Returns `null` when the download fails and waits for the next cycle, as for a full pack or a listed delta.
- * A streamed pack falls back to the full pack whatever the answer, since a device follows no redirect.
+ * Resolves the URL of the delta route, the `GET` on the updates host a download sends when the envelope lists no delta for the device's base.
+ * `null` when no file is missing, the device has no base or the envelope lists its delta.
+ * The device sends it once and never retries it, requests the full pack without waiting for its answer,
+ * and reads nothing of that answer. No answer and no failure of the request changes the download.
  */
-export function resolveFallbackPackSource(
-  download: PackDownload,
-  source: PackSource,
-): PackSource | null {
-  switch (source.kind) {
-    case 'delta':
-    case 'full':
-      return null;
-    case 'streamed':
-      return resolveFullPackSource(download);
+export function resolveDeltaRouteUrl(download: PackDownload): string | null {
+  const { appId, baseBundleId, envelope, hosts, missingFileCount } = download;
+  if (
+    missingFileCount === 0 ||
+    baseBundleId === null ||
+    resolveListedDelta(download) !== undefined
+  ) {
+    return null;
   }
+  return `${resolveUpdatesBaseUrl(hosts)}/v1/apps/${appId}/bundles/${envelope.bundleId}/deltas/${baseBundleId}`;
+}
+
+function resolveListedDelta({
+  baseBundleId,
+  envelope,
+}: PackDownload): EnvelopeDelta | undefined {
+  return envelope.deltas.find(delta => delta.baseBundleId === baseBundleId);
 }
 
 function resolveFullPackSource(download: PackDownload): PackSource {
   const { pack } = download.envelope;
-  return {
-    kind: 'full',
-    packBytesLimit: pack.sizeBytes,
-    sizeBytes: pack.sizeBytes,
-    url: pack.url,
-  };
-}
-
-// The updates host assembles this delta on request, so its length is unknown up front.
-// It shares its entries with the full pack, so it is never larger.
-function resolveStreamedPackSource(
-  download: PackDownload,
-  baseBundleId: string,
-): PackSource {
-  return {
-    kind: 'streamed',
-    packBytesLimit: download.envelope.pack.sizeBytes,
-    sizeBytes: null,
-    url: `${resolveUpdatesBaseUrl(download.hosts)}/v1/apps/${download.appId}/bundles/${download.envelope.bundleId}/deltas/${baseBundleId}`,
-  };
+  return { kind: 'full', sizeBytes: pack.sizeBytes, url: pack.url };
 }
